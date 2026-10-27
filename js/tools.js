@@ -190,20 +190,24 @@
     var items = Array.prototype.filter.call(document.querySelectorAll(".dbr-item"), function (c) { return c.checked; }).map(function (c) { return c.getAttribute("data-t"); });
     if ($("dbr-extra").value.trim()) items.push($("dbr-extra").value.trim());
     var iv = $("dbr-int").value ? INTERVENTIONS[$("dbr-int").value].name : "";
-    var goal = Math.min(9, Math.max(1, +$("dbr-goal").value || 7));
+    var goalPct = Math.min(100, Math.max(10, +$("dbr-goal").value || 80));
     var bucks = $("dbr-bucks").checked, bonus = $("dbr-bonus").checked;
     var blank = function () { return names.map(function () { return "<td></td>"; }).join(""); };
+    var ckCells = function () { return names.map(function () { return '<td class="ck-cell"><span class="ck-yes">&#10003;</span><span class="ck-no">&#10007;</span></td>'; }).join(""); };
+    var rows = items.length + ($("dbr-hw").checked ? 1 : 0);
     var h = '<div class="sheet">' + sheetHead("Student Daily Behavior Report") +
       '<table class="sheet-meta"><tr><td>Student: <b>' + esc($("dbr-student").value) + "</b></td><td>Grade: <b>" + esc($("dbr-grade").value) + "</b></td></tr>" +
       "<tr><td>Completed by: <b>" + esc($("dbr-rater").value) + "</b></td><td>Intervention: <b>" + esc(iv) + "</b></td></tr></table>" +
       ($("dbr-struggle").value ? '<p class="sheet-dir">Focus: <b>' + esc(BEHAVIORS.filter(function (b) { return b.id === $("dbr-struggle").value; })[0].name) + "</b>. These are the behaviors we are working toward.</p>" : "") +
-      '<p class="sheet-dir">At the end of the class period or day, rate each behavior: <b>1-3</b> Never/Seldom &middot; <b>4-6</b> Sometimes &middot; <b>7-9</b> Most/All of the time.</p>' +
-      (bucks ? '<div class="bucks-rule"><img src="img/broncho-logo.png" alt=""><div><b>Earn Broncho Bucks!</b> For every behavior rated <b>' + goal + " or higher</b>, you earn <b>1 Broncho Buck</b>." + (bonus ? " Meet the goal on <b>every</b> behavior today and earn <b>1 bonus Buck</b>." : "") + "</div></div>" : "") +
+      '<p class="sheet-dir">At the end of the class period or day, circle one for each behavior: <b class="ck-yes">&#10003;</b> = showed it &nbsp; <b class="ck-no">&#10007;</b> = not yet</p>' +
+      (bucks ? '<div class="bucks-rule"><img src="img/broncho-logo.png" alt=""><div><b>Earn Broncho Bucks!</b> Every <b>&#10003;</b> earns <b>1 Broncho Buck</b>.' + (bonus ? " Get a &#10003; on <b>every</b> behavior today and earn <b>1 bonus Buck</b>." : "") + "</div></div>" : "") +
       '<table class="sheet-grid"><thead><tr><th>Student behaviors</th>' + names.map(function (n, i) { return "<th>" + n + "<br><small>" + (days[i] || "__/__") + "</small></th>"; }).join("") + "</tr></thead><tbody>" +
-      items.map(function (t) { return "<tr><td>" + esc(t) + '<div class="scale">1 2 3 | 4 5 6 | 7 8 9' + (bucks ? " &middot; goal: " + goal + "+" : "") + "</div></td>" + blank() + "</tr>"; }).join("") +
-      ($("dbr-hw").checked ? '<tr><td>The student completed and turned in classwork and homework.<div class="scale">0-19% | 20-39% | 40-59% | 60-79% | 80-100%</div></td>' + blank() + "</tr>" : "") +
+      items.map(function (t) { return "<tr><td>" + esc(t) + "</td>" + ckCells() + "</tr>"; }).join("") +
+      ($("dbr-hw").checked ? "<tr><td>The student completed and turned in classwork and homework.</td>" + ckCells() + "</tr>" : "") +
+      '<tr class="bucks-row"><td><b>&#10003; total today</b></td>' + blank() + "</tr>" +
       (bucks ? '<tr class="bucks-row"><td><b>Broncho Bucks earned today</b></td>' + blank() + "</tr>" : "") +
       "</tbody></table>" +
+      '<p class="sheet-sign"><b>Weekly &#10003; total: ______ of ' + rows * 5 + "</b> &nbsp; Goal: <b>" + Math.ceil(rows * 5 * goalPct / 100) + " &#10003; (" + goalPct + "%)</b> &nbsp; Met? <span class=\"box\"></span> Yes <span class=\"box\"></span> Not yet</p>" +
       (bucks ? '<p class="sheet-sign"><b>Weekly Broncho Bucks total: ________</b> &nbsp; Teacher initials: ______</p>' : "") +
       '<div class="sheet-comments"><b>Daily comments</b>' + names.map(function (n, i) { return "<div><span>" + n + " " + (days[i] || "") + "</span><i></i></div>"; }).join("") + "</div>" +
       ($("dbr-parent").checked ? '<p class="sheet-sign">Parent sign-off: I have reviewed this report and discussed it with my child.<br>Signature: ______________________________ Date: __________</p>' : "") +

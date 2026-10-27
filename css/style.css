@@ -514,3 +514,10 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
   .pass, .job-card, .punch, .pose-card { break-inside: avoid; }
   .sheet-grid tr.bucks-row td, .bucks-rule, .heart-matrix tbody th, .heart-matrix thead th, .pose-heart, .rnum, .pose-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* check / x daily report */
+.sheet-grid td.ck-cell { text-align: center; white-space: nowrap; vertical-align: middle; }
+.ck-cell span { display: inline-block; width: 26px; height: 26px; line-height: 24px; border: 1.5px solid #999; border-radius: 50%; margin: 0 2px; font-weight: 700; font-size: 15px; }
+.ck-yes { color: #1f7a46; }
+.ck-no { color: #c8102e; }
+.sheet-dir .ck-yes, .sheet-dir .ck-no { font-size: 1.2em; }

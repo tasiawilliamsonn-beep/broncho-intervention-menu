@@ -133,7 +133,7 @@
         <div class="row2"><div><label class="f" for="sc-student">Student</label><input type="text" id="sc-student"></div><div><label class="f" for="sc-teacher">Teacher</label><input type="text" id="sc-teacher"></div></div>
         <div class="row2"><div><label class="f" for="sc-start">Start date</label><input type="text" id="sc-start" placeholder="e.g., 11/3"></div><div><label class="f" for="sc-review">Review date</label><input type="text" id="sc-review" placeholder="e.g., 11/14"></div></div>
         <label class="f" for="sc-goal">Goal (positive and observable)</label><input type="text" id="sc-goal" placeholder="e.g., I will start my work within 2 minutes of directions.">
-        <label class="f" for="sc-measure">How we will measure it</label><input type="text" id="sc-measure" placeholder="e.g., Daily Behavior Report rating of 7+ on 4 of 5 days">
+        <label class="f" for="sc-measure">How we will measure it</label><input type="text" id="sc-measure" placeholder="e.g., a &#10003; on the Daily Behavior Report on 4 of 5 days">
         <label class="f" for="sc-student-do">The student will</label><input type="text" id="sc-student-do" placeholder="e.g., Use my stuck steps and help card">
         <label class="f" for="sc-teacher-do">The teacher will help by</label><input type="text" id="sc-teacher-do" placeholder="e.g., Checking in after directions and chunking long tasks">
         <label class="f" for="sc-reward">Reward the student chose</label><input type="text" id="sc-reward" placeholder="e.g., Lunch with the teacher and a friend">
@@ -210,7 +210,7 @@
   <section class="tool" id="tool-dbr" role="tabpanel" hidden>
     <div class="tool-intro no-print">
       <h2 class="title">Daily Behavior Report</h2>
-      <p class="intro">A Daily Behavior Report is a quick, reliable way to show whether an intervention is working (Chafouleas, Riley-Tillman, &amp; Sugai, 2007). Rate the same behaviors at the same time each day for 2 to 4 weeks. To keep ratings consistent, decide in advance what a typical classmate would earn (for example, 7 = matches the class norm).</p>
+      <p class="intro">A Daily Behavior Report is a quick, reliable way to show whether an intervention is working (Chafouleas, Riley-Tillman, &amp; Sugai, 2007). Mark each behavior with a <b>&#10003;</b> (the student showed it) or an <b>&#10007;</b> (not yet) at the same time each day for 2 to 4 weeks. To keep marks consistent, decide in advance what earns a &#10003;: the student did it about as well as a typical classmate.</p>
     </div>
     <div class="grid g2 no-print" style="align-items:start">
       <div class="panel"><header><h2>Set up the report</h2></header><div class="body">
@@ -232,12 +232,12 @@
         <label class="f" for="dbr-extra">Optional behavior (positively stated goal)</label>
         <input type="text" id="dbr-extra" placeholder="e.g., The student used the break card instead of leaving the room.">
         <fieldset style="margin-top:12px"><legend>Broncho Bucks</legend>
-          <label class="opt" style="padding-left:0"><input type="checkbox" id="dbr-bucks" checked><span>Student earns Broncho Bucks for meeting the goal</span></label>
-          <div class="row2"><div><label class="f" for="dbr-goal">Goal rating (1-9)</label><input type="number" id="dbr-goal" value="7" min="1" max="9"></div>
-          <div><label class="opt" style="padding-left:0;margin-top:34px"><input type="checkbox" id="dbr-bonus" checked><span>Bonus Buck for meeting every goal</span></label></div></div>
-          <p class="hint">Set the goal where the student can succeed at first, then raise it. Pairing points for meeting a goal with praise is supported by token economy research (Maggin et al., 2011).</p>
+          <label class="opt" style="padding-left:0"><input type="checkbox" id="dbr-bucks" checked><span>Student earns 1 Broncho Buck for each &#10003;</span></label>
+          <div class="row2"><div><label class="f" for="dbr-goal">Weekly goal (% of &#10003;)</label><input type="number" id="dbr-goal" value="80" min="10" max="100" step="5"></div>
+          <div><label class="opt" style="padding-left:0;margin-top:34px"><input type="checkbox" id="dbr-bonus" checked><span>Bonus Buck for an all-&#10003; day</span></label></div></div>
+          <p class="hint">Set the weekly goal where the student can succeed at first, then raise it. Pairing points for meeting a goal with praise is supported by token economy research (Maggin et al., 2011).</p>
         </fieldset>
-        <label class="opt" style="padding-left:0;margin-top:8px"><input type="checkbox" id="dbr-hw" checked><span>Include classwork/homework completion (% turned in)</span></label>
+        <label class="opt" style="padding-left:0;margin-top:8px"><input type="checkbox" id="dbr-hw" checked><span>Include classwork/homework turned in</span></label>
         <label class="opt" style="padding-left:0"><input type="checkbox" id="dbr-parent" checked><span>Include parent sign-off line</span></label>
         <button class="btn" type="button" id="dbr-print" style="margin-top:12px">Print Daily Behavior Report</button>
       </div></div>
