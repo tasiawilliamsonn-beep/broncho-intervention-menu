@@ -492,14 +492,6 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .jc-heart { font-size: .8em; color: #c8102e; font-weight: 700; }
 
 /* incentives */
-.buck { display: grid; grid-template-columns: 64px 1fr 120px; gap: 10px; align-items: center; border: 3px double #111; outline: 2px solid #c8102e; outline-offset: -8px; border-radius: 8px; padding: 12px 14px; background: #fff; color: #111; max-width: 460px; break-inside: avoid; }
-.buck img { width: 60px; height: 60px; }
-.buck-mid { text-align: center; }
-.buck-mid span { display: block; font-family: var(--display); letter-spacing: .2em; text-transform: uppercase; color: #c8102e; font-size: .8em; }
-.buck-mid b { display: block; font-family: var(--display); font-size: 1.5em; letter-spacing: .04em; line-height: 1.05; }
-.buck-mid em { font-family: var(--display); font-style: normal; font-size: 1.6em; color: #c8102e; }
-.buck-right { display: grid; gap: 1px; font-size: .72em; }
-.buck-right .box { width: 10px; height: 10px; }
 .bucks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .bucks-rule { display: flex; gap: 10px; align-items: center; border: 2px dashed #c8102e; border-radius: 8px; padding: 6px 10px; margin: 8px 0; background: #fff6f7; }
 .bucks-rule img { width: 40px; height: 40px; }
@@ -519,6 +511,6 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
   .poster { font-size: 13pt; }
   .heart-matrix { min-width: 0; font-size: 9pt; }
   .bc * { animation: none !important; }
-  .buck, .pass, .job-card, .punch, .pose-card { break-inside: avoid; }
+  .pass, .job-card, .punch, .pose-card { break-inside: avoid; }
   .sheet-grid tr.bucks-row td, .bucks-rule, .heart-matrix tbody th, .heart-matrix thead th, .pose-heart, .rnum, .pose-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }

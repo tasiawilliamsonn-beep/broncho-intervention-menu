@@ -212,17 +212,10 @@
   $("inc-research").innerHTML = INCENTIVE_RESEARCH.map(function (r) { return '<div class="card red-top"><h3>' + esc(r.t) + "</h3><p>" + esc(r.d) + '</p><p class="cite">' + esc(BIM.shortCite(r.c)) + "</p></div>"; }).join("");
   var groups = { individual: "Individual (free)", group: "Table or small group", whole: "Whole class" };
   $("inc-menu").innerHTML = Object.keys(groups).map(function (g) { return '<div class="card"><h3>' + groups[g] + '</h3><ul class="check">' + INCENTIVES[g].map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul></div>"; }).join("");
-  function buck() {
-    return '<div class="buck"><img src="img/broncho-logo.png" alt=""><div class="buck-mid"><span>Sunnyside</span><b>BRONCHO BUCKS</b><em>1</em></div><div class="buck-right"><small>Earned for:</small>' +
-      ["Honesty", "Effort", "Attitude", "Respect", "Teamwork"].map(function (v) { return '<span><span class="box"></span> ' + v + "</span>"; }).join("") +
-      '<small>Name ____________</small><small>Staff ______</small></div></div>';
-  }
-  $("buck-preview").innerHTML = buck();
-  $("inc-bucks").addEventListener("click", function () { print('<div class="sheet"><div class="bucks-grid">' + Array(10).join(",").split(",").map(buck).join("") + "</div></div>"); });
   $("inc-menu-print").addEventListener("click", function () {
-    print('<div class="sheet poster">' + head("Broncho Bucks Reward Menu") + '<table class="sheet-grid"><thead><tr><th>Reward</th><th>Cost</th></tr></thead><tbody>' +
+    print('<div class="sheet poster">' + head("Classroom Reward Menu") + '<table class="sheet-grid"><thead><tr><th>Reward</th><th>Broncho Bucks</th></tr></thead><tbody>' +
       INCENTIVES.individual.slice(0, 12).map(function (t) { return "<tr><td>" + esc(t) + "</td><td></td></tr>"; }).join("") + "</tbody></table>" +
-      '<p class="sheet-dir">Earn Broncho Bucks by showing HEART: Honesty, Effort, Attitude, Respect, Teamwork.</p></div>');
+      '<p class="sheet-dir">Earn rewards by showing HEART: Honesty, Effort, Attitude, Respect, Teamwork. Spend your Broncho Bucks here.</p></div>');
   });
   $("inc-note").addEventListener("click", function () {
     var note = '<div class="pass"><div class="pass-head"><img src="img/broncho-logo.png" alt=""><div><b>Good News from Sunnyside!</b><span>A Broncho showed HEART today</span></div></div>' +
