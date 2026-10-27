@@ -18,6 +18,8 @@
     window.print();
     setTimeout(function () { document.body.classList.remove("printing"); }, 500);
   }
+  window.BIMPrint = function (html) { printArea("print-area", html); };
+  window.BIMSheetHead = function (t) { return sheetHead(t); };
   function sheetHead(title) {
     return '<div class="sheet-head"><img src="img/broncho-logo.png" alt=""><div><b>Sunnyside Intermediate School</b><span>' + esc(title) + "</span></div></div>";
   }
@@ -161,31 +163,59 @@
   $("dbr-int").innerHTML += Object.keys(INTERVENTIONS).map(function (id) { return '<option value="' + id + '">' + esc(INTERVENTIONS[id].name) + "</option>"; }).join("");
   var plan = BIM.getPlan();
   if (plan.interventions && plan.interventions[0]) $("dbr-int").value = plan.interventions[0];
-  $("dbr-items").innerHTML = DBR_ITEMS.map(function (t, i) { return '<label class="opt"><input type="checkbox" class="dbr-item" value="' + i + '" checked><span>' + esc(t) + "</span></label>"; }).join("");
+  $("dbr-struggle").innerHTML = '<option value="">Choose the behavior the student struggles with...</option>' + [1, 2].map(function (l) {
+    return '<optgroup label="Level ' + l + '">' + BEHAVIORS.filter(function (b) { return b.level === l; }).map(function (b) { return '<option value="' + b.id + '">' + esc(b.name) + "</option>"; }).join("") + "</optgroup>";
+  }).join("");
+  var planBeh = (plan.behaviors || []).filter(function (b) { return REPLACEMENTS[b.bid] && REPLACEMENTS[b.bid].length; })[0];
+  if (planBeh) $("dbr-struggle").value = planBeh.bid;
   $("dbr-week").value = iso(mondayOf(new Date()));
+
+  /* Recommended replacement behaviors first (checked), then the standard report items */
+  function renderDbrItems() {
+    var rec = REPLACEMENTS[$("dbr-struggle").value] || [];
+    var h = "";
+    if (rec.length) {
+      h += '<p class="hint" style="margin:4px 0"><b>Recommended for this struggle</b> (positively stated replacement behaviors):</p>' +
+        rec.map(function (t) { return '<label class="opt"><input type="checkbox" class="dbr-item" data-t="' + esc(t) + '" checked><span>' + esc(t) + ' <span class="pill ok">recommended</span></span></label>'; }).join("");
+    } else if ($("dbr-struggle").value) {
+      h += '<p class="hint" style="margin:4px 0">For chronic Level 1 behaviors, rate the replacement behavior for the specific behavior that keeps happening, or use the standard items below.</p>';
+    }
+    h += '<p class="hint" style="margin:10px 0 4px"><b>Standard report items</b></p>' +
+      DBR_ITEMS.map(function (t) { return '<label class="opt"><input type="checkbox" class="dbr-item" data-t="' + esc(t) + '"' + (rec.length ? "" : " checked") + "><span>" + esc(t) + "</span></label>"; }).join("");
+    $("dbr-items").innerHTML = h;
+  }
 
   function dbrSheet() {
     var days = weekDays(), names = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-    var items = Array.prototype.filter.call(document.querySelectorAll(".dbr-item"), function (c) { return c.checked; }).map(function (c) { return DBR_ITEMS[+c.value]; });
+    var items = Array.prototype.filter.call(document.querySelectorAll(".dbr-item"), function (c) { return c.checked; }).map(function (c) { return c.getAttribute("data-t"); });
     if ($("dbr-extra").value.trim()) items.push($("dbr-extra").value.trim());
     var iv = $("dbr-int").value ? INTERVENTIONS[$("dbr-int").value].name : "";
+    var goal = Math.min(9, Math.max(1, +$("dbr-goal").value || 7));
+    var bucks = $("dbr-bucks").checked, bonus = $("dbr-bonus").checked;
+    var blank = function () { return names.map(function () { return "<td></td>"; }).join(""); };
     var h = '<div class="sheet">' + sheetHead("Student Daily Behavior Report") +
       '<table class="sheet-meta"><tr><td>Student: <b>' + esc($("dbr-student").value) + "</b></td><td>Grade: <b>" + esc($("dbr-grade").value) + "</b></td></tr>" +
       "<tr><td>Completed by: <b>" + esc($("dbr-rater").value) + "</b></td><td>Intervention: <b>" + esc(iv) + "</b></td></tr></table>" +
+      ($("dbr-struggle").value ? '<p class="sheet-dir">Focus: <b>' + esc(BEHAVIORS.filter(function (b) { return b.id === $("dbr-struggle").value; })[0].name) + "</b>. These are the behaviors we are working toward.</p>" : "") +
       '<p class="sheet-dir">At the end of the class period or day, rate each behavior: <b>1-3</b> Never/Seldom &middot; <b>4-6</b> Sometimes &middot; <b>7-9</b> Most/All of the time.</p>' +
+      (bucks ? '<div class="bucks-rule"><img src="img/broncho-logo.png" alt=""><div><b>Earn Broncho Bucks!</b> For every behavior rated <b>' + goal + " or higher</b>, you earn <b>1 Broncho Buck</b>." + (bonus ? " Meet the goal on <b>every</b> behavior today and earn <b>1 bonus Buck</b>." : "") + "</div></div>" : "") +
       '<table class="sheet-grid"><thead><tr><th>Student behaviors</th>' + names.map(function (n, i) { return "<th>" + n + "<br><small>" + (days[i] || "__/__") + "</small></th>"; }).join("") + "</tr></thead><tbody>" +
-      items.map(function (t) { return "<tr><td>" + esc(t) + '<div class="scale">1 2 3 | 4 5 6 | 7 8 9</div></td>' + names.map(function () { return "<td></td>"; }).join("") + "</tr>"; }).join("") +
-      ($("dbr-hw").checked ? '<tr><td>The student completed and turned in classwork and homework.<div class="scale">0-19% | 20-39% | 40-59% | 60-79% | 80-100%</div></td>' + names.map(function () { return "<td></td>"; }).join("") + "</tr>" : "") +
+      items.map(function (t) { return "<tr><td>" + esc(t) + '<div class="scale">1 2 3 | 4 5 6 | 7 8 9' + (bucks ? " &middot; goal: " + goal + "+" : "") + "</div></td>" + blank() + "</tr>"; }).join("") +
+      ($("dbr-hw").checked ? '<tr><td>The student completed and turned in classwork and homework.<div class="scale">0-19% | 20-39% | 40-59% | 60-79% | 80-100%</div></td>' + blank() + "</tr>" : "") +
+      (bucks ? '<tr class="bucks-row"><td><b>Broncho Bucks earned today</b></td>' + blank() + "</tr>" : "") +
       "</tbody></table>" +
+      (bucks ? '<p class="sheet-sign"><b>Weekly Broncho Bucks total: ________</b> &nbsp; Teacher initials: ______</p>' : "") +
       '<div class="sheet-comments"><b>Daily comments</b>' + names.map(function (n, i) { return "<div><span>" + n + " " + (days[i] || "") + "</span><i></i></div>"; }).join("") + "</div>" +
       ($("dbr-parent").checked ? '<p class="sheet-sign">Parent sign-off: I have reviewed this report and discussed it with my child.<br>Signature: ______________________________ Date: __________</p>' : "") +
-      '<p class="sheet-cite">Daily Behavior Report format: Chafouleas, Riley-Tillman, &amp; Sugai (2007); J. Wright, Intervention Central.</p></div>';
+      '<p class="sheet-cite">Daily Behavior Report format: Chafouleas, Riley-Tillman, &amp; Sugai (2007); J. Wright, Intervention Central. Rating replacement behaviors: Gable et al. (2009). Points for meeting a goal: Maggin et al. (2011).</p></div>';
     return h;
   }
   function updateDbr() { $("dbr-sheet").innerHTML = dbrSheet(); }
-  ["dbr-student", "dbr-grade", "dbr-rater", "dbr-week", "dbr-int", "dbr-extra", "dbr-hw", "dbr-parent"].forEach(function (id) { $(id).addEventListener("input", updateDbr); $(id).addEventListener("change", updateDbr); });
+  ["dbr-student", "dbr-grade", "dbr-rater", "dbr-week", "dbr-int", "dbr-extra", "dbr-hw", "dbr-parent", "dbr-bucks", "dbr-goal", "dbr-bonus"].forEach(function (id) { $(id).addEventListener("input", updateDbr); $(id).addEventListener("change", updateDbr); });
+  $("dbr-struggle").addEventListener("change", function () { renderDbrItems(); updateDbr(); });
   $("dbr-items").addEventListener("change", updateDbr);
-  $("dbr-print").addEventListener("click", function () { printArea("dbr-print-area", dbrSheet()); });
+  $("dbr-print").addEventListener("click", function () { printArea("print-area", dbrSheet()); });
+  renderDbrItems();
 
   /* ---------- Behavior checklist ---------- */
   function ckSheet() {
@@ -203,10 +233,11 @@
   function updateCk() { $("ck-sheet").innerHTML = ckSheet(); }
   ["ck-student", "ck-goal", "ck-steps", "ck-days"].forEach(function (id) { $(id).addEventListener("input", updateCk); $(id).addEventListener("change", updateCk); });
   $("ck-example").addEventListener("click", function () { $("ck-goal").value = CHECKLIST_EXAMPLE.goal; $("ck-steps").value = CHECKLIST_EXAMPLE.steps.join("\n"); updateCk(); });
-  $("ck-print").addEventListener("click", function () { printArea("ck-print-area", ckSheet()); });
+  $("ck-print").addEventListener("click", function () { printArea("print-area", ckSheet()); });
 
   /* ---------- init ---------- */
   renderAbcLists(); updateAbc(); renderSelf(); updateDbr(); updateCk();
   var start = (location.hash || "").slice(1);
-  showTab(["abc", "self", "dbr", "check"].indexOf(start) > -1 ? start : "abc");
+  var tabs = Array.prototype.map.call(document.querySelectorAll("[data-tab]"), function (b) { return b.getAttribute("data-tab"); });
+  showTab(tabs.indexOf(start) > -1 ? start : "tips");
 })();

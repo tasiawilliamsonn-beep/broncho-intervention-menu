@@ -26,19 +26,154 @@
 
 <div class="page-head"><div class="wrap">
   <h1>Classroom Tools</h1>
-  <p>Tools for collecting the data behind a strong Tier 1 plan: find out why a behavior is happening, check your class-wide practices, and track progress day by day. Adapted from the ONC BOCES MTSS Tier 1 toolkit (Wright, Intervention Central).</p>
+  <p>Research-based tips, printables, and data tools for a strong Tier 1 classroom: teach and remind expectations, build belonging, recognize HEART, and track progress day by day. Every tool lists its research, and it says so plainly when the evidence is indirect.</p>
 </div></div>
 
 <main id="main" class="wrap" style="padding-block:24px 56px">
   <div class="tabs no-print" role="tablist" aria-label="Tools">
+    <button role="tab" type="button" data-tab="tips">Teacher Tips</button>
+    <button role="tab" type="button" data-tab="posters">HEART Posters &amp; Reminders</button>
+    <button role="tab" type="button" data-tab="incent">Free Incentives &amp; Broncho Bucks</button>
+    <button role="tab" type="button" data-tab="jobs">Class Jobs</button>
+    <button role="tab" type="button" data-tab="contract">Behavior Contracts</button>
+    <button role="tab" type="button" data-tab="pass">Visiting Pass</button>
     <button role="tab" type="button" data-tab="abc">ABC Behavior Organizer</button>
     <button role="tab" type="button" data-tab="self">Tier 1 Classroom Self-Check</button>
     <button role="tab" type="button" data-tab="dbr">Daily Behavior Report</button>
     <button role="tab" type="button" data-tab="check">Behavior Checklist Maker</button>
   </div>
 
+  <!-- TIPS -->
+  <section class="tool" id="tool-tips" role="tabpanel">
+    <div class="tool-intro">
+      <h2 class="title">Research-Based Teacher Tips</h2>
+      <p class="intro">Small moves you can start tomorrow. Each one is a Tier 1 practice with research behind it. Pick two or three, use them every day for two weeks, and watch what changes.</p>
+      <button class="btn" type="button" id="tips-print">Print a desk reminder card</button>
+    </div>
+    <div id="tips-list"></div>
+  </section>
+
+  <!-- POSTERS -->
+  <section class="tool" id="tool-posters" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Sunnyside Bronchos Have HEART</h2>
+      <p class="intro">Posting positively stated expectations, and teaching what they look like in each setting, is a core Tier 1 practice (Center on PBIS, 2022; Simonsen et al., 2008). A poster only works when you teach it, point to it, and praise it. Click any cell below to edit it for your building before printing; your edits stay on this device.</p>
+      <div class="cta"><button class="btn" type="button" id="heart-print">Print HEART matrix poster</button><button class="btn dark" type="button" id="heart-print-values">Print HEART values poster</button><button class="btn ghost" type="button" id="heart-reset">Reset to original wording</button></div>
+    </div>
+    <div class="table-scroll" id="heart-edit" style="margin-top:16px"></div>
+
+    <h2 class="title" style="margin-top:40px">The Broncho Shows You How</h2>
+    <p class="intro">Students learn behavior the way they learn academics: by seeing it modeled, practicing, and getting feedback (Center on PBIS, 2022; Fairbanks et al., 2007). Use these animated Broncho posters to model each expectation, then have students act it out. Print one at a time or all eight on one page.</p>
+    <button class="btn" type="button" id="pose-all">Print all eight on one page</button>
+    <div class="pose-grid" id="pose-grid"></div>
+
+    <h2 class="title" style="margin-top:40px">Student Reminder Posters</h2>
+    <p class="intro">Visual prompts for routines students use every day. Teach each routine first, then point to the poster as a quick prompt instead of a verbal reminder (Kern &amp; Clemens, 2007).</p>
+    <div class="grid g3" id="reminders"></div>
+  </section>
+
+  <!-- INCENTIVES -->
+  <section class="tool" id="tool-incent" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Free Incentives &amp; Broncho Bucks</h2>
+      <p class="intro">Recognition makes expected behavior worth repeating. Free rewards work as well as purchased ones when they are tied to a specific HEART behavior, given right away, paired with praise, and chosen from a menu. Start rich, then fade to praise and occasional surprises.</p>
+    </div>
+    <div class="grid g3" id="inc-research"></div>
+    <div class="alert black" style="margin-top:18px"><p><b>Make it work:</b> name the HEART behavior every time you give a Broncho Buck ("You started right away. That's Effort."). Make rewards earnable by every student. Never take away a Buck that was already earned. Rotate the menu so it stays motivating, and gradually give rewards less often as the behavior becomes a habit (Kazdin, 2013).</p></div>
+    <h3 class="subhead">Broncho Bucks</h3>
+    <div class="grid g2" style="align-items:center"><div id="buck-preview"></div>
+      <div class="cta"><button class="btn" type="button" id="inc-bucks">Print Broncho Bucks (10 per page)</button><button class="btn dark" type="button" id="inc-menu-print">Print Broncho Bucks reward menu</button></div></div>
+    <h3 class="subhead">Free incentive ideas</h3>
+    <div class="grid g3" id="inc-menu"></div>
+    <h3 class="subhead">More printables</h3>
+    <div class="cta"><button class="btn" type="button" id="inc-note">Positive notes home (3 per page)</button><button class="btn" type="button" id="inc-mystery">Mystery Motivator chart</button><button class="btn" type="button" id="inc-punch">HEART punch cards (8 per page)</button></div>
+  </section>
+
+  <!-- JOBS -->
+  <section class="tool" id="tool-jobs" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Class Jobs That Build Belonging</h2>
+      <p class="intro">Class jobs give every student a real role, a reason to move, and a positive way to get attention. <b>Evidence note:</b> we did not find rigorous studies of classroom jobs alone. This structure is based on related research: teacher support and positive roles predict school belonging (Allen et al., 2018), and matching supports to why a behavior happens works better than one-size-fits-all (Gable et al., 2009).</p>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div class="panel"><header><h2>How to run class jobs</h2></header><div class="body"><ol class="flow">
+        <li><b>Every student has a job.</b> Belonging means everyone contributes. Share a job between two students if needed.</li>
+        <li><b>Teach each job like a routine.</b> Model it, practice it, and post the job card with its steps.</li>
+        <li><b>Rotate weekly.</b> Change jobs every Monday and log it, so every student gets every type of role.</li>
+        <li><b>Match jobs on purpose.</b> A student who seeks attention may thrive as Greeter or Agenda Reader. A student who needs movement can be Messenger or Materials Manager. These are healthy ways to meet the same need.</li>
+        <li><b>Praise the job, not just the student.</b> "Thanks for getting the Chromebooks plugged in. That's Teamwork."</li>
+        <li><b>Never remove a job as punishment.</b> The job is part of the support plan. If a job isn't going well, re-teach it.</li>
+      </ol></div></div>
+      <div class="panel"><header><h2>Choose your jobs</h2></header><div class="body">
+        <label class="f" for="job-class">Class / period (optional)</label><input type="text" id="job-class" placeholder="e.g., Period 3 Science">
+        <div id="jobs-list" style="margin-top:10px;max-height:420px;overflow:auto"></div>
+        <div class="cta" style="margin-top:12px"><button class="btn" type="button" id="job-chart">Print job chart</button><button class="btn" type="button" id="job-cards">Print job cards</button><button class="btn dark" type="button" id="job-app">Print job applications</button><button class="btn ghost" type="button" id="job-log">Print rotation log</button></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- CONTRACTS -->
+  <section class="tool" id="tool-contract" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Behavior Contracts</h2>
+      <p class="intro">A meta-analysis of 18 studies found behavior contracts had moderate positive effects on behavior, along with benefits for academic outcomes (Bowman-Perrott et al., 2015). A good contract is <b>positive</b> (what the student will do), <b>specific</b> (observable), <b>short</b> (1 to 2 weeks), <b>achievable</b> (start where the student can succeed), and <b>shared</b> (the teacher commits too). Start with a whole-class agreement; use an individual contract for a student who needs more.</p>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div class="panel"><header><h2>Class agreement</h2><button class="btn ghost sm" type="button" id="ca-example">Load example</button></header><div class="body">
+        <p class="hint">Write it with your students during the first week, then have everyone sign it. One item per line.</p>
+        <label class="f" for="ca-class">Class / period</label><input type="text" id="ca-class" placeholder="e.g., Period 2 ELA">
+        <label class="f" for="ca-goals">Our goals for this year</label><textarea id="ca-goals"></textarea>
+        <label class="f" for="ca-we">To reach our goals, we agree to</label><textarea id="ca-we"></textarea>
+        <label class="f" for="ca-teacher">Our teacher agrees to</label><textarea id="ca-teacher"></textarea>
+        <label class="f" for="ca-repair">When someone makes a mistake, we will</label><textarea id="ca-repair"></textarea>
+        <button class="btn" type="button" id="ca-print" style="margin-top:12px">Print class agreement</button>
+      </div></div>
+      <div class="panel"><header><h2>Individual student contract</h2></header><div class="body">
+        <div class="row2"><div><label class="f" for="sc-student">Student</label><input type="text" id="sc-student"></div><div><label class="f" for="sc-teacher">Teacher</label><input type="text" id="sc-teacher"></div></div>
+        <div class="row2"><div><label class="f" for="sc-start">Start date</label><input type="text" id="sc-start" placeholder="e.g., 11/3"></div><div><label class="f" for="sc-review">Review date</label><input type="text" id="sc-review" placeholder="e.g., 11/14"></div></div>
+        <label class="f" for="sc-goal">Goal (positive and observable)</label><input type="text" id="sc-goal" placeholder="e.g., I will start my work within 2 minutes of directions.">
+        <label class="f" for="sc-measure">How we will measure it</label><input type="text" id="sc-measure" placeholder="e.g., Daily Behavior Report rating of 7+ on 4 of 5 days">
+        <label class="f" for="sc-student-do">The student will</label><input type="text" id="sc-student-do" placeholder="e.g., Use my stuck steps and help card">
+        <label class="f" for="sc-teacher-do">The teacher will help by</label><input type="text" id="sc-teacher-do" placeholder="e.g., Checking in after directions and chunking long tasks">
+        <label class="f" for="sc-reward">Reward the student chose</label><input type="text" id="sc-reward" placeholder="e.g., Lunch with the teacher and a friend">
+        <label class="f" for="sc-support">If it gets hard, the student can</label><input type="text" id="sc-support" placeholder="e.g., Use the break card for 3 minutes">
+        <button class="btn" type="button" id="sc-print" style="margin-top:12px">Print student contract</button>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- VISITING PASS -->
+  <section class="tool" id="tool-pass" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Visiting Pass (Buddy Classroom)</h2>
+      <p class="intro">A buddy classroom is a planned, short reset in a partner teacher's room. It is a calm-down support, not a punishment or a removal to the office. <b>Evidence note:</b> buddy rooms come from practitioner guidance (Responsive Classroom, n.d.), and we did not find studies of buddy rooms specifically. The rules below apply research on classroom removals, re-entry, and escape-motivated behavior.</p>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div class="panel"><header><h2>Rules for using it well</h2></header><div class="body"><ul class="check">
+        <li><b>Plan it ahead.</b> Agree with a partner teacher, ideally in a nearby room with a different grade or class.</li>
+        <li><b>Teach the routine first.</b> Students practice going, sitting in the reset spot, and returning before they ever need it.</li>
+        <li><b>Keep it short.</b> 10 minutes or less, with a timer. The student brings work or the reflection sheet.</li>
+        <li><b>Keep it calm.</b> The receiving teacher welcomes the student quietly and does not lecture.</li>
+        <li><b>Hold a re-entry conference.</b> Reconnect, talk about the trigger, and agree on a plan (Fields, 2004).</li>
+        <li><b>Document every visit.</b> Log the time out and the time back as an INTERVENTION entry (Wright, 2018).</li>
+        <li><b>Watch for escape.</b> If a student asks to go mostly to avoid work, check the work level, chunk the task, or use a break card in your room instead (Waller &amp; Higbee, 2010).</li>
+        <li><b>Not for Level 3 or 4.</b> Unsafe behavior or an office referral goes to an administrator, not a buddy room.</li>
+      </ul></div></div>
+      <div class="panel"><header><h2>Fill in the pass</h2></header><div class="body">
+        <p class="hint">Leave fields blank to print a stack of blank passes.</p>
+        <label class="f" for="vp-student">Student</label><input type="text" id="vp-student">
+        <div class="row2"><div><label class="f" for="vp-from">Sending teacher</label><input type="text" id="vp-from"></div><div><label class="f" for="vp-fromroom">Room</label><input type="text" id="vp-fromroom"></div></div>
+        <div class="row2"><div><label class="f" for="vp-to">Buddy teacher</label><input type="text" id="vp-to"></div><div><label class="f" for="vp-toroom">Room</label><input type="text" id="vp-toroom"></div></div>
+        <label class="f" for="vp-mins">Maximum minutes</label><input type="number" id="vp-mins" value="10" min="3" max="15">
+        <button class="btn" type="button" id="vp-print" style="margin-top:12px">Print passes and reflection sheets</button>
+      </div></div>
+    </div>
+    <h3 class="subhead">Preview</h3>
+    <div class="sheet-preview" id="vp-preview"></div>
+  </section>
+
   <!-- ABC -->
-  <section class="tool" id="tool-abc" role="tabpanel">
+  <section class="tool" id="tool-abc" role="tabpanel" hidden>
     <div class="tool-intro">
       <h2 class="title">ABC Behavior Statement Organizer</h2>
       <p class="intro">Behavior happens for a reason. Describe the <b>A</b>ntecedent (what is happening right before), the <b>B</b>ehavior, and the <b>C</b>onsequence (what usually happens right after). The most frequent outcome is often the pay-off that keeps the behavior going (Packenham, Shute, &amp; Reid, 2004).</p>
@@ -88,17 +223,25 @@
         </div>
         <label class="f" for="dbr-int">Intervention being monitored</label>
         <select id="dbr-int"><option value="">Choose...</option></select>
+        <label class="f" for="dbr-struggle">What is the student struggling with?</label>
+        <select id="dbr-struggle"></select>
+        <p class="hint">Choosing a struggle fills in recommended replacement behaviors to rate: what you want to see instead.</p>
         <label class="f">Behaviors to rate</label>
         <div id="dbr-items"></div>
         <label class="f" for="dbr-extra">Optional behavior (positively stated goal)</label>
         <input type="text" id="dbr-extra" placeholder="e.g., The student used the break card instead of leaving the room.">
+        <fieldset style="margin-top:12px"><legend>Broncho Bucks</legend>
+          <label class="opt" style="padding-left:0"><input type="checkbox" id="dbr-bucks" checked><span>Student earns Broncho Bucks for meeting the goal</span></label>
+          <div class="row2"><div><label class="f" for="dbr-goal">Goal rating (1-9)</label><input type="number" id="dbr-goal" value="7" min="1" max="9"></div>
+          <div><label class="opt" style="padding-left:0;margin-top:34px"><input type="checkbox" id="dbr-bonus" checked><span>Bonus Buck for meeting every goal</span></label></div></div>
+          <p class="hint">Set the goal where the student can succeed at first, then raise it. Pairing points for meeting a goal with praise is supported by token economy research (Maggin et al., 2011).</p>
+        </fieldset>
         <label class="opt" style="padding-left:0;margin-top:8px"><input type="checkbox" id="dbr-hw" checked><span>Include classwork/homework completion (% turned in)</span></label>
         <label class="opt" style="padding-left:0"><input type="checkbox" id="dbr-parent" checked><span>Include parent sign-off line</span></label>
         <button class="btn" type="button" id="dbr-print" style="margin-top:12px">Print Daily Behavior Report</button>
       </div></div>
       <div class="panel"><header><h2>Preview</h2></header><div class="body"><div class="sheet-preview" id="dbr-sheet"></div></div></div>
     </div>
-    <div class="print-only" id="dbr-print-area"></div>
   </section>
 
   <!-- CHECKLIST -->
@@ -118,8 +261,8 @@
       </div></div>
       <div class="panel"><header><h2>Preview</h2></header><div class="body"><div class="sheet-preview" id="ck-sheet"></div></div></div>
     </div>
-    <div class="print-only" id="ck-print-area"></div>
   </section>
+  <div class="print-only" id="print-area"></div>
 </main>
 
 <footer class="foot"><div class="wrap">
@@ -129,7 +272,9 @@
 
 <script src="js/data.js"></script>
 <script src="js/tools-data.js"></script>
+<script src="js/tools-data2.js"></script>
 <script src="js/app.js"></script>
 <script src="js/tools.js"></script>
+<script src="js/tools2.js"></script>
 </body>
 </html>
