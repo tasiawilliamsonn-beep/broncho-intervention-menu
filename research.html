@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research | The Broncho Intervention Menu</title>
+<meta name="description" content="The research behind every intervention in The Broncho Intervention Menu.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Intervention Menu</a>
+    <a href="log.html">PowerSchool Log Builder</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="research.html" aria-current="page">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>The Research Behind the Menu</h1>
+  <p>Every intervention on this site is tied to peer-reviewed research or to the professional texts cited in our MTSS Tier 1 training. Nothing on the menu is included because it is popular or easy; it is included because it has evidence.</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:28px 56px">
+  <div class="grid g3" style="margin-bottom:28px">
+    <div class="card red-top"><h3>How interventions were chosen</h3><p>Each strategy appears in at least one peer-reviewed study or review (for example, the <i>Journal of Applied Behavior Analysis</i>, <i>Journal of Positive Behavior Interventions</i>, <i>School Psychology Review</i>) or in the research-cited Tier 1 toolkit presented in our ONC BOCES training.</p></div>
+    <div class="card red-top"><h3>Sunnyside source documents</h3><ul class="check"><li>Sunnyside Intermediate School Behavior Intervention Matrix</li><li>Response to Intervention Handbook (tier definitions, progress monitoring)</li><li>ONC BOCES MTSS Behavior, Day 2: <i>Building a Tier 1/Classroom Behavioral/SEL Toolkit</i> (J. Wright, Aug. 2023)</li></ul></div>
+    <div class="card red-top"><h3>Aligned web resources</h3><ul class="check"><li><a href="https://www.pbisworld.com/tier-1/" target="_blank" rel="noopener">PBIS World: Tier 1</a></li><li><a href="https://www.hmhco.com/blog/what-is-tier-1-intervention-in-education" target="_blank" rel="noopener">HMH: What Is Tier 1 Intervention?</a></li><li><a href="https://characterstrong.com/wp-content/uploads/2022/08/MTSS-Tier-1-Resource-Guide.pdf" target="_blank" rel="noopener">CharacterStrong MTSS Tier 1 Resource Guide</a></li></ul></div>
+  </div>
+
+  <div class="panel">
+    <header><h2>References (APA)</h2><input type="text" id="q" placeholder="Search references or interventions" style="max-width:320px" aria-label="Search references"></header>
+    <div class="body"><ol class="refs" id="refs"></ol></div>
+  </div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Sunnyside Intermediate School &middot; Tier 1 Behavior Supports</div>
+</div></footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+(function () {
+  var usedBy = {};
+  Object.keys(INTERVENTIONS).forEach(function (id) {
+    INTERVENTIONS[id].refs.forEach(function (k) { (usedBy[k] = usedBy[k] || []).push(INTERVENTIONS[id].name); });
+  });
+  var keys = Object.keys(REFS).sort(function (a, b) { return REFS[a].localeCompare(REFS[b]); });
+  function render(q) {
+    q = (q || "").toLowerCase();
+    document.getElementById("refs").innerHTML = keys.filter(function (k) {
+      return !q || (REFS[k] + " " + (usedBy[k] || []).join(" ")).toLowerCase().indexOf(q) > -1;
+    }).map(function (k) {
+      var u = usedBy[k];
+      return "<li>" + BIM.esc(REFS[k]) + (u ? '<br><span class="hint" style="text-indent:0">Supports: ' + BIM.esc(u.join(", ")) + "</span>" : '<br><span class="hint">Cited on the home page</span>') + "</li>";
+    }).join("");
+  }
+  document.getElementById("q").addEventListener("input", function () { render(this.value); });
+  render();
+})();
+</script>
+</body>
+</html>

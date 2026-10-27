@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intervention Menu | The Broncho Intervention Menu</title>
+<meta name="description" content="Select the behaviors you are seeing and get research-based Tier 1 interventions matched to them.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html" aria-current="page">Intervention Menu</a>
+    <a href="log.html">PowerSchool Log Builder</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Tier 1 Intervention Menu</h1>
+  <p>Choose exactly what you are seeing. The menu matches research-based Tier 1 interventions to those behaviors and to the likely reason behind them. These are interventions that teach, prevent, reinforce, or redirect. They are not consequences.</p>
+</div></div>
+
+<main id="main" class="wrap layout">
+  <aside class="panel sticky" aria-label="Choose behaviors">
+    <header><h2>What are you seeing?</h2><button class="btn ghost sm" id="clear" type="button">Clear</button></header>
+    <div class="body">
+      <div class="step-lab">Step 1 &middot; Pick the behavior(s) and what they look like</div>
+      <div id="behaviors"></div>
+      <div class="step-lab">Step 2 &middot; Why do you think it is happening?</div>
+      <p class="hint">Suggested from your choices. Tap to change. Not sure? Leave it; the ABC statement intervention can help you find out.</p>
+      <div class="chips" id="functions"></div>
+    </div>
+  </aside>
+
+  <section aria-live="polite">
+    <div id="alerts"></div>
+    <div id="results"></div>
+    <details class="panel" style="margin-top:18px" id="notint">
+      <summary style="padding:14px 18px;cursor:pointer;font-weight:700">These are consequences, not interventions</summary>
+      <div class="body" id="conlist"></div>
+    </details>
+  </section>
+</main>
+
+<div class="plan-bar no-print"><div class="wrap">
+  <span id="plan-sum">Your plan is empty. Add interventions you will try.</span>
+  <button class="btn ghost sm" id="print" type="button" style="color:#fff;border-color:#fff">Print plan</button>
+  <a class="btn sm" href="log.html">Write the log entry &rarr;</a>
+</div></div>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Sunnyside Intermediate School. Every intervention cites its research; see <a href="research.html">References</a>.</div>
+</div></footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Tools | The Broncho Intervention Menu</title>
+<meta name="description" content="ABC behavior organizer, Tier 1 classroom self-check, Daily Behavior Report, and behavior checklist maker.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Intervention Menu</a>
+    <a href="log.html">PowerSchool Log Builder</a>
+    <a href="tools.html" aria-current="page">Classroom Tools</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Classroom Tools</h1>
+  <p>Tools for collecting the data behind a strong Tier 1 plan: find out why a behavior is happening, check your class-wide practices, and track progress day by day. Adapted from the ONC BOCES MTSS Tier 1 toolkit (Wright, Intervention Central).</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:24px 56px">
+  <div class="tabs no-print" role="tablist" aria-label="Tools">
+    <button role="tab" type="button" data-tab="abc">ABC Behavior Organizer</button>
+    <button role="tab" type="button" data-tab="self">Tier 1 Classroom Self-Check</button>
+    <button role="tab" type="button" data-tab="dbr">Daily Behavior Report</button>
+    <button role="tab" type="button" data-tab="check">Behavior Checklist Maker</button>
+  </div>
+
+  <!-- ABC -->
+  <section class="tool" id="tool-abc" role="tabpanel">
+    <div class="tool-intro">
+      <h2 class="title">ABC Behavior Statement Organizer</h2>
+      <p class="intro">Behavior happens for a reason. Describe the <b>A</b>ntecedent (what is happening right before), the <b>B</b>ehavior, and the <b>C</b>onsequence (what usually happens right after). The most frequent outcome is often the pay-off that keeps the behavior going (Packenham, Shute, &amp; Reid, 2004).</p>
+    </div>
+    <div class="grid g3 abc-cols">
+      <div class="panel"><header><h2>A &middot; Antecedent</h2></header><div class="body"><p class="hint">Pick the 1 or 2 activities where the behavior is worst.</p><div id="abc-a"></div></div></div>
+      <div class="panel"><header><h2>B &middot; Behavior</h2></header><div class="body"><p class="hint">Pick no more than 2 or 3 behaviors.</p><div id="abc-b"></div></div></div>
+      <div class="panel"><header><h2>C &middot; Consequence</h2></header><div class="body"><p class="hint">Click to rank by how often it happens: 1 = most often. Click again to remove.</p><div id="abc-c"></div></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:20px;align-items:start">
+      <div class="panel"><header><h2>Your behavior statement</h2></header><div class="body">
+        <label class="f" for="abc-student">Student (initials or ID)</label><input type="text" id="abc-student" placeholder="e.g., J.M.">
+        <div class="output" id="abc-out" style="margin-top:12px;min-height:90px"></div>
+        <div class="cta" style="margin-top:12px"><button class="btn" type="button" id="abc-copy">Copy as INFORMATION log</button><button class="btn ghost" type="button" id="abc-clear">Clear</button></div>
+      </div></div>
+      <div class="panel"><header><h2>Likely function</h2></header><div class="body" id="abc-fn"></div></div>
+    </div>
+  </section>
+
+  <!-- SELF CHECK -->
+  <section class="tool" id="tool-self" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Tier 1 Classroom Self-Check</h2>
+      <p class="intro">Well-managed classrooms rest on five foundations: taught expectations, motivating instruction, group management, relationships, and flexible individual management. Rate your classroom honestly. Before deciding a student needs Tier 2, make sure these Tier 1 practices are in place. Your ratings stay on this device.</p>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div id="self-list"></div>
+      <div class="panel sticky"><header><h2>Your results</h2><button class="btn ghost sm no-print" type="button" id="self-print">Print</button></header><div class="body" id="self-out"></div></div>
+    </div>
+  </section>
+
+  <!-- DBR -->
+  <section class="tool" id="tool-dbr" role="tabpanel" hidden>
+    <div class="tool-intro no-print">
+      <h2 class="title">Daily Behavior Report</h2>
+      <p class="intro">A Daily Behavior Report is a quick, reliable way to show whether an intervention is working (Chafouleas, Riley-Tillman, &amp; Sugai, 2007). Rate the same behaviors at the same time each day for 2 to 4 weeks. To keep ratings consistent, decide in advance what a typical classmate would earn (for example, 7 = matches the class norm).</p>
+    </div>
+    <div class="grid g2 no-print" style="align-items:start">
+      <div class="panel"><header><h2>Set up the report</h2></header><div class="body">
+        <div class="row2">
+          <div><label class="f" for="dbr-student">Student</label><input type="text" id="dbr-student" placeholder="Initials or ID"></div>
+          <div><label class="f" for="dbr-grade">Grade</label><input type="text" id="dbr-grade" placeholder="5 or 6"></div>
+        </div>
+        <div class="row2">
+          <div><label class="f" for="dbr-rater">Completed by</label><input type="text" id="dbr-rater" placeholder="Teacher name"></div>
+          <div><label class="f" for="dbr-week">Week of (Monday)</label><input type="date" id="dbr-week"></div>
+        </div>
+        <label class="f" for="dbr-int">Intervention being monitored</label>
+        <select id="dbr-int"><option value="">Choose...</option></select>
+        <label class="f">Behaviors to rate</label>
+        <div id="dbr-items"></div>
+        <label class="f" for="dbr-extra">Optional behavior (positively stated goal)</label>
+        <input type="text" id="dbr-extra" placeholder="e.g., The student used the break card instead of leaving the room.">
+        <label class="opt" style="padding-left:0;margin-top:8px"><input type="checkbox" id="dbr-hw" checked><span>Include classwork/homework completion (% turned in)</span></label>
+        <label class="opt" style="padding-left:0"><input type="checkbox" id="dbr-parent" checked><span>Include parent sign-off line</span></label>
+        <button class="btn" type="button" id="dbr-print" style="margin-top:12px">Print Daily Behavior Report</button>
+      </div></div>
+      <div class="panel"><header><h2>Preview</h2></header><div class="body"><div class="sheet-preview" id="dbr-sheet"></div></div></div>
+    </div>
+    <div class="print-only" id="dbr-print-area"></div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="tool" id="tool-check" role="tabpanel" hidden>
+    <div class="tool-intro no-print">
+      <h2 class="title">Behavior Checklist Maker</h2>
+      <p class="intro">Positive behaviors must be taught. Break a goal behavior into small, observable steps (a task analysis), then teach it in four stages: <b>show them</b>, <b>watch and praise them</b>, <b>practice</b>, and <b>prompt it across settings</b> (Kazdin, 2013). Students can use the printed card to self-monitor (Bruhn, McDaniel, &amp; Kreigh, 2015).</p>
+    </div>
+    <div class="grid g2 no-print" style="align-items:start">
+      <div class="panel"><header><h2>Build the checklist</h2><button class="btn ghost sm" type="button" id="ck-example">Load example</button></header><div class="body">
+        <label class="f" for="ck-student">Student (optional)</label><input type="text" id="ck-student" placeholder="Name or leave blank for the whole class">
+        <label class="f" for="ck-goal">Goal behavior</label><input type="text" id="ck-goal" placeholder="e.g., I complete my in-class writing assignment.">
+        <label class="f" for="ck-steps">Steps (one per line)</label>
+        <textarea id="ck-steps" style="min-height:180px" placeholder="I read the directions.&#10;I write my first sentence within 2 minutes.&#10;If I'm stuck, I use the help card."></textarea>
+        <label class="opt" style="padding-left:0;margin-top:8px"><input type="checkbox" id="ck-days" checked><span>Add Monday-Friday check boxes</span></label>
+        <button class="btn" type="button" id="ck-print" style="margin-top:12px">Print checklist</button>
+      </div></div>
+      <div class="panel"><header><h2>Preview</h2></header><div class="body"><div class="sheet-preview" id="ck-sheet"></div></div></div>
+    </div>
+    <div class="print-only" id="ck-print-area"></div>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Tools adapted from J. Wright, Intervention Central, presented in ONC BOCES MTSS Behavior training (2023). See <a href="research.html">References</a>.</div>
+</div></footer>
+
+<script src="js/data.js"></script>
+<script src="js/tools-data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/tools.js"></script>
+</body>
+</html>

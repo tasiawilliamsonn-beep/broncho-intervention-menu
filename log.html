@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerSchool Log Builder | The Broncho Intervention Menu</title>
+<meta name="description" content="Write an objective PowerSchool log entry and choose the right log type from the Sunnyside Behavior Intervention Matrix.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Intervention Menu</a>
+    <a href="log.html" aria-current="page">PowerSchool Log Builder</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>PowerSchool Log Builder</h1>
+  <p>Fill in what happened and what you did. The builder picks the log type from the Sunnyside Behavior Intervention Matrix, checks for subjective wording, and writes an objective entry you can paste into PowerSchool. Each saved entry is added to the student's Proof of Intervention record.</p>
+</div></div>
+
+<main id="main" class="wrap">
+<div class="log-grid">
+  <form class="panel" id="form" autocomplete="off" onsubmit="return false">
+    <header><h2>1. Build the entry</h2><button class="btn ghost sm" type="button" id="startover">Start over</button></header>
+    <div class="body">
+      <fieldset>
+        <legend>Student and setting</legend>
+        <div class="row2">
+          <div><label class="f" for="student">Student (initials or ID)</label><input type="text" id="student" placeholder="e.g., J.M. or 123456" list="students">
+            <datalist id="students"></datalist></div>
+          <div><label class="f" for="date">Date</label><input type="date" id="date"></div>
+        </div>
+        <div class="row2">
+          <div><label class="f" for="period">Period / time</label><input type="text" id="period" placeholder="e.g., Period 3, 10:15"></div>
+          <div><label class="f" for="setting">Activity / setting</label>
+            <select id="setting">
+              <option value="">Choose...</option>
+              <option>Start of class / bell-ringer</option><option>Whole-group instruction</option><option>Teacher-led discussion</option>
+              <option>Independent work</option><option>Partner work</option><option>Small-group / cooperative work</option>
+              <option>Computer / Chromebook work</option><option>Test or quiz</option><option>Transition between activities</option>
+              <option>Hallway</option><option>Cafeteria / lunch</option><option>Recess</option><option>Specials / related arts</option>
+              <option>Arrival / dismissal</option><option>Other</option>
+            </select></div>
+        </div>
+        <p class="hint">Use initials or a student number. Records stay only in this browser on this device.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>What is this entry for?</legend>
+        <div class="chips" id="purpose" role="radiogroup" aria-label="Entry purpose">
+          <button type="button" class="chip" data-p="behavior" aria-pressed="true">I addressed a behavior</button>
+          <button type="button" class="chip" data-p="contact" aria-pressed="false">Parent/guardian contact</button>
+          <button type="button" class="chip" data-p="info" aria-pressed="false">Information to document</button>
+          <button type="button" class="chip" data-p="admin" aria-pressed="false">I need an administrator</button>
+        </div>
+      </fieldset>
+
+      <fieldset id="fs-beh">
+        <legend>Behavior observed</legend>
+        <div class="row2">
+          <div><label class="f" for="beh">Behavior (from the matrix)</label><select id="beh"></select></div>
+          <div><label class="f" for="look">What it looked like</label><select id="look"></select></div>
+        </div>
+        <button class="btn dark sm" type="button" id="add-beh" style="margin-top:10px">+ Add behavior</button>
+        <div class="chips" id="beh-list" style="margin-top:10px"></div>
+        <label class="f" for="desc">Objective description (what you saw and heard)</label>
+        <textarea id="desc" placeholder="e.g., During independent writing, student said &quot;I'm not doing this&quot; and put head on desk for about 8 minutes."></textarea>
+        <ul class="flags" id="flags"></ul>
+        <div class="row2">
+          <div><label class="f" for="freq">How often / how long (optional)</label><input type="text" id="freq" placeholder="e.g., 3 times in 20 min; 3rd day this week"></div>
+          <div><label class="f">Expectation(s) missed</label><div class="chips" id="heart"></div></div>
+        </div>
+      </fieldset>
+
+      <fieldset id="fs-int">
+        <legend>Tier 1 intervention(s) used</legend>
+        <p class="hint" id="int-hint">Interventions from your plan are listed first. Check every one you actually used.</p>
+        <div id="int-list"></div>
+        <button class="btn ghost sm" type="button" id="more-int" style="margin-top:8px">Show all interventions</button>
+        <label class="f" for="response">Student response</label>
+        <select id="response">
+          <option value="">Choose...</option>
+          <option>Corrected the behavior right away</option>
+          <option>Corrected the behavior after a second prompt</option>
+          <option>Partial improvement</option>
+          <option>No change</option>
+          <option>Behavior escalated</option>
+        </select>
+      </fieldset>
+
+      <fieldset id="fs-contact">
+        <legend>Parent / guardian contact</legend>
+        <label class="opt" style="padding-left:0"><input type="checkbox" id="contact-made"><span>I contacted a parent/guardian about this</span></label>
+        <div id="contact-fields" hidden>
+          <div class="row3">
+            <div><label class="f" for="c-method">Method</label><select id="c-method"><option>Phone call</option><option>Email</option><option>In-person conference</option><option>Written note</option><option>School messaging app</option><option>Voicemail left</option></select></div>
+            <div><label class="f" for="c-with">With</label><input type="text" id="c-with" placeholder="e.g., mother, guardian"></div>
+            <div><label class="f" for="c-date">Date</label><input type="date" id="c-date"></div>
+          </div>
+          <label class="f" for="c-sum">What was shared and agreed</label>
+          <textarea id="c-sum" placeholder="e.g., Shared a strength, described the behavior, explained the break card we are using. Parent will review the expectation at home. Follow up Friday."></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Next step</legend>
+        <select id="next">
+          <option value="">Choose...</option>
+          <option>Continue the current interventions and monitor</option>
+          <option>Add or change an intervention</option>
+          <option>Follow-up parent contact</option>
+          <option>Begin ABC data / Daily Behavior Rating</option>
+          <option>Bring documented interventions to the MTSS/RTI team</option>
+          <option>Administrator to address (Level 3/4)</option>
+        </select>
+        <label class="f" for="next-note">Details (optional)</label>
+        <input type="text" id="next-note" placeholder="e.g., Review progress on 11/10">
+      </fieldset>
+    </div>
+  </form>
+
+  <section>
+    <div class="panel" style="position:sticky;top:88px">
+      <header><h2>2. Log type and entry</h2></header>
+      <div class="body">
+        <div class="typebox" id="typebox"><div class="lv" id="type-lv">Sunnyside matrix</div><div class="t" id="type-t">INTERVENTION</div><div class="s" id="type-s"></div></div>
+        <div id="guards"></div>
+        <label class="f" for="out">PowerSchool log text</label>
+        <div class="output" id="out" tabindex="0" aria-live="polite"></div>
+        <label class="opt" style="padding-left:0"><input type="checkbox" id="cites" checked><span>Include research citations in the log text</span></label>
+        <div id="out2-wrap" hidden><label class="f">Second entry: COMMUNICATION</label><div class="output" id="out2" tabindex="0"></div></div>
+        <div class="cta" style="margin-top:12px">
+          <button class="btn" type="button" id="copy">Copy log text</button>
+          <button class="btn dark" type="button" id="save">Save to Proof of Intervention</button>
+        </div>
+        <p class="hint" style="margin-top:8px">In PowerSchool/PowerTeacher: open the student, choose <b>Log Entries</b> &rarr; <b>New</b>, set the <b>Log Type</b> shown above, and paste the text.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="panel" id="proof" style="margin-bottom:56px">
+  <header><h2>3. Proof of Intervention record</h2>
+    <div class="filters"><select id="proof-student" aria-label="Choose student" style="width:auto"></select>
+      <button class="btn ghost sm" type="button" id="csv">Export CSV</button>
+      <button class="btn ghost sm" type="button" id="print">Print record</button></div></header>
+  <div class="body" id="proof-body"></div>
+</section>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Log types follow the Sunnyside Behavior Intervention Matrix PowerTeacher Log Instructions.</div>
+</div></footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/log.js"></script>
+</body>
+</html>
