@@ -20,41 +20,56 @@
   });
 
   /* ---------- Broncho character (SVG) ---------- */
+  var COAT = "#c47a3d", MUZZLE = "#f0c595", MANE = "#3a2418";
   function arm(x1, y1, x2, y2, cls) {
     return '<g class="' + (cls || "") + '"><line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#111" stroke-width="16" stroke-linecap="round"/>' +
-      '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#fff" stroke-width="10" stroke-linecap="round"/><circle cx="' + x2 + '" cy="' + y2 + '" r="8" fill="#111"/></g>';
+      '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + COAT + '" stroke-width="10" stroke-linecap="round"/><circle cx="' + x2 + '" cy="' + y2 + '" r="8" fill="#111"/></g>';
   }
+  /* A cartoon horse: long side-profile head with muzzle, pointed ears, mane, forelock, tail, and hooves */
   function broncho(pose) {
     var p = pose.id, closed = p === "calm";
-    var armsDown = arm(68, 146, 54, 186) + arm(132, 146, 146, 186);
-    var arms = armsDown, extra = "", back = "", bob = "";
-    if (p === "raise") arms = arm(68, 146, 54, 186) + arm(132, 146, 162, 74, "bc-wave");
-    if (p === "space") back = '<circle class="bc-spin" cx="100" cy="122" r="96" fill="none" stroke="#c8102e" stroke-width="4" stroke-dasharray="12 10"/>';
-    if (p === "walk") { bob = "bc-bob"; extra = '<g class="bc-steps" fill="#c8102e"><ellipse cx="40" cy="222" rx="7" ry="4"/><ellipse cx="62" cy="214" rx="7" ry="4"/><ellipse cx="150" cy="222" rx="7" ry="4"/><ellipse cx="170" cy="214" rx="7" ry="4"/></g>'; }
-    if (p === "effort") { arms = arm(68, 146, 54, 186) + arm(132, 146, 160, 176, "bc-write"); extra = '<rect x="150" y="178" width="44" height="34" rx="3" fill="#fff" stroke="#111" stroke-width="3"/><line x1="156" y1="188" x2="186" y2="188" stroke="#999" stroke-width="2"/><line x1="156" y1="196" x2="186" y2="196" stroke="#999" stroke-width="2"/><line x1="156" y1="204" x2="176" y2="204" stroke="#999" stroke-width="2"/>'; }
-    if (p === "team") { arms = arm(68, 146, 88, 170) + arm(132, 146, 112, 170); extra = '<path class="bc-pulse" d="M100 196 C70 176 78 150 100 164 C122 150 130 176 100 196Z" fill="#c8102e" stroke="#111" stroke-width="3"/>'; }
-    if (p === "honest") extra = '<g class="bc-pop"><path d="M128 20 h66 a8 8 0 0 1 8 8 v30 a8 8 0 0 1 -8 8 h-40 l-12 12 v-12 h-14 a8 8 0 0 1 -8 -8 v-30 a8 8 0 0 1 8 -8z" fill="#fff" stroke="#111" stroke-width="3"/><text x="161" y="40" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial">I did it.</text><text x="161" y="56" text-anchor="middle" font-size="12" font-family="Arial">I\'ll fix it.</text></g>';
-    if (p === "listen") extra = '<g class="bc-waves" fill="none" stroke="#c8102e" stroke-width="4" stroke-linecap="round"><path d="M28 50 q-10 18 0 36"/><path d="M16 42 q-14 26 0 52"/><path d="M172 50 q10 18 0 36"/><path d="M184 42 q14 26 0 52"/></g>';
-    if (p === "calm") back = '<circle class="bc-breathe" cx="100" cy="110" r="90" fill="#c8102e" opacity=".12"/>';
-    var eyes = closed
-      ? '<path d="M76 78 q8 7 16 0" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M108 78 q8 7 16 0" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/>'
-      : '<g class="bc-blink"><ellipse cx="84" cy="76" rx="9" ry="11" fill="#111"/><ellipse cx="116" cy="76" rx="9" ry="11" fill="#111"/><circle cx="87" cy="72" r="3" fill="#fff"/><circle cx="119" cy="72" r="3" fill="#fff"/></g>';
-    var mouth = p === "listen" || p === "calm" ? '<path d="M94 111 h12" stroke="#111" stroke-width="3" stroke-linecap="round"/>' : '<path d="M90 109 q10 9 20 0" stroke="#111" stroke-width="3" fill="none" stroke-linecap="round"/>';
-    return '<svg class="bc" viewBox="0 0 200 235" role="img" aria-label="Broncho character: ' + esc(pose.t) + '">' + back +
+    var arms = arm(70, 148, 56, 188) + arm(130, 148, 144, 188), extra = "", back = "", bob = "";
+    if (p === "raise") arms = arm(70, 148, 38, 76, "bc-wave") + arm(130, 148, 144, 188);
+    if (p === "space") back = '<circle class="bc-spin" cx="100" cy="122" r="98" fill="none" stroke="#c8102e" stroke-width="4" stroke-dasharray="12 10"/>';
+    if (p === "walk") { bob = "bc-bob"; extra = '<g class="bc-steps" fill="#c8102e"><ellipse cx="40" cy="226" rx="7" ry="4"/><ellipse cx="62" cy="218" rx="7" ry="4"/><ellipse cx="150" cy="226" rx="7" ry="4"/><ellipse cx="172" cy="218" rx="7" ry="4"/></g>'; }
+    if (p === "effort") { arms = arm(70, 148, 56, 188) + arm(130, 148, 158, 178, "bc-write"); extra = '<rect x="150" y="180" width="44" height="34" rx="3" fill="#fff" stroke="#111" stroke-width="3"/><line x1="156" y1="190" x2="186" y2="190" stroke="#999" stroke-width="2"/><line x1="156" y1="198" x2="186" y2="198" stroke="#999" stroke-width="2"/><line x1="156" y1="206" x2="176" y2="206" stroke="#999" stroke-width="2"/>'; }
+    if (p === "team") { arms = arm(70, 148, 88, 172) + arm(130, 148, 112, 172); extra = '<path class="bc-pulse" d="M100 198 C70 178 78 152 100 166 C122 152 130 178 100 198Z" fill="#c8102e" stroke="#111" stroke-width="3"/>'; }
+    if (p === "honest") extra = '<g class="bc-pop"><path d="M6 10 h70 a8 8 0 0 1 8 8 v30 a8 8 0 0 1 -8 8 h-26 l12 14 l-24 -14 h-32 a8 8 0 0 1 -8 -8 v-30 a8 8 0 0 1 8 -8z" fill="#fff" stroke="#111" stroke-width="3"/><text x="41" y="30" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial">I did it.</text><text x="41" y="46" text-anchor="middle" font-size="12" font-family="Arial">I\'ll fix it.</text></g>';
+    if (p === "listen") extra = '<g class="bc-waves" fill="none" stroke="#c8102e" stroke-width="4" stroke-linecap="round"><path d="M128 14 q14 12 6 30"/><path d="M140 4 q22 18 10 46"/><path d="M60 40 q-12 16 -4 34"/><path d="M48 32 q-18 24 -6 50"/></g>';
+    if (p === "calm") back = '<circle class="bc-breathe" cx="100" cy="112" r="92" fill="#c8102e" opacity=".12"/>';
+    var eye = closed
+      ? '<path d="M110 62 q8 7 16 0" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/>'
+      : '<g class="bc-blink"><ellipse cx="118" cy="60" rx="9" ry="11" fill="#fff" stroke="#111" stroke-width="2.5"/><ellipse cx="121" cy="61" rx="6" ry="8" fill="#111"/><circle cx="123" cy="57" r="2.5" fill="#fff"/></g>';
+    var mouth = p === "listen" || p === "calm" ? '<path d="M138 106 h12" stroke="#111" stroke-width="3" stroke-linecap="round"/>' : '<path d="M134 102 q9 9 18 2" stroke="#111" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    return '<svg class="bc" viewBox="0 0 200 240" role="img" aria-label="Broncho the horse: ' + esc(pose.t) + '">' + back +
       '<g class="' + bob + '">' +
-      '<rect x="78" y="182" width="16" height="34" rx="7" fill="#fff" stroke="#111" stroke-width="3"/><rect x="77" y="210" width="18" height="10" rx="3" fill="#111"/>' +
-      '<rect x="106" y="182" width="16" height="34" rx="7" fill="#fff" stroke="#111" stroke-width="3"/><rect x="105" y="210" width="18" height="10" rx="3" fill="#111"/>' +
-      '<rect x="62" y="126" width="76" height="70" rx="32" fill="#fff" stroke="#111" stroke-width="3"/>' +
-      '<path d="M70 130 L130 130 L100 166 Z" fill="#c8102e" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>' +
-      '<polygon points="100,137 103,145 111,145 105,150 107,158 100,153 93,158 95,150 89,145 97,145" fill="#fff"/>' +
+      /* tail */
+      '<path d="M70 170 C44 168 30 186 34 214 C44 200 52 196 58 206 C56 190 64 182 74 182 Z" fill="' + MANE + '" stroke="#111" stroke-width="3" stroke-linejoin="round"/>' +
+      /* legs and hooves */
+      '<rect x="78" y="184" width="16" height="34" rx="7" fill="' + COAT + '" stroke="#111" stroke-width="3"/><rect x="76" y="212" width="20" height="11" rx="3" fill="#111"/>' +
+      '<rect x="106" y="184" width="16" height="34" rx="7" fill="' + COAT + '" stroke="#111" stroke-width="3"/><rect x="104" y="212" width="20" height="11" rx="3" fill="#111"/>' +
+      /* body */
+      '<rect x="62" y="128" width="76" height="70" rx="32" fill="' + COAT + '" stroke="#111" stroke-width="3"/>' +
+      '<ellipse cx="100" cy="172" rx="22" ry="16" fill="' + MUZZLE + '" opacity=".55"/>' +
+      /* neck */
+      '<path d="M84 136 C82 112 86 92 94 80 L122 88 C116 104 116 120 118 136 Z" fill="' + COAT + '" stroke="#111" stroke-width="3" stroke-linejoin="round"/>' +
+      /* mane down the neck */
+      '<path d="M96 34 C82 46 80 62 84 74 C76 84 80 98 78 110 C74 122 78 132 84 138 C88 124 86 112 90 100 C92 88 92 80 98 70 C98 58 100 46 96 34 Z" fill="' + MANE + '" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>' +
+      /* bandana */
+      '<path d="M76 132 L124 132 L100 166 Z" fill="#c8102e" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<polygon points="100,138 103,146 111,146 105,151 107,159 100,154 93,159 95,151 89,146 97,146" fill="#fff"/>' +
       arms +
-      '<polygon points="66,56 74,16 94,44" fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/><polygon points="73,48 76,28 86,44" fill="#f6c9c3"/>' +
-      '<polygon points="134,56 126,16 106,44" fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/><polygon points="127,48 124,28 114,44" fill="#f6c9c3"/>' +
-      '<ellipse cx="100" cy="80" rx="46" ry="40" fill="#fff" stroke="#111" stroke-width="3"/>' +
-      '<path d="M64 60 Q70 26 92 38 Q100 16 116 34 Q138 24 136 58 Q122 44 106 50 Q92 40 80 52 Q72 50 64 60Z" fill="#111"/>' +
-      eyes +
-      '<ellipse cx="100" cy="104" rx="27" ry="17" fill="#f6d7cf" stroke="#111" stroke-width="3"/><ellipse cx="91" cy="101" rx="3.5" ry="2.5" fill="#111"/><ellipse cx="109" cy="101" rx="3.5" ry="2.5" fill="#111"/>' +
-      mouth + "</g>" + extra + "</svg>";
+      /* ears */
+      '<path d="M100 44 L104 10 L116 42 Z" fill="' + COAT + '" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M104 38 L106 20 L112 38 Z" fill="#e9a6a0"/>' +
+      '<path d="M114 46 L124 16 L130 48 Z" fill="' + COAT + '" stroke="#111" stroke-width="3" stroke-linejoin="round"/>' +
+      /* long horse head in profile, facing right */
+      '<path d="M96 46 C108 36 128 40 138 56 C148 70 160 82 164 94 C168 106 158 116 146 114 C134 112 124 108 114 102 C100 96 92 84 92 68 C92 58 92 52 96 46 Z" fill="' + COAT + '" stroke="#111" stroke-width="3" stroke-linejoin="round"/>' +
+      /* muzzle and nostril */
+      '<path d="M138 82 C150 82 166 90 164 102 C162 114 148 116 138 110 C130 106 128 86 138 82 Z" fill="' + MUZZLE + '" stroke="#111" stroke-width="2.5"/>' +
+      '<ellipse cx="154" cy="96" rx="4" ry="3" fill="#111" transform="rotate(-20 154 96)"/>' +
+      /* forelock */
+      '<path d="M100 42 C106 34 116 36 120 44 C114 42 112 50 106 48 C104 52 98 52 100 42 Z" fill="' + MANE + '" stroke="#111" stroke-width="2"/>' +
+      eye + mouth + "</g>" + extra + "</svg>";
   }
   function poseCard(p) {
     return '<div class="pose-card"><div class="pose-heart">' + esc(p.heart) + "</div>" + broncho(p) + "<h3>" + esc(p.t) + '</h3><ul class="check">' + p.s.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
