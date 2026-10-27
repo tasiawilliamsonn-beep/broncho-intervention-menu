@@ -60,8 +60,8 @@ var HEART_WORDS = { Honesty: "I tell the truth and do my own work.", Effort: "I 
 /* ---------- Broncho character modeling posters ---------- */
 var POSES = [
   { id: "listen", heart: "Respect", t: "Eyes on the speaker", s: ["Eyes on the speaker", "Body still", "Mouth quiet", "Think about what they said"] },
-  { id: "raise", heart: "Respect", t: "Raise a hoof to talk", s: ["Raise my hand", "Wait to be called on", "Speak in a clear voice"] },
-  { id: "space", heart: "Respect", t: "Hooves to myself", s: ["Hands and feet to myself", "Keep my own space", "Ask before touching things"] },
+  { id: "raise", heart: "Respect", t: "Raise my hand to speak", s: ["Raise my hand", "Wait to be called on", "Speak in a clear voice"] },
+  { id: "space", heart: "Respect", t: "Hands and feet to myself", s: ["Keep my hands and feet to myself", "Keep my own space", "Ask before touching things"] },
   { id: "walk", heart: "Respect", t: "Walk in the hall", s: ["Walk on the right", "Voice level 1", "Eyes forward", "Go straight to my spot"] },
   { id: "effort", heart: "Effort", t: "Try, try again", s: ["Start right away", "Use my \"stuck\" steps", "Mistakes help me learn"] },
   { id: "team", heart: "Teamwork", t: "Help a teammate", s: ["Share materials", "Use kind words", "Include everyone"] },
