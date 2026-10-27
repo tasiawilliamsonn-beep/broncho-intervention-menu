@@ -385,7 +385,7 @@ var BEHAVIORS = [
       { t: "Starts, then stops partway through", f: ["escape", "blocker"] },
       { t: "Head down, sits inactive, or stares into space", f: ["blocker", "escape"] },
       { t: "Plays with objects, doodles, or taps", f: ["blocker", "escape"] },
-      { t: "On a device/Chromebook site that isn't the assignment", f: ["tangible", "escape"] },
+      { t: "On a device or website that isn't the assignment", f: ["tangible", "escape"] },
       { t: "Works on something else", f: ["escape", "tangible"] }],
     ints: ["match", "chunk", "steps", "fixup", "otr", "choice", "goal", "momentum", "selfmonitor", "schedattn", "feedback", "bsp", "proximity", "redirect", "schedbreak", "breakcard", "pace", "directions"] },
   { id: "outofarea", level: 1, name: "Out of assigned area", v: [
@@ -403,7 +403,7 @@ var BEHAVIORS = [
   { id: "homework", level: 1, name: "Homework infraction(s)", v: [
       { t: "Homework not turned in", f: ["escape", "skill", "blocker"] },
       { t: "Homework incomplete or rushed", f: ["skill", "escape"] },
-      { t: "Missing materials (pencil, Chromebook, notebook)", f: ["skill", "blocker"] }],
+      { t: "Missing materials (pencil, notebook, folder)", f: ["skill", "blocker"] }],
     ints: ["match", "chunk", "steps", "goal", "selfmonitor", "feedback", "choice", "teach", "homenote", "greet"] },
   { id: "language", level: 1, name: "Inappropriate language/comments", v: [
       { t: "Profanity not directed at anyone (frustration)", f: ["blocker", "escape"] },

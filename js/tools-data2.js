@@ -11,6 +11,7 @@
     maggin2017: "Maggin, D. M., Pustejovsky, J. E., & Johnson, A. H. (2017). A meta-analysis of school-based group contingency interventions for students with challenging behavior: An update. Remedial and Special Education, 38(6), 353-370.",
     rimmkaufman2014: "Rimm-Kaufman, S. E., Larsen, R. A., Baroody, A. E., Curby, T. W., Ko, M., Thomas, J. B., Merritt, E. G., Abry, T., & DeCoster, J. (2014). Efficacy of the Responsive Classroom approach: Results from a 3-year, longitudinal randomized controlled trial. American Educational Research Journal, 51(3), 567-603.",
     rcbuddy: "Responsive Classroom. (n.d.). Buddy teachers. Center for Responsive Schools. Retrieved from https://www.responsiveclassroom.org/buddy-teachers (practitioner guidance).",
+    yeager2018: "Yeager, D. S., Dahl, R. E., & Dweck, C. S. (2018). Why interventions to influence adolescent behavior often fail but could succeed. Perspectives on Psychological Science, 13(1), 101-122.",
     watson2017: "Watson, A., Timperio, A., Brown, H., Best, K., & Hesketh, K. D. (2017). Effect of classroom-based physical activity interventions on academic and physical activity outcomes: A systematic review and meta-analysis. International Journal of Behavioral Nutrition and Physical Activity, 14, 114."
   };
   Object.keys(add).forEach(function (k) { if (!REFS[k]) REFS[k] = add[k]; });
@@ -26,7 +27,7 @@ var TIPS = [
     { t: "Aim for 3 or more chances to respond per minute", d: "Whiteboards, choral answers, thumbs, and turn-and-talk keep everyone working instead of one hand at a time.", c: ["macsuga2015", "haydon2009"] },
     { t: "Praise 4 times for every correction", d: "Name the behavior: \"Table 2 started right away. That's Effort.\" Tally yourself for one period to check.", c: ["caldarella2020", "royer2019"] },
     { t: "Build in a 2- to 5-minute movement break", d: "Classroom movement breaks increased on-task behavior and reduced off-task behavior in a meta-analysis.", c: ["watson2017"] },
-    { t: "Offer a choice inside the task", d: "Which 5 problems, pencil or Chromebook, alone or with a partner. Same standard, more buy-in.", c: ["jolivette2001"] },
+    { t: "Offer a choice inside the task", d: "Which 5 problems, which order, alone or with a partner. Same standard, more buy-in.", c: ["jolivette2001"] },
     { t: "Post the agenda and use a visible timer", d: "When students know what is next and for how long, engagement goes up.", c: ["kern2007"] }] },
   { group: "Transitions", items: [
     { t: "Use one signal, every time", d: "A chime or countdown, then the 3-step routine, then praise the first students ready.", c: ["hirn2012", "mccoy2010"] },
@@ -79,22 +80,22 @@ var REMINDERS = {
 
 /* ---------- Class jobs ---------- */
 var JOBS = [
-  { n: "Greeter", i: "👋", d: "Welcomes classmates at the door with the teacher.", s: ["Stand by the door at the bell", "Say hello and use names", "Point to the bell-ringer"], g: "attention" },
-  { n: "Materials Manager", i: "✏️", d: "Hands out and collects supplies.", s: ["Pass out supplies when asked", "Count them back in", "Put them in the right bin"], g: "movement" },
-  { n: "Paper Passer", i: "📄", d: "Passes out and collects papers.", s: ["Pass papers row by row", "Collect them facing the same way", "Give them to the teacher"], g: "movement" },
-  { n: "Tech Manager", i: "💻", d: "Checks Chromebooks are charged and returned.", s: ["Check each slot at the end of class", "Plug in any that are unplugged", "Tell the teacher about damage"], g: "responsibility" },
-  { n: "Line Leader", i: "🚶", d: "Leads the line and models hallway expectations.", s: ["Wait for the teacher's signal", "Walk on the right at voice level 1", "Stop at each corner"], g: "attention" },
-  { n: "Door Holder", i: "🚪", d: "Holds doors for the class.", s: ["Go to the door when we line up", "Hold it until everyone passes", "Join the end of the line"], g: "movement" },
-  { n: "Caboose", i: "💡", d: "Last in line; checks lights and door.", s: ["Be last in line", "Turn off the lights", "Make sure the door closes"], g: "responsibility" },
-  { n: "Messenger", i: "✉️", d: "Delivers notes to the office or other rooms.", s: ["Take the pass", "Walk straight there and back", "Hand the note to an adult"], g: "movement" },
-  { n: "Timekeeper", i: "⏱️", d: "Runs the timer for activities and transitions.", s: ["Start the timer when the teacher says", "Give a 1-minute warning", "Announce when time is up"], g: "responsibility" },
-  { n: "Agenda Reader", i: "📅", d: "Reads the day's agenda and date to the class.", s: ["Read the date", "Read the agenda", "Point to the learning target"], g: "attention" },
-  { n: "HEART Spotter", i: "❤️", d: "Writes tootles (kind notes) about classmates showing HEART.", s: ["Watch for kind and helpful actions", "Write who and what they did", "Put notes in the tootle box"], g: "attention" },
-  { n: "Absent Buddy", i: "📥", d: "Collects work for classmates who are absent.", s: ["Check who is absent", "Put a copy of each handout in their folder", "Write the homework on the sticky note"], g: "responsibility" },
-  { n: "Desk Cleaner", i: "🧽", d: "Wipes desks and keeps the room tidy.", s: ["Wipe desks at the end of the day", "Pick up items on the floor", "Put the supplies away"], g: "movement" },
-  { n: "Librarian", i: "📚", d: "Keeps the class library organized.", s: ["Return books to the right bins", "Check out books on the log", "Report missing books"], g: "responsibility" },
-  { n: "Recycling Manager", i: "♻️", d: "Empties the recycling bin.", s: ["Check the bin on Friday", "Take it to the main bin with a buddy", "Bring the bin back"], g: "movement" },
-  { n: "Substitute Helper", i: "🤝", d: "Helps a guest teacher find things.", s: ["Introduce yourself", "Show the sub plans and seating chart", "Answer questions about routines"], g: "responsibility" }
+  { n: "Welcome Ambassador", i: "\uD83E\uDD1D", d: "Greets classmates at the door and helps new students learn our routines.", s: ["Stand by the door with the teacher at the bell", "Greet classmates by name", "Show any new student the routines and where things are"], g: "belonging" },
+  { n: "Materials Manager", i: "\u270F\uFE0F", d: "Gets supplies ready and checks them back in.", s: ["Set out supplies before the activity", "Count them back in at the end", "Tell the teacher when something is running low"], g: "movement" },
+  { n: "Distribution Manager", i: "\uD83D\uDCC4", d: "Hands out and collects papers and returned work.", s: ["Pass out papers quickly and quietly", "Collect work facing the same way", "Return graded work to the right folders"], g: "movement" },
+  { n: "Agenda & Target Leader", i: "\uD83D\uDCC5", d: "Reads the learning target and agenda to start class.", s: ["Read the date and learning target aloud", "Walk the class through the agenda", "Remind the class of any due dates"], g: "leadership" },
+  { n: "Timekeeper", i: "\u23F1\uFE0F", d: "Runs the timer for work time, groups, and transitions.", s: ["Start the timer when the teacher says", "Give a 1-minute warning", "Announce when time is up"], g: "responsibility" },
+  { n: "Discussion Leader", i: "\uD83D\uDDE3\uFE0F", d: "Keeps class or group discussions moving and fair.", s: ["Read the discussion question", "Call on classmates who haven't shared yet", "Sum up what the group said"], g: "leadership" },
+  { n: "Messenger", i: "\u2709\uFE0F", d: "Delivers notes to the office or other classrooms.", s: ["Take the pass", "Walk straight there and back", "Hand the note to an adult"], g: "movement" },
+  { n: "Absent Work Coordinator", i: "\uD83D\uDCE5", d: "Makes sure absent classmates get what they missed.", s: ["Check who is absent", "Put a copy of each handout in their folder", "Write a short note about what we did and what is due"], g: "responsibility" },
+  { n: "Recognition Coordinator", i: "\u2764\uFE0F", d: "Collects and shares tootles: notes about classmates showing HEART.", s: ["Hand out tootle slips on Monday", "Collect them in the box", "Read three aloud on Friday and update the class total"], g: "leadership" },
+  { n: "Class Goal Tracker", i: "\uD83D\uDCC8", d: "Updates the class goal chart, Good Behavior Game score, or Mystery Motivator.", s: ["Check the goal at the end of class with the teacher", "Update the chart neatly", "Announce how close we are to the goal"], g: "responsibility" },
+  { n: "Brain Break Leader", i: "\uD83C\uDFC3", d: "Leads a 2- to 3-minute movement or stretch break.", s: ["Pick a break from the approved list", "Lead it with energy", "Help everyone get back to work when the timer ends"], g: "attention" },
+  { n: "Classroom Librarian", i: "\uD83D\uDCDA", d: "Keeps the class library organized and tracks checkouts.", s: ["Return books to the right bins", "Log checkouts and returns", "Report missing or damaged books"], g: "responsibility" },
+  { n: "Exit Ticket Collector", i: "\uD83C\uDF9F\uFE0F", d: "Collects exit tickets and sorts them for the teacher.", s: ["Collect exit tickets at the door", "Check that each one has a name", "Put them in the teacher's tray"], g: "responsibility" },
+  { n: "Substitute Ambassador", i: "\uD83E\uDDED", d: "Helps a guest teacher find things and follow our routines.", s: ["Introduce yourself to the substitute", "Show the sub plans and seating chart", "Answer questions about our routines"], g: "leadership" },
+  { n: "Environment Manager", i: "\u267B\uFE0F", d: "Keeps the room clean, organized, and recycling sorted.", s: ["Check that desks and floors are clear at the end of class", "Empty the recycling bin on Friday with a partner", "Report anything broken"], g: "movement" },
+  { n: "Peer Help Desk", i: "\uD83D\uDCA1", d: "Helps classmates who are stuck during work time, without giving answers.", s: ["Wait for a classmate to ask for help", "Ask \"What have you tried?\"", "Give a hint or point to the example, not the answer"], g: "leadership" }
 ];
 
 /* ---------- Free incentives ---------- */
