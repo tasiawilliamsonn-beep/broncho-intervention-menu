@@ -37,7 +37,7 @@
   </div>
 
   <div class="panel">
-    <header><h2>References (APA)</h2><input type="text" id="q" placeholder="Search references or interventions" style="max-width:320px" aria-label="Search references"></header>
+    <header><h2>References (APA)</h2><div class="filters"><label class="opt" style="padding:0"><input type="checkbox" id="recent"><span>Last 10 years only (2016+)</span></label><input type="text" id="q" placeholder="Search references or interventions" style="max-width:280px" aria-label="Search references"></div></header>
     <div class="body"><ol class="refs" id="refs"></ol></div>
   </div>
 </main>
@@ -56,16 +56,19 @@
     INTERVENTIONS[id].refs.forEach(function (k) { (usedBy[k] = usedBy[k] || []).push(INTERVENTIONS[id].name); });
   });
   var keys = Object.keys(REFS).sort(function (a, b) { return REFS[a].localeCompare(REFS[b]); });
+  function year(k) { return +((REFS[k].match(/\((\d{4})\)/) || [])[1] || 0); }
   function render(q) {
     q = (q || "").toLowerCase();
+    var onlyRecent = document.getElementById("recent").checked;
     document.getElementById("refs").innerHTML = keys.filter(function (k) {
-      return !q || (REFS[k] + " " + (usedBy[k] || []).join(" ")).toLowerCase().indexOf(q) > -1;
+      return (!q || (REFS[k] + " " + (usedBy[k] || []).join(" ")).toLowerCase().indexOf(q) > -1) && (!onlyRecent || year(k) >= 2016);
     }).map(function (k) {
       var u = usedBy[k];
-      return "<li>" + BIM.esc(REFS[k]) + (u ? '<br><span class="hint" style="text-indent:0">Supports: ' + BIM.esc(u.join(", ")) + "</span>" : '<br><span class="hint">Cited on the home page</span>') + "</li>";
+      return "<li>" + BIM.esc(REFS[k]) + (year(k) >= 2016 ? '<span class="recent">Last 10 years</span>' : "") + (u ? '<br><span class="hint" style="text-indent:0">Supports: ' + BIM.esc(u.join(", ")) + "</span>" : '<br><span class="hint">Cited on the home page research summary</span>') + "</li>";
     }).join("");
   }
   document.getElementById("q").addEventListener("input", function () { render(this.value); });
+  document.getElementById("recent").addEventListener("change", function () { render(document.getElementById("q").value); });
   render();
 })();
 </script>
