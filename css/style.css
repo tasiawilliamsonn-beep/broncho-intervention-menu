@@ -532,3 +532,12 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .ps-row #out, .ps-row #out2 { min-height: 140px; }
 .ps-title { padding: 8px 10px !important; }
 @media (max-width: 520px) { .ps-row { grid-template-columns: 1fr; gap: 4px; } }
+
+/* log page mode switch */
+.mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+@media (max-width: 640px) { .mode-switch { grid-template-columns: 1fr; } }
+.mode-btn { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px 16px; cursor: pointer; }
+.mode-btn b { display: block; font-family: var(--display); text-transform: uppercase; letter-spacing: .04em; font-size: 1.15rem; }
+.mode-btn span { color: var(--muted); font-size: .93rem; }
+.mode-btn[aria-pressed="true"] { border-color: var(--red); background: var(--red-soft); box-shadow: inset 6px 0 0 var(--red); }
+.alert.tipbox { background: var(--surface2); border-color: var(--line); }

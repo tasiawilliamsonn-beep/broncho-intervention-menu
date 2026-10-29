@@ -26,10 +26,35 @@
 
 <div class="page-head"><div class="wrap">
   <h1>PowerSchool Log Builder</h1>
-  <p>Fill in what happened and what you did. The builder picks the log type from the Sunnyside Behavior Intervention Matrix, checks for subjective wording, and writes an objective entry you can paste into PowerSchool. Each saved entry is added to the student's Proof of Intervention record.</p>
+  <p>Fill in what happened and what you did. The builder picks the log type from the Sunnyside Behavior Intervention Matrix, checks for subjective wording, and writes an objective entry you can paste into PowerSchool. Prefer to write your own? Choose <b>Check an entry I wrote</b> to get feedback on it. Each saved entry is added to the student's Proof of Intervention record.</p>
 </div></div>
 
 <main id="main" class="wrap">
+<div class="mode-switch" role="group" aria-label="How do you want to write the log?">
+  <button type="button" class="mode-btn" data-mode="build" aria-pressed="true"><b>Build it for me</b><span>Choose the behavior and interventions; the builder writes the entry.</span></button>
+  <button type="button" class="mode-btn" data-mode="check" aria-pressed="false"><b>Check an entry I wrote</b><span>Paste your own entry and get feedback against the matrix.</span></button>
+</div>
+
+<div id="mode-check" hidden>
+<div class="log-grid">
+  <div class="panel"><header><h2>Your log entry</h2></header><div class="body">
+    <div class="row2">
+      <div><label class="f" for="own-student">Student (initials or ID)</label><input type="text" id="own-student" placeholder="e.g., A.B." list="students"></div>
+      <div><label class="f" for="own-date">Date</label><input type="date" id="own-date"></div>
+    </div>
+    <label class="f" for="own-type">Log Type you plan to choose in PowerSchool</label>
+    <select id="own-type"><option value="">Not sure</option><option value="INTERVENTION">Intervention</option><option value="INFORMATION">Information</option><option value="COMMUNICATION">Communication</option><option value="DISCIPLINE">Discipline</option></select>
+    <label class="f" for="own-title">Title</label><input type="text" id="own-title" placeholder="e.g., Refusal to comply - Tier 1 intervention">
+    <label class="f" for="own-text">Log Entry</label>
+    <textarea id="own-text" style="min-height:260px" placeholder="Write or paste your log entry here, the same way you would in PowerSchool."></textarea>
+    <p class="hint">A strong entry describes what you saw and heard, the Tier 1 intervention you used, how the student responded, any parent contact, and your next step.</p>
+    <button class="btn dark" type="button" id="own-save" style="margin-top:8px">Save to Proof of Intervention</button>
+  </div></div>
+  <section><div class="panel" style="position:sticky;top:88px"><header><h2>Feedback</h2></header><div class="body" id="own-out"></div></div></section>
+</div>
+</div>
+
+<div id="mode-build">
 <div class="log-grid">
   <form class="panel" id="form" autocomplete="off" onsubmit="return false">
     <header><h2>1. Build the entry</h2><button class="btn ghost sm" type="button" id="startover">Start over</button></header>
@@ -163,6 +188,8 @@
   </section>
 </div>
 
+</div>
+
 <section class="panel" id="proof" style="margin-bottom:56px">
   <header><h2>3. Proof of Intervention record</h2>
     <div class="filters"><select id="proof-student" aria-label="Choose student" style="width:auto"></select>
@@ -180,5 +207,6 @@
 <script src="js/data.js?v=26a959a"></script>
 <script src="js/app.js?v=26a959a"></script>
 <script src="js/log.js?v=26a959a"></script>
+<script src="js/logcheck.js?v=x"></script>
 </body>
 </html>

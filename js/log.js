@@ -401,4 +401,6 @@
     document.querySelectorAll("[data-p]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-p") === "admin"); });
   }
   renderBehaviorList(); renderInts(); renderHeart(); renderProof(); update();
+  window.BIM_SUBJECTIVE = SUBJECTIVE;
+  window.BIMRenderProof = function (stu) { logs = BIM.getLogs(); $("proof-student").value = key(stu); renderProof(); };
 })();
