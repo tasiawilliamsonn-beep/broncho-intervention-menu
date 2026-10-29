@@ -558,3 +558,11 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .fc-steps { padding-left: 20px; }
 .fc-steps li { margin-bottom: 10px; }
 .fc-steps .pill { margin-right: 4px; }
+
+/* essential behaviors */
+.es-row { display: grid; grid-template-columns: 1fr 230px; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); align-items: center; }
+.es-row:last-child { border-bottom: 0; }
+.es-sel { display: grid; gap: 4px; font-size: .8rem; color: var(--muted); }
+.es-sel select { padding: 5px 8px; font-size: .9rem; }
+@media (max-width: 640px) { .es-row { grid-template-columns: 1fr; } }
+#es-fields textarea { min-height: 64px; }

@@ -33,6 +33,7 @@
   <div class="tabs no-print" role="tablist" aria-label="Tools">
     <button role="tab" type="button" data-tab="tips">Teacher Tips</button>
     <button role="tab" type="button" data-tab="fourc">4 C's Audit</button>
+    <button role="tab" type="button" data-tab="essential">Essential Behaviors</button>
     <button role="tab" type="button" data-tab="posters">HEART Posters &amp; Reminders</button>
     <button role="tab" type="button" data-tab="incent">Free Incentives</button>
     <button role="tab" type="button" data-tab="jobs">Class Jobs</button>
@@ -67,6 +68,26 @@
       <div class="panel sticky"><header><h2>Your 4 C's</h2></header><div class="body" id="fc-summary"></div></div>
     </div>
     <div id="fc-plan"></div>
+  </section>
+
+  <!-- ESSENTIAL BEHAVIORS -->
+  <section class="tool" id="tool-essential" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">Essential Academic &amp; Social Behaviors</h2>
+      <p class="intro">In <i>Behavior Solutions: Teaching Academic and Social Skills Through RTI at Work</i>, Hannigan, Djabrayan Hannigan, Mattos, and Buffum (2020) define behavior as two kinds of skills: <b>academic behaviors</b> (skill-based) and <b>social behaviors</b> (will-based). Both must be taught and reinforced at every tier, starting with Tier 1 prevention. Tier 1 begins by identifying the <b>essential</b> behaviors every student must learn and show, then teaching them like academic standards.</p>
+      <ol class="flow" style="max-width:900px">
+        <li><b>Rate each behavior below</b> for its impact on learning and how many students struggle with it. Do this as a team if you can.</li>
+        <li><b>Focus on your top 3 academic and top 3 social behaviors.</b> Print them for your room or team.</li>
+        <li><b>Plan a lesson for each one</b> and teach it like content: model, example and non-example, practice, feedback, and reinforcement. Re-teach after breaks.</li>
+      </ol>
+      <p class="hint">The behaviors and lesson content here are Sunnyside examples written for this site, organized around the book's framework. For the book's own tools, see the publisher's free reproducibles.</p>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div id="es-rate"></div>
+      <div class="panel sticky"><header><h2>Your priorities</h2></header><div class="body" id="es-priority"></div></div>
+    </div>
+    <div class="panel" id="es-plan" hidden style="margin-top:20px"><header><h2 id="es-plan-title">Behavior lesson</h2><div class="filters"><button class="btn sm" type="button" id="es-plan-print">Print lesson plan</button><button class="btn ghost sm" type="button" id="es-plan-reset">Reset to suggested wording</button></div></header>
+      <div class="body"><p class="hint">Suggested wording is filled in. Edit anything; your changes save on this device. Text in [brackets] needs your words.</p><div id="es-fields"></div></div></div>
   </section>
 
   <!-- POSTERS -->
@@ -295,5 +316,7 @@
 <script src="js/fourc-data.js?v=b03ea0d"></script>
 <script src="js/tools2.js?v=b03ea0d"></script>
 <script src="js/fourc.js?v=b03ea0d"></script>
+<script src="js/essential-data.js?v=x"></script>
+<script src="js/essential.js?v=x"></script>
 </body>
 </html>
