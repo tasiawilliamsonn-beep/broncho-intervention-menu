@@ -79,8 +79,27 @@
     return { key: k, level: byId[k].level, name: byId[k].name };
   }
 
+  var COMMON = ("the a an and or but to of in on at for with was were is are be been being he she they him her them his hers their i me my we our you it its this that " +
+    "then when after before during while student students class classroom teacher work did not no had has have asked said told would could again from by as so because " +
+    "about into out up down time minutes seat assignment directions peer peers classmate other went got used gave called refused started stopped stayed sat walked " +
+    "talked put took will mom mother dad father parent guardian family home school lesson group partner desk room hallway lunch recess behavior").split(" ");
+  function quality(text) {
+    var toks = (text.toLowerCase().match(/[a-z']+/g) || []);
+    if (!toks.length) return { ok: false, why: "Write the log entry in words." };
+    var common = toks.filter(function (t) { return COMMON.indexOf(t) > -1; }).length / toks.length;
+    var junk = toks.filter(function (t) { return t.length >= 4 && (!/[aeiouy]/.test(t) || /(.)\1\1/.test(t)); }).length / toks.length;
+    if (toks.length >= 3 && (common < 0.2 || junk > 0.3)) return { ok: false, why: "This doesn't read like a log entry. Write in full sentences: what the student did, what you did, and how the student responded." };
+    if (toks.length < 3) return { ok: false, why: "Keep writing. Describe what the student did, what you did, and how the student responded." };
+    return { ok: true, words: toks.length };
+  }
+
   function analyze(text, chosen) {
+    if (!text.trim()) return null;
+    var q = quality(text);
+    if (!q.ok) return { invalid: true, why: q.why, behs: [], ints: [], lv: 0, rec: "", refer: false, align: [], fixes: [], good: [], req: [], parent: false, rating: ["red", "Not a log entry yet"] };
     var behs = BEH_RX.filter(function (r) { return r[1].test(text); }).map(function (r) { return behFromKey(r[0]); });
+    var picked = $("own-beh") ? $("own-beh").value : "";
+    if (picked && !behs.some(function (b) { return b.key === picked; })) behs.unshift(behFromKey(picked));
     var ints = INT_RX.filter(function (r) { return r[1].test(text); }).map(function (r) { return r[0]; });
     var lv = behs.reduce(function (m, b) { return Math.max(m, b.level); }, 0);
     var parent = PARENT_RX.test(text), conseq = CONSEQ_RX.test(text);
@@ -96,9 +115,8 @@
 
     var align = [], fixes = [], good = [];
     /* log type vs. matrix */
-    if (!text.trim()) return null;
-    if (!behs.length && chosen !== "COMMUNICATION" && chosen !== "INFORMATION")
-      align.push(["warn", "No matrix behavior recognized", "Name the behavior in plain terms (for example \"refused to start the assignment\" or \"called out during instruction\") so the level is clear. You can also use the builder to choose it from the matrix."]);
+    if (!behs.length && rec !== "COMMUNICATION" && chosen !== "INFORMATION")
+      align.push(["red", "No matrix behavior found", "Name the behavior in plain terms (for example \"refused to start the assignment\" or \"called out during instruction\"), or choose it from the matrix list under the entry box."]);
     if (chosen && rec && chosen !== rec) {
       if (chosen === "DISCIPLINE" && lv <= 2)
         align.push(["red", "This does not align with the matrix: Level " + (lv || "1-2") + " is not logged as Discipline",
@@ -139,10 +157,36 @@
     if (words && words < 25) fixes.push(["warn", "Add more detail", "This is very short. Describe what you saw and heard, what you did, and how the student responded."]);
     if (words > 250) fixes.push(["tip", "Trim it down", "Keep it to the facts: the behavior, the intervention, the response, and the next step."]);
 
-    var red = align.concat(fixes).filter(function (f) { return f[0] === "red"; }).length;
-    var warn = align.concat(fixes).filter(function (f) { return f[0] === "warn"; }).length;
-    var rating = red ? ["red", "Needs changes before you submit"] : warn ? ["warn", "Good start: a few things to strengthen"] : ["ok", "Strong entry"];
-    return { behs: behs, ints: ints, lv: lv, rec: rec || chosen, refer: refer, align: align, fixes: fixes, good: good, rating: rating, parent: parent };
+    /* required elements decide the rating */
+    var type = rec || chosen, subj = (window.BIM_SUBJECTIVE || []).some(function (r) { return r[0].test(text); });
+    var req = [];
+    function need(label, ok, required) { req.push({ label: label, ok: !!ok, required: required }); }
+    if (type === "COMMUNICATION") {
+      need("Says who you contacted and how", parent, true);
+      need("Explains the reason and what was shared", q.words >= 15, true);
+      need("Objective language", !subj, true);
+    } else if (type === "INFORMATION") {
+      need("Enough detail to be useful (15+ words)", q.words >= 15, true);
+      need("Objective language", !subj, true);
+    } else {
+      need("Behavior identified on the matrix", behs.length, true);
+      need("Describes what the student said or did (20+ words)", q.words >= 20, true);
+      need("Objective language (no judgment words)", !subj, true);
+      need("Log Type matches the matrix", !align.some(function (f) { return f[0] === "red"; }), true);
+      if (lv && lv <= 2) {
+        need("Names the Tier 1 intervention you used", ints.length, true);
+        need("Says how the student responded", RESPONSE_RX.test(text), true);
+        if (lv === 2) need("Parent/guardian contact (required for Level 2)", parent, true);
+        need("Names the HEART expectation", HEART_RX.test(text), false);
+        need("Includes a next step", NEXT_RX.test(text), false);
+      }
+      if (noChange) need("Mentions the parent communications already logged", parent || NOCHANGE_RX.test(text), true);
+    }
+    need("No [bracketed] text left to fill in", !/\[[^\]]+\]/.test(text), true);
+    need("No dates, times, or labels (PowerSchool has its own fields)", !DATE_RX.test(text) && !LABEL_RX.test(text), false);
+    var missReq = req.filter(function (x) { return x.required && !x.ok; }).length, missOpt = req.filter(function (x) { return !x.required && !x.ok; }).length;
+    var rating = missReq ? ["red", "Not ready yet: " + missReq + " required element" + (missReq > 1 ? "s" : "") + " missing"] : missOpt ? ["warn", "Almost there: all required elements are in"] : ["ok", "Strong entry: ready to submit"];
+    return { behs: behs, ints: ints, lv: lv, rec: type, refer: refer, align: align, fixes: fixes, good: good, req: req, rating: rating, parent: parent, noChange: noChange };
   }
 
   function suggest(behs, types) {
@@ -184,6 +228,10 @@
     if (add.resp) out.push(add.resp);
     if (add.pMethod || add.pWho) out.push("I contacted " + (add.pWho ? "the student's " + add.pWho : "the student's parent/guardian") + (METHODS[add.pMethod] ? " " + METHODS[add.pMethod] : "") + ".");
     if (add.next) out.push(add.next);
+    var lvl = a.lv;
+    if ((rec === "INTERVENTION" || (lvl && lvl <= 2)) && !a.ints.length && !add.ints.length) out.push("[Add the Tier 1 intervention you used.]");
+    if (lvl && lvl <= 2 && !RESPONSE_RX.test(text) && !add.resp) out.push("[Add how the student responded.]");
+    if (lvl === 2 && !a.parent && !add.pMethod && !add.pWho) out.push("[Add your parent/guardian contact, or log it as a separate Communication entry.]");
     return out.join(" ");
   }
   function titleFor(a) {
@@ -220,16 +268,26 @@
   function renderStrong(a) {
     var text = $("own-text").value;
     if (!a) { $("own-strong").innerHTML = '<p class="hint">Write or paste your log entry on the left. A strengthened version that aligns with the matrix will appear here.</p>'; sig = ""; return; }
+    if (a.invalid) { $("own-strong").innerHTML = '<div class="alert red"><h3>No strengthened version yet</h3><p>' + esc(a.why) + "</p></div>"; sig = ""; return; }
+    if (!a.behs.length && a.rec !== "COMMUNICATION" && a.rec !== "INFORMATION") {
+      $("own-strong").innerHTML = '<div class="alert red"><h3>Choose the matrix behavior first</h3><p>The checker could not find a behavior from the Sunnyside matrix in your entry. Describe the behavior in plain terms, or pick it in <b>Matrix behavior</b> under your entry. The strengthened version appears once the behavior is known.</p></div>'; sig = ""; return;
+    }
     if (!$("own-add")) $("own-strong").innerHTML = '<div id="own-add"></div><div class="ps-form" style="margin-top:12px">' +
       '<div class="ps-row"><span class="ps-lab">Log Type</span><div><b id="s-type"></b></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="s-title"></div><button class="btn ghost sm" type="button" data-copy="s-title">Copy title</button></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="s-text"></div><button class="btn sm" type="button" data-copy="s-text">Copy log entry</button> <button class="btn ghost sm" type="button" id="s-use">Use this version</button></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Office Referral</span><div id="s-ref"></div></div></div>' +
-      '<p class="hint" style="margin-top:8px">Anything in [brackets] needs your words. Replace it before you submit.</p>';
+      '<div id="s-ready" style="margin-top:10px"></div><p class="hint" style="margin-top:8px">Anything in [brackets] needs your words. Replace it before you submit.</p>';
     renderStrongControls(a, text);
     $("s-type").textContent = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Choose the behavior to decide";
     $("s-title").textContent = $("own-title").value.trim() || titleFor(a);
-    $("s-text").textContent = strongText(a, text);
+    var st2 = strongText(a, text);
+    $("s-text").textContent = st2;
+    var a2 = analyze(st2, a.rec);
+    var miss2 = a2 && a2.req ? a2.req.filter(function (x) { return x.required && !x.ok; }).map(function (x) { return x.label; }) : [];
+    $("s-ready").innerHTML = miss2.length
+      ? '<div class="alert warn"><h3>Not ready to submit yet</h3><p>Still needed: ' + esc(miss2.join("; ")) + ". Use the choices above, or edit your entry and replace anything in [brackets].</p></div>"
+      : '<div class="alert ok"><h3>Ready to submit</h3><p>All required elements are included. Read it once more, then copy it into PowerSchool.</p></div>';
     $("s-ref").innerHTML = a.refer ? '<span class="pill no">Check it</span>' : '<span class="pill ok">Leave unchecked</span>';
   }
   $("own-strong").addEventListener("change", function (e) {
@@ -257,8 +315,12 @@
     var text = $("own-text").value, chosen = $("own-type").value;
     var a = analyze(text, chosen); last = a;
     if (!a) { renderStrong(null); $("own-out").innerHTML = '<p class="hint">Paste or type your log entry, choose the Log Type you plan to use, and the feedback will appear here.</p>'; return; }
+    if (a.invalid) { renderStrong(a); $("own-out").innerHTML = '<div class="alert red"><h3>' + esc(a.rating[1]) + "</h3><p>" + esc(a.why) + "</p></div>"; return; }
     var typeName = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Not sure yet";
     var h = '<div class="alert ' + a.rating[0] + '"><h3>' + esc(a.rating[1]) + "</h3></div>";
+    h += '<ul class="checklist" style="margin-bottom:12px">' + a.req.map(function (x) {
+      return '<li><span class="ic ' + (x.ok ? "yes" : x.required ? "no" : "") + '">' + (x.ok ? "\u2713" : x.required ? "\u2715" : "\u2013") + "</span><span>" + esc(x.label) + (x.required ? "" : ' <span class="hint">(recommended)</span>') + "</span></li>";
+    }).join("") + "</ul>";
     h += '<div class="ps-form">' +
       '<div class="ps-row"><span class="ps-lab">Matrix level</span><div>' + (a.lv ? "<b>Level " + a.lv + "</b>: " + esc(LEVELS[a.lv].who) : "Not recognized") + "</div></div>" +
       '<div class="ps-row"><span class="ps-lab">Behaviors found</span><div>' + (a.behs.length ? esc(a.behs.map(function (b) { return "L" + b.level + " " + b.name; }).join("; ")) : "None") + "</div></div>" +
@@ -276,13 +338,19 @@
     return '<div class="alert ' + (cls || "tipbox") + '"><h3>' + (f[0] === "tip" ? "Tip: " : "") + esc(f[1]) + "</h3><p>" + esc(f[2]) + "</p></div>";
   }
 
+  /* matrix behavior picker (fallback when keywords miss the behavior) */
+  $("own-beh").innerHTML = '<option value="">Found automatically</option>' + [1, 2].map(function (l) {
+    return '<optgroup label="Level ' + l + '">' + BEHAVIORS.filter(function (b) { return b.level === l; }).map(function (b) { return '<option value="' + b.id + '">' + esc(b.name) + "</option>"; }).join("") + "</optgroup>";
+  }).join("") + '<optgroup label="Level 3">' + LEVEL3.map(function (t, i) { return '<option value="L3:' + i + '">' + esc(t) + "</option>"; }).join("") + "</optgroup>" +
+    '<optgroup label="Level 4">' + LEVEL4.map(function (t, i) { return '<option value="L4:' + i + '">' + esc(t) + "</option>"; }).join("") + "</optgroup>";
+  $("own-beh").addEventListener("change", function () { sig = ""; render(); });
   $("own-text").addEventListener("input", render);
   $("own-type").addEventListener("change", render);
   $("own-title").addEventListener("input", render);
   $("own-save").addEventListener("click", function () {
     var stu = $("own-student").value.trim();
     if (!stu) { BIM.toast("Add student initials or ID first"); $("own-student").focus(); return; }
-    if (!last) { BIM.toast("Write the log entry first"); return; }
+    if (!last || last.invalid) { BIM.toast("Write a complete log entry first"); return; }
     var logs = BIM.getLogs();
     logs.push({ id: Date.now().toString(36), student: stu, date: $("own-date").value, period: "", setting: "", type: last.rec || $("own-type").value || "INFORMATION", level: last.lv,
       behaviors: last.behs.map(function (b) { return { name: b.name, look: b.name, level: b.level }; }), ints: last.ints.slice(), response: "",
