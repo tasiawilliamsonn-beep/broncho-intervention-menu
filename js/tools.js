@@ -21,7 +21,7 @@
   window.BIMPrint = function (html) { printArea("print-area", html); };
   window.BIMSheetHead = function (t) { return sheetHead(t); };
   function sheetHead(title) {
-    return '<div class="sheet-head"><img src="img/broncho-logo.png" alt=""><div><b>Sunnyside Intermediate School</b><span>' + esc(title) + "</span></div></div>";
+    return '<div class="sheet-head"><img src="img/broncho-logo.png" alt=""><div><b>Lafayette Sunnyside Intermediate School</b><span>' + esc(title) + "</span></div></div>";
   }
 
   /* ---------- ABC organizer ---------- */

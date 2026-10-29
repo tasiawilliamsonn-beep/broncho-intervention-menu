@@ -1,6 +1,6 @@
 # The Broncho Intervention Menu
 
-Sunnyside Intermediate School's Tier 1 behavior intervention website. Plain HTML, CSS, and JavaScript; no build step.
+Lafayette Sunnyside Intermediate School's Tier 1 behavior intervention website. Plain HTML, CSS, and JavaScript; no build step.
 
 | Page | What it does |
 | --- | --- |

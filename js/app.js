@@ -45,7 +45,7 @@ var BIM = (function () {
 
   /* ---------- printing (pages provide <div class="print-only" id="print-area">) ---------- */
   function sheetHead(title) {
-    return '<div class="sheet-head"><img src="img/broncho-logo.png" alt=""><div><b>Sunnyside Intermediate School</b><span>' + esc(title) + "</span></div></div>";
+    return '<div class="sheet-head"><img src="img/broncho-logo.png" alt=""><div><b>Lafayette Sunnyside Intermediate School</b><span>' + esc(title) + "</span></div></div>";
   }
   function printHTML(html) {
     var area = document.getElementById("print-area"); if (!area) return;
