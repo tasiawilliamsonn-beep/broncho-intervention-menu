@@ -26,51 +26,49 @@
 </div></header>
 
 <div class="page-head"><div class="wrap">
-  <h1>Team Meeting: Getting on One Accord</h1>
-  <p>A 30-minute calibration activity for a Sunnyside grade-level team, PLC, or staff meeting. The team works through real Sunnyside scenarios, votes, sees the matrix answer, and talks it through until everyone would respond the same way. Consistent responses across classrooms are how we make discipline fair for every student.</p>
+  <h1>Team Meeting</h1>
+  <p>A 30-minute activity to make sure every Sunnyside staff member responds to behavior the same way.</p>
 </div></div>
 
 <main id="main" class="wrap" style="padding-block:28px 56px">
   <div class="grid g2" style="align-items:start">
     <div class="card red-top">
-      <h3>Agenda (30 minutes)</h3>
+      <h3>Agenda: 30 minutes</h3>
       <ol class="flow">
-        <li><b>Why we calibrate (5 min).</b> Share the research on the right. Set the norm: we are calibrating a system, not judging anyone's classroom.</li>
-        <li><b>Scenarios (20 min).</b> For each one, everyone decides silently, then votes by show of hands. Tally with the + buttons, reveal the answer, and use the discussion question. Flag anything the team wants to revisit.</li>
-        <li><b>Team agreements (5 min).</b> Edit and print the agreements below, and have everyone sign.</li>
+        <li><b>Why it matters</b> (5 min)</li>
+        <li><b>Scenarios</b> (20 min): decide silently, vote, reveal, talk.</li>
+        <li><b>Team agreements</b> (5 min): edit, print, sign.</li>
       </ol>
-      <p class="hint">Facilitator keys: &rarr; next, &larr; back, R reveal, F full screen.</p>
-      <div class="cta"><button class="btn" type="button" id="f-start">Start the activity</button><button class="btn ghost" type="button" id="hand-print">Print participant handout</button><button class="btn ghost" type="button" id="key-print">Print answer key</button></div>
+      <div class="cta"><button class="btn" type="button" id="f-start">Start</button><button class="btn ghost" type="button" id="hand-print">Print handout</button><button class="btn ghost" type="button" id="key-print">Print answer key</button></div>
     </div>
     <div class="card">
-      <h3>Why calibration matters</h3>
+      <h3>Why it matters</h3>
       <ul class="check">
-        <li>Racial gaps in discipline are largest for <b>subjective</b> referrals like "defiance" and "disrespect," and at predictable decision points (Smolkowski et al., 2016; Girvan, Gion, McIntosh, &amp; Smolkowski, 2017).</li>
-        <li>In one district, the 5% of teachers who referred most often <b>doubled</b> the racial gap in referrals (Liu, Penner, &amp; Gao, 2023).</li>
-        <li>Shared definitions, clear procedures, and looking at data together are recommended strategies for fair discipline (McIntosh, Ellwood, McCall, &amp; Girvan, 2018).</li>
-        <li>Our three problems (consequences without intervention, no proof of intervention, and mild behaviors logged as Discipline) are all consistency problems.</li>
+        <li>Discipline gaps are biggest when behavior is labeled with subjective words like "defiance."</li>
+        <li>When responses differ by classroom, students get different chances to learn.</li>
+        <li>Shared definitions and a shared process make discipline fair.</li>
       </ul>
+      <p class="cite">Smolkowski et al., 2016; Girvan et al., 2017; Liu, Penner, &amp; Gao, 2023; McIntosh et al., 2018</p>
     </div>
   </div>
 
   <section class="facil" id="facil" hidden>
-    <div class="f-top"><span id="f-count"></span><div class="meter" style="flex:1"><span id="f-bar"></span></div>
-      <button class="btn ghost sm" type="button" id="f-full">Full screen</button><button class="btn ghost sm" type="button" id="f-reset">Reset votes</button></div>
-    <div class="f-cat" id="f-cat"></div>
+    <div class="f-top"><span class="f-cat" id="f-cat"></span><span class="f-count" id="f-count"></span></div>
+    <div class="meter f-meter"><span id="f-bar"></span></div>
     <p class="f-text" id="f-text"></p>
     <div class="f-opts" id="f-opts"></div>
     <div class="f-answer" id="f-answer" hidden></div>
     <div class="f-ctrl">
       <button class="btn ghost" type="button" id="f-prev">&larr; Back</button>
       <button class="btn dark" type="button" id="f-reveal">Reveal answer</button>
-      <label class="opt"><input type="checkbox" id="f-flag"><span>Flag for follow-up</span></label>
       <button class="btn" type="button" id="f-next">Next &rarr;</button>
     </div>
+    <div class="f-tools"><button type="button" class="linkbtn" id="f-count-toggle">Count votes</button> &middot; <button type="button" class="linkbtn" id="f-reset">Reset votes</button> &middot; <button type="button" class="linkbtn" id="f-full">Full screen</button> &middot; <span>Keys: &larr; &rarr; R</span></div>
   </section>
   <section id="f-summary" hidden style="margin-top:24px"></section>
 
   <div class="panel" style="margin-top:28px"><header><h2>Our team agreements</h2><button class="btn sm" type="button" id="agree-print">Print to sign</button></header>
-    <div class="body"><p class="hint">Start from these, then edit them together. One agreement per line. Saved on this device.</p><textarea id="agree" style="min-height:200px"></textarea></div></div>
+    <div class="body"><p class="hint">Edit together. One per line.</p><textarea id="agree" style="min-height:200px"></textarea></div></div>
   <div class="print-only" id="print-area"></div>
 </main>
 

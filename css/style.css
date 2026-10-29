@@ -615,3 +615,18 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 /* keep long select options and content from widening grids on phones */
 .grid > *, .row2 > *, .row3 > * { min-width: 0; }
 select { max-width: 100%; }
+
+/* simplified slides */
+.f-top { justify-content: space-between; }
+.f-top .f-cat { margin-top: 0; }
+.f-count { color: var(--muted); font-weight: 700; }
+.f-meter { margin-top: 10px; height: 6px; }
+.f-text { font-size: clamp(1.4rem, 3vw, 2.3rem); margin: 22px 0; }
+.f-opt { font-size: 1.3rem; padding: 16px; }
+.f-answer { font-size: 1.25rem; }
+.f-ans { font-family: var(--display); text-transform: uppercase; font-size: 1.5rem; margin-bottom: 4px; }
+.f-talk { font-weight: 600; }
+.f-ctrl { justify-content: center; gap: 14px; }
+.f-tools { text-align: center; margin-top: 14px; font-size: .85rem; color: var(--muted); }
+.linkbtn { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: .85rem; padding: 2px; }
+#facil, #f-summary { scroll-margin-top: 96px; }
