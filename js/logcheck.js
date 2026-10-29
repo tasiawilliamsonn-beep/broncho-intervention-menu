@@ -154,10 +154,109 @@
   }
 
   var last = null;
+
+  /* ---------- Strengthen: clean the teacher's text and add what's missing ---------- */
+  var add = { ints: [], resp: "", heart: [], pWho: "", pMethod: "", next: "" };
+  var sig = "";
+  var RESP = ["The student corrected the behavior right away.", "The student corrected the behavior after a second prompt.", "The student showed partial improvement.", "The behavior did not change.", "The behavior escalated."];
+  var METHODS = { "": "", "phone": "by phone", "email": "by email", "conference": "in a conference", "note": "with a written note", "app": "through the school messaging app", "voicemail": "by phone and left a voicemail" };
+  var NEXTS = ["I will continue these interventions and monitor progress.", "I will add or adjust an intervention.", "I will follow up with the family.", "I will begin a Daily Behavior Report to monitor progress.", "I will bring the documented interventions to the MTSS/RTI team."];
+  function joinAnd(l) { return l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + (l.length > 2 ? "," : "") + " and " + l[l.length - 1]; }
+  function cleanText(t) {
+    var s = t.replace(/^\s*[A-Z][A-Za-z /]{2,25}:\s*/gm, "");
+    s = s.replace(/\s*\b(on|at)?\s*\b\d{1,2}\/\d{1,2}(\/\d{2,4})?\b/gi, "").replace(/\s*\b(at|around)?\s*\b\d{1,2}:\d{2}(\s?(am|pm|a\.m\.|p\.m\.)(?![a-z]))?/gi, "").replace(/\s*\bon (monday|tuesday|wednesday|thursday|friday)\b/gi, "");
+    s = s.split(/\n+/).map(function (x) { x = x.trim(); return x && !/[.!?"]$/.test(x) ? x + "." : x; }).filter(Boolean).join(" ");
+    (window.BIM_SUBJECTIVE || []).filter(function (r) { return !/always|defian/.test(r[0].source); }).forEach(function (r) {
+      var rx = new RegExp(r[0].source, "gi");
+      s = s.replace(rx, function (m) { return "[replace \"" + m + "\" with what the student said or did]"; });
+    });
+    s = s.replace(/\s{2,}/g, " ").replace(/\s+([.,])/g, "$1").replace(/,(\s*,)+/g, ",").replace(/(^|[.!?]\s+)[,;]\s*/g, "$1").trim();
+    return s.replace(/(^|[.!?]\s+)([a-z])/g, function (m, p, c) { return p + c.toUpperCase(); });
+  }
+  function strongText(a, text) {
+    var s = cleanText(text), out = [];
+    var rec = a.rec;
+    if (rec === "DISCIPLINE" && !/administrator/i.test(s)) out.push("I am requesting that an administrator address this behavior.");
+    if (s) out.push(s);
+    if (a.lv && !/\blevel \d\b/i.test(s)) out.push("This is a Level " + a.lv + " behavior on the Sunnyside Behavior Intervention Matrix.");
+    if (add.heart.length) out.push("This did not meet our " + (add.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(add.heart) + ".");
+    if (add.ints.length) out.push((rec === "DISCIPLINE" ? "Tier 1 interventions already used: I " : (a.ints.length ? "I also " : "To address the behavior, I ")) + joinAnd(add.ints.map(function (id) { return INTERVENTIONS[id].log; })) + ".");
+    if (add.resp) out.push(add.resp);
+    if (add.pMethod || add.pWho) out.push("I contacted " + (add.pWho ? "the student's " + add.pWho : "the student's parent/guardian") + (METHODS[add.pMethod] ? " " + METHODS[add.pMethod] : "") + ".");
+    if (add.next) out.push(add.next);
+    return out.join(" ");
+  }
+  function titleFor(a) {
+    var names = a.behs.filter(function (b) { return a.lv < 3 || b.level >= 3; }).map(function (b) { return b.name.split(" after ")[0]; }).slice(0, 2).join(" / ");
+    var t = { INTERVENTION: names ? names + " - Tier 1 intervention" : "Tier 1 intervention", COMMUNICATION: names ? "Parent contact - " + names : "Parent contact",
+      INFORMATION: names ? "Information - " + names : "Information", DISCIPLINE: names ? "Office referral - " + names : "Office referral" }[a.rec] || names || "";
+    return t.length > 60 ? t.slice(0, 57).replace(/\s+\S*$/, "") + "..." : t;
+  }
+  function matched(a) {
+    var ids = [];
+    a.behs.forEach(function (b) { var x = byId[b.key]; if (x) x.ints.forEach(function (id) { if (ids.indexOf(id) < 0 && a.ints.indexOf(id) < 0) ids.push(id); }); });
+    if (!ids.length) ids = ["redirect", "teach", "bsp", "precorrect", "proximity", "reentry"].filter(function (id) { return a.ints.indexOf(id) < 0; });
+    return ids.slice(0, 8);
+  }
+  function renderStrongControls(a, text) {
+    var need = { ints: (a.rec === "INTERVENTION" || a.rec === "DISCIPLINE") && a.lv && a.lv <= 3, resp: a.lv && a.lv <= 2 && !/\b(responded|corrected|stopped|complied|returned to|got back to work|began|started (working|the)|improv|no change|did not change|continued|escalat|refused again|was able to|followed)/i.test(text),
+      heart: a.lv && a.lv <= 2 && !/\b(honesty|effort|attitude|respect|teamwork)\b/i.test(text), parent: a.lv === 2 && !a.parent, next: a.lv && !/\b(will |plan|next step|follow[- ]?up|continue|monitor)\b/i.test(text) };
+    var s2 = JSON.stringify([a.behs.map(function (b) { return b.key; }), a.ints, need, a.rec]);
+    if (s2 === sig) return;
+    sig = s2;
+    var h = "";
+    if (need.ints) {
+      var m = matched(a);
+      h += '<label class="f">' + (a.ints.length ? "Add another Tier 1 intervention you used" : "Which Tier 1 intervention did you use?") + "</label>" +
+        m.map(function (id) { return '<label class="opt"><input type="checkbox" data-sint="' + id + '"' + (add.ints.indexOf(id) > -1 ? " checked" : "") + "><span>" + esc(INTERVENTIONS[id].name) + ' <span class="pill ok">' + esc(TYPES[INTERVENTIONS[id].type].name) + "</span></span></label>"; }).join("");
+    }
+    if (need.heart) h += '<label class="f">Expectation(s) missed</label><div class="chips">' + ["Honesty", "Effort", "Attitude", "Respect", "Teamwork"].map(function (v) { return '<button type="button" class="chip" data-sheart="' + v + '" aria-pressed="' + (add.heart.indexOf(v) > -1) + '">' + v + "</button>"; }).join("") + "</div>";
+    if (need.resp) h += '<label class="f" for="s-resp">How did the student respond?</label><select id="s-resp"><option value="">Choose...</option>' + RESP.map(function (r) { return "<option" + (add.resp === r ? " selected" : "") + ">" + esc(r) + "</option>"; }).join("") + "</select>";
+    if (need.parent) h += '<label class="f">Parent contact (required for Level 2)</label><div class="row2"><input type="text" id="s-who" placeholder="Who? e.g., mother" value="' + esc(add.pWho) + '"><select id="s-method"><option value="">How?</option><option value="phone">Phone</option><option value="email">Email</option><option value="conference">Conference</option><option value="note">Written note</option><option value="app">Messaging app</option><option value="voicemail">Voicemail</option></select></div>';
+    if (need.next) h += '<label class="f" for="s-next">Next step</label><select id="s-next"><option value="">Choose...</option>' + NEXTS.map(function (n) { return "<option" + (add.next === n ? " selected" : "") + ">" + esc(n) + "</option>"; }).join("") + "</select>";
+    $("own-add").innerHTML = h ? '<p class="hint" style="margin:0 0 4px"><b>Add what\'s missing</b> (it is added to the entry below):</p>' + h : "";
+    if ($("s-method")) $("s-method").value = add.pMethod;
+  }
+  function renderStrong(a) {
+    var text = $("own-text").value;
+    if (!a) { $("own-strong").innerHTML = '<p class="hint">Write or paste your log entry on the left. A strengthened version that aligns with the matrix will appear here.</p>'; sig = ""; return; }
+    if (!$("own-add")) $("own-strong").innerHTML = '<div id="own-add"></div><div class="ps-form" style="margin-top:12px">' +
+      '<div class="ps-row"><span class="ps-lab">Log Type</span><div><b id="s-type"></b></div></div>' +
+      '<div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="s-title"></div><button class="btn ghost sm" type="button" data-copy="s-title">Copy title</button></div></div>' +
+      '<div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="s-text"></div><button class="btn sm" type="button" data-copy="s-text">Copy log entry</button> <button class="btn ghost sm" type="button" id="s-use">Use this version</button></div></div>' +
+      '<div class="ps-row"><span class="ps-lab">Office Referral</span><div id="s-ref"></div></div></div>' +
+      '<p class="hint" style="margin-top:8px">Anything in [brackets] needs your words. Replace it before you submit.</p>';
+    renderStrongControls(a, text);
+    $("s-type").textContent = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Choose the behavior to decide";
+    $("s-title").textContent = $("own-title").value.trim() || titleFor(a);
+    $("s-text").textContent = strongText(a, text);
+    $("s-ref").innerHTML = a.refer ? '<span class="pill no">Check it</span>' : '<span class="pill ok">Leave unchecked</span>';
+  }
+  $("own-strong").addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.hasAttribute("data-sint")) { var id = t.getAttribute("data-sint"), i = add.ints.indexOf(id); if (t.checked && i < 0) add.ints.push(id); if (!t.checked && i > -1) add.ints.splice(i, 1); }
+    if (t.id === "s-resp") add.resp = t.value;
+    if (t.id === "s-method") add.pMethod = t.value;
+    if (t.id === "s-next") add.next = t.value;
+    renderStrong(last);
+  });
+  $("own-strong").addEventListener("input", function (e) { if (e.target.id === "s-who") { add.pWho = e.target.value.trim(); $("s-text").textContent = strongText(last, $("own-text").value); } });
+  $("own-strong").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-sheart]");
+    if (b) { var v = b.getAttribute("data-sheart"), i = add.heart.indexOf(v); if (i > -1) add.heart.splice(i, 1); else add.heart.push(v); b.setAttribute("aria-pressed", i < 0); renderStrong(last); }
+    if (e.target.id === "s-use") {
+      $("own-text").value = $("s-text").textContent;
+      if (!$("own-title").value.trim()) $("own-title").value = $("s-title").textContent;
+      if (last && last.rec) $("own-type").value = last.rec;
+      add = { ints: [], resp: "", heart: [], pWho: "", pMethod: "", next: "" }; sig = "";
+      render(); BIM.toast("Your entry was updated. Check the feedback again.");
+    }
+  });
+
   function render() {
     var text = $("own-text").value, chosen = $("own-type").value;
     var a = analyze(text, chosen); last = a;
-    if (!a) { $("own-out").innerHTML = '<p class="hint">Paste or type your log entry, choose the Log Type you plan to use, and the feedback will appear here.</p>'; return; }
+    if (!a) { renderStrong(null); $("own-out").innerHTML = '<p class="hint">Paste or type your log entry, choose the Log Type you plan to use, and the feedback will appear here.</p>'; return; }
     var typeName = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Not sure yet";
     var h = '<div class="alert ' + a.rating[0] + '"><h3>' + esc(a.rating[1]) + "</h3></div>";
     h += '<div class="ps-form">' +
@@ -170,6 +269,7 @@
     if (a.good.length) h += '<h3 class="subhead" style="font-size:1.05rem;margin:16px 0 8px">What\'s working</h3><ul class="check">' + a.good.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("") + "</ul>";
     h += '<p class="hint" style="margin-top:12px">This checker looks for key words, so use your judgment. It does not read for meaning the way a person would.</p>';
     $("own-out").innerHTML = h;
+    renderStrong(a);
   }
   function box(f) {
     var cls = f[0] === "tip" ? "" : f[0];
@@ -178,6 +278,7 @@
 
   $("own-text").addEventListener("input", render);
   $("own-type").addEventListener("change", render);
+  $("own-title").addEventListener("input", render);
   $("own-save").addEventListener("click", function () {
     var stu = $("own-student").value.trim();
     if (!stu) { BIM.toast("Add student initials or ID first"); $("own-student").focus(); return; }

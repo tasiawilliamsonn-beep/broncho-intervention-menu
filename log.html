@@ -26,13 +26,13 @@
 
 <div class="page-head"><div class="wrap">
   <h1>PowerSchool Log Builder</h1>
-  <p>Fill in what happened and what you did. The builder picks the log type from the Sunnyside Behavior Intervention Matrix, checks for subjective wording, and writes an objective entry you can paste into PowerSchool. Prefer to write your own? Choose <b>Check an entry I wrote</b> to get feedback on it. Each saved entry is added to the student's Proof of Intervention record.</p>
+  <p>Fill in what happened and what you did. The builder picks the log type from the Sunnyside Behavior Intervention Matrix, checks for subjective wording, and writes an objective entry you can paste into PowerSchool. Prefer to write your own? Choose <b>Write my own and strengthen it</b>. Each saved entry is added to the student's Proof of Intervention record.</p>
 </div></div>
 
 <main id="main" class="wrap">
 <div class="mode-switch" role="group" aria-label="How do you want to write the log?">
-  <button type="button" class="mode-btn" data-mode="build" aria-pressed="true"><b>Build it for me</b><span>Choose the behavior and interventions; the builder writes the entry.</span></button>
-  <button type="button" class="mode-btn" data-mode="check" aria-pressed="false"><b>Check an entry I wrote</b><span>Paste your own entry and get feedback against the matrix.</span></button>
+  <button type="button" class="mode-btn" data-mode="build" aria-pressed="true"><b>Format it for me</b><span>Choose the behavior and the interventions you used. The builder writes the Title and Log Entry.</span></button>
+  <button type="button" class="mode-btn" data-mode="check" aria-pressed="false"><b>Write my own and strengthen it</b><span>Write or paste your entry. Get a stronger version that aligns with the matrix.</span></button>
 </div>
 
 <div id="mode-check" hidden>
@@ -50,7 +50,10 @@
     <p class="hint">A strong entry describes what you saw and heard, the Tier 1 intervention you used, how the student responded, any parent contact, and your next step.</p>
     <button class="btn dark" type="button" id="own-save" style="margin-top:8px">Save to Proof of Intervention</button>
   </div></div>
-  <section><div class="panel" style="position:sticky;top:88px"><header><h2>Feedback</h2></header><div class="body" id="own-out"></div></div></section>
+  <section>
+    <div class="panel"><header><h2>Your strengthened log entry</h2></header><div class="body" id="own-strong"></div></div>
+    <div class="panel" style="margin-top:18px"><header><h2>Feedback</h2></header><div class="body" id="own-out"></div></div>
+  </section>
 </div>
 </div>
 

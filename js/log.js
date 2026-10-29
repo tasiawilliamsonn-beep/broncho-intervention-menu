@@ -10,7 +10,7 @@
   var SUBJECTIVE = [
     [/\b(disrespectful|rude)\b/i, "\"disrespectful/rude\": describe the words or actions instead (e.g., said \"...\" in a raised voice)."],
     [/\blazy\b|\bunmotivated\b|\bdoesn'?t care\b/i, "\"lazy/unmotivated\": describe the work behavior (e.g., completed 1 of 10 problems in 20 minutes)."],
-    [/\b(bad|negative|poor) attitude\b|\battitude\b/i, "\"attitude\": name the observable behavior (eye rolling, sighing, muttering \"...\")."],
+    [/\b(bad|negative|poor|an|a|his|her|their) attitude\b/i, "\"attitude\": name the observable behavior (eye rolling, sighing, muttering \"...\")."],
     [/\balways\b|\bnever\b|\bconstantly\b/i, "\"always/never/constantly\": give a count or time frame (e.g., 4 times this period)."],
     [/\bdefian(t|ce)\b/i, "\"defiant\": describe the direction given and the student's response. \"Overt defiance\" is a Level 3 term; use it only for a Level 3 referral."],
     [/\b(out of control|crazy|wild|psycho)\b/i, "Avoid labels; describe what the student did and for how long."],
