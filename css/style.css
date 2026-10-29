@@ -521,3 +521,14 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .ck-yes { color: #1f7a46; }
 .ck-no { color: #c8102e; }
 .sheet-dir .ck-yes, .sheet-dir .ck-no { font-size: 1.2em; }
+
+/* PowerSchool-style output */
+.ps-form { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.ps-row { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); align-items: start; }
+.ps-row:nth-child(odd) { background: var(--surface2); }
+.ps-row:last-child { border-bottom: 0; }
+.ps-lab { font-weight: 700; font-size: .92rem; padding-top: 4px; }
+.ps-row .output { font-family: var(--body); font-size: .95rem; min-height: 0; margin-bottom: 6px; background: var(--surface); }
+.ps-row #out, .ps-row #out2 { min-height: 140px; }
+.ps-title { padding: 8px 10px !important; }
+@media (max-width: 520px) { .ps-row { grid-template-columns: 1fr; gap: 4px; } }

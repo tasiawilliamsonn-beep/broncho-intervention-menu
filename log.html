@@ -132,19 +132,32 @@
 
   <section>
     <div class="panel" style="position:sticky;top:88px">
-      <header><h2>2. Log type and entry</h2></header>
+      <header><h2>2. Your PowerSchool log entry</h2></header>
       <div class="body">
         <div class="typebox" id="typebox"><div class="lv" id="type-lv">Sunnyside matrix</div><div class="t" id="type-t">INTERVENTION</div><div class="s" id="type-s"></div></div>
         <div id="guards"></div>
-        <label class="f" for="out">PowerSchool log text</label>
-        <div class="output" id="out" tabindex="0" aria-live="polite"></div>
-        <label class="opt" style="padding-left:0"><input type="checkbox" id="cites" checked><span>Include research citations in the log text</span></label>
-        <div id="out2-wrap" hidden><label class="f">Second entry: COMMUNICATION</label><div class="output" id="out2" tabindex="0"></div></div>
+        <p class="hint">Fill in PowerSchool's <b>Submit Log Entry</b> screen like this:</p>
+        <div class="ps-form">
+          <div class="ps-row"><span class="ps-lab">Incident Date / Time</span><div>Enter <b id="ps-date"></b> in PowerSchool's date and time boxes. They are not part of the log text.</div></div>
+          <div class="ps-row"><span class="ps-lab">Log Type</span><div><b id="ps-type"></b></div></div>
+          <div class="ps-row"><span class="ps-lab">Subtype</span><div>Choose the closest match from your school's list.</div></div>
+          <div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="ps-title"></div><button class="btn ghost sm" type="button" data-copy="ps-title">Copy title</button></div></div>
+          <div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="out" tabindex="0" aria-live="polite"></div><button class="btn sm" type="button" data-copy="out">Copy log entry</button></div></div>
+          <div class="ps-row"><span class="ps-lab">Office Referral</span><div id="ps-ref"></div></div>
+        </div>
+        <label class="opt" style="padding-left:0;margin-top:8px"><input type="checkbox" id="cites"><span>Add research citations after each intervention</span></label>
+        <div id="out2-wrap" hidden>
+          <p class="hint" style="margin-top:14px"><b>Then submit a second log entry</b> for the parent contact:</p>
+          <div class="ps-form">
+            <div class="ps-row"><span class="ps-lab">Log Type</span><div><b>Communication</b></div></div>
+            <div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="ps-title2"></div><button class="btn ghost sm" type="button" data-copy="ps-title2">Copy title</button></div></div>
+            <div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="out2" tabindex="0"></div><button class="btn sm" type="button" data-copy="out2">Copy log entry</button></div></div>
+            <div class="ps-row"><span class="ps-lab">Office Referral</span><div><span class="pill ok">Leave unchecked</span></div></div>
+          </div>
+        </div>
         <div class="cta" style="margin-top:12px">
-          <button class="btn" type="button" id="copy">Copy log text</button>
           <button class="btn dark" type="button" id="save">Save to Proof of Intervention</button>
         </div>
-        <p class="hint" style="margin-top:8px">In PowerSchool/PowerTeacher: open the student, choose <b>Log Entries</b> &rarr; <b>New</b>, set the <b>Log Type</b> shown above, and paste the text.</p>
       </div>
     </div>
   </section>

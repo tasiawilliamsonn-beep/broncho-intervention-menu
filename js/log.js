@@ -140,47 +140,90 @@
   /* ---------- text ---------- */
   function lcFirst(s) { return /^I\b/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1); }
   function sentence(s) { s = String(s || "").trim(); if (!s) return ""; return s.charAt(0).toUpperCase() + s.slice(1) + (/[.!?"]$/.test(s) ? "" : "."); }
-  function build(d) {
-    var stu = $("student").value.trim() || "[Student]";
-    var lines = [];
-    var head = "LOG TYPE: " + d.type + (d.level ? " | Sunnyside Matrix Level " + d.level : "");
-    lines.push(head);
-    var when = [fmtDate($("date").value), $("period").value.trim(), $("setting").value].filter(Boolean).join(" | ");
-    if (when) lines.push("When/where: " + when);
-    if (d.type !== "COMMUNICATION" || state.behaviors.length) {
-      if (state.behaviors.length) lines.push("Behavior: " + state.behaviors.map(function (b) { return b.bid.charAt(0) === "L" ? b.name : b.name + " (" + lcFirst(b.look) + ")"; }).join("; ") + ".");
-      if ($("desc").value.trim()) lines.push("Observed: " + sentence($("desc").value));
-      if ($("freq").value.trim()) lines.push("Frequency/duration: " + sentence($("freq").value));
-      if (state.heart.length) lines.push("Expectation(s) missed: " + state.heart.join(", ") + ".");
-    }
-    if (state.ints.length) {
-      lines.push("Tier 1 intervention(s): " + state.ints.map(function (id, i) {
-        var it = INTERVENTIONS[id];
-        return (i + 1) + ") " + it.name + ": teacher " + it.log + ($("cites").checked ? " (" + BIM.shortCite(it.refs[0]) + ")" : "");
-      }).join("; ") + ".");
-    } else if (d.type === "INTERVENTION") {
-      lines.push("Tier 1 intervention(s): [ADD THE INTERVENTION USED]");
-    }
-    if ($("response").value) lines.push("Student response: " + $("response").value + ".");
-    if ($("contact-made").checked) lines.push(contactLine());
-    else if (d.level === 2) lines.push("Parent/guardian contact: not yet made; required for Level 2.");
-    var nx = [$("next").value, $("next-note").value.trim()].filter(Boolean).join(": ");
-    if (nx) lines.push("Next step: " + sentence(nx));
-    var t = lines.join("\n");
-    return t.replace(/\[Student\]/g, stu);
+  /* PowerSchool has separate Incident Date, Time, Log Type, Subtype, Title, and Office Referral fields,
+     so the Log Entry is one plain paragraph with no date, time, or labels. */
+  function joinAnd(list) { return list.length < 2 ? list.join("") : list.slice(0, -1).join(", ") + (list.length > 2 ? "," : "") + " and " + list[list.length - 1]; }
+  function stripStudent(s) { return s.replace(/^The student\s+/i, ""); }
+  var RESPONSE_TEXT = {
+    "Corrected the behavior right away": "The student corrected the behavior right away.",
+    "Corrected the behavior after a second prompt": "The student corrected the behavior after a second prompt.",
+    "Partial improvement": "The student showed partial improvement.",
+    "No change": "The behavior did not change.",
+    "Behavior escalated": "The behavior escalated."
+  };
+  var NEXT_TEXT = {
+    "Continue the current interventions and monitor": "I will continue these interventions and monitor progress.",
+    "Add or change an intervention": "I will add or adjust an intervention.",
+    "Follow-up parent contact": "I will follow up with the family.",
+    "Begin ABC data / Daily Behavior Rating": "I will begin collecting ABC data and a Daily Behavior Report to monitor progress.",
+    "Bring documented interventions to the MTSS/RTI team": "I will bring the documented interventions to the MTSS/RTI team.",
+    "Administrator to address (Level 3/4)": "I am requesting that an administrator address this behavior."
+  };
+  var METHOD_TEXT = {
+    "Phone call": "by phone", "Email": "by email", "In-person conference": "in an in-person conference",
+    "Written note": "with a written note", "School messaging app": "through the school messaging app", "Voicemail left": "by phone and left a voicemail"
+  };
+  function behaviorPhrase() {
+    return joinAnd(state.behaviors.map(function (b) {
+      return b.bid.charAt(0) === "L" ? b.name.toLowerCase() : b.name.toLowerCase() + " (" + lcFirst(b.look.replace(/\s*\(.*\)\s*/g, " ").trim()) + ")";
+    }));
   }
-  function contactLine() {
-    var bits = [$("c-method").value, $("c-with").value.trim() ? "with " + $("c-with").value.trim() : "", $("c-date").value ? "on " + fmtDate($("c-date").value) : ""].filter(Boolean).join(" ");
-    return "Parent/guardian contact: " + bits + (($("c-sum").value.trim()) ? ". " + sentence($("c-sum").value) : ".");
+  function contactSentence() {
+    var who = $("c-with").value.trim();
+    var m = METHOD_TEXT[$("c-method").value] || "";
+    return "I contacted " + (who ? "the student's " + who : "the student's parent/guardian") + " " + m + ".";
+  }
+  function interventionSentence(prefix) {
+    if (!state.ints.length) return "";
+    return prefix + joinAnd(state.ints.map(function (id) {
+      var it = INTERVENTIONS[id];
+      return it.log + ($("cites").checked ? " (" + BIM.shortCite(it.refs[0]) + ")" : "");
+    })) + ".";
+  }
+  function build(d) {
+    var out = [];
+    var SETTING_TEXT = { "Start of class / bell-ringer": "At the start of class", "Whole-group instruction": "During whole-group instruction", "Teacher-led discussion": "During a class discussion",
+      "Independent work": "During independent work", "Partner work": "During partner work", "Small-group / cooperative work": "During small-group work", "Computer / device work": "During computer work",
+      "Test or quiz": "During a test", "Transition between activities": "During a transition", "Hallway": "In the hallway", "Cafeteria / lunch": "At lunch", "Recess": "At recess",
+      "Specials / related arts": "During specials", "Arrival / dismissal": "During arrival/dismissal" };
+    var setting = SETTING_TEXT[$("setting").value] || "";
+    if (d.type === "COMMUNICATION" && !state.behaviors.length) return buildComm();
+    if (d.type === "DISCIPLINE") out.push("I am requesting that an administrator address this behavior.");
+    if (state.behaviors.length) out.push((setting ? setting + ", I observed " : "I observed ") + behaviorPhrase() + ".");
+    if ($("desc").value.trim()) out.push(sentence($("desc").value));
+    var fq = $("freq").value.trim();
+    if (fq) out.push(/^\d/.test(fq) ? "This occurred " + fq.replace(/[.]$/, "") + "." : sentence(fq));
+    if (d.level) out.push("This is a Level " + d.level + " behavior on the Sunnyside Behavior Intervention Matrix.");
+    if (state.heart.length) out.push("This did not meet our " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) + ".");
+    if (d.type === "DISCIPLINE") {
+      if (state.behaviors.some(function (b) { return b.key === "L3:0"; })) {
+        var c = commsCount(studentLogs($("student").value)) + ($("contact-made").checked ? 1 : 0);
+        out.push("The student has shown little or no change in Level 2 behaviors after " + c + " logged parent/guardian communication" + (c === 1 ? "" : "s") + ".");
+      }
+      out.push(interventionSentence("Tier 1 interventions already used: I "));
+    } else {
+      out.push(interventionSentence("To address the behavior, I ") || (d.type === "INTERVENTION" ? "[Add the Tier 1 intervention you used.]" : ""));
+    }
+    if ($("response").value) out.push(RESPONSE_TEXT[$("response").value] || sentence($("response").value));
+    if ($("contact-made").checked) { out.push(contactSentence()); if ($("c-sum").value.trim()) out.push(sentence($("c-sum").value)); }
+    var nx = $("next").value;
+    if (nx && !(d.type === "DISCIPLINE" && nx.indexOf("Administrator") === 0)) out.push(NEXT_TEXT[nx] || sentence(nx));
+    if ($("next-note").value.trim()) out.push(sentence($("next-note").value));
+    return out.filter(Boolean).join(" ");
   }
   function buildComm() {
-    var lines = ["LOG TYPE: COMMUNICATION"];
-    var when = [fmtDate($("c-date").value || $("date").value), $("c-method").value].filter(Boolean).join(" | ");
-    lines.push("Contact: " + when + ($("c-with").value.trim() ? " | with " + $("c-with").value.trim() : ""));
-    if (state.behaviors.length) lines.push("Regarding: " + state.behaviors.map(function (b) { return b.name; }).join("; ") + ".");
-    if (state.ints.length) lines.push("Interventions shared with family: " + state.ints.map(function (id) { return INTERVENTIONS[id].name; }).join(", ") + ".");
-    if ($("c-sum").value.trim()) lines.push("Summary: " + sentence($("c-sum").value));
-    return lines.join("\n");
+    var out = [contactSentence().replace(/\.$/, "") + (state.behaviors.length ? " about " + joinAnd(state.behaviors.map(function (b) { return b.name.toLowerCase(); })) + "." : ".")];
+    if (state.ints.length) out.push("I shared the Tier 1 supports we are using in class: " + joinAnd(state.ints.map(function (id) { return INTERVENTIONS[id].name.toLowerCase(); })) + ".");
+    if ($("c-sum").value.trim()) out.push(sentence($("c-sum").value));
+    return out.join(" ");
+  }
+  function titleFor(type) {
+    var names = state.behaviors.map(function (b) { return b.bid.charAt(0) === "L" ? b.name.split(" after ")[0] : b.name; }).join(" / ");
+    var t = { INTERVENTION: names ? names + " - Tier 1 intervention" : "Tier 1 intervention",
+      COMMUNICATION: names ? "Parent contact - " + names : "Parent contact",
+      INFORMATION: names ? "Information - " + names : "Information",
+      DISCIPLINE: names ? "Office referral - " + names : "Office referral" }[type];
+    return t.length > 60 ? t.slice(0, 57).replace(/\s+\S*$/, "") + "..." : t;
   }
 
   function checkLanguage() {
@@ -197,10 +240,17 @@
     $("type-s").textContent = LOG_TYPES[d.type];
     $("type-lv").textContent = d.sub;
     $("guards").innerHTML = d.guards.map(function (x) { return '<div class="alert ' + x[0] + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + "</p></div>"; }).join("");
+    var tName = d.type.charAt(0) + d.type.slice(1).toLowerCase();
+    $("ps-type").textContent = tName;
+    $("ps-title").textContent = titleFor(d.type);
     $("out").textContent = build(d);
+    $("ps-ref").innerHTML = d.type === "DISCIPLINE"
+      ? '<span class="pill no">Check it</span> This is a Level ' + (d.level || "3/4") + " behavior for an administrator."
+      : '<span class="pill ok">Leave unchecked</span> Level 1 and 2 behaviors are handled in the classroom.';
+    $("ps-date").textContent = ($("date").value ? fmtDate($("date").value) : "today's date") + ($("period").value.trim() ? " (" + $("period").value.trim() + ")" : "");
     var second = $("contact-made").checked && d.type !== "COMMUNICATION";
     $("out2-wrap").hidden = !second;
-    if (second) $("out2").textContent = buildComm();
+    if (second) { $("ps-title2").textContent = titleFor("COMMUNICATION"); $("out2").textContent = buildComm(); }
     $("fs-int").style.display = state.purpose === "contact" && !state.behaviors.length ? "none" : "";
     checkLanguage();
     return d;
@@ -261,7 +311,7 @@
       type: d.type, level: d.level, behaviors: state.behaviors.map(function (b) { return { name: b.name, look: b.look, level: b.level }; }),
       ints: state.ints.slice(), response: $("response").value,
       contact: { made: $("contact-made").checked, method: $("c-method").value, with: $("c-with").value.trim(), date: $("c-date").value, summary: $("c-sum").value.trim() },
-      text: $("out").textContent, savedAt: new Date().toISOString()
+      title: $("ps-title").textContent, text: $("out").textContent, savedAt: new Date().toISOString()
     };
     logs.push(rec);
     if (!BIM.setLogs(logs)) BIM.toast("This browser blocked saving; copy the text instead.");
@@ -325,9 +375,9 @@
   });
   $("student").addEventListener("change", function () { if (key(this.value)) { $("proof-student").value = key(this.value); renderProof(); } });
   $("proof-student").addEventListener("change", renderProof);
-  $("copy").addEventListener("click", function () {
-    var t = $("out").textContent + ($("out2-wrap").hidden ? "" : "\n\n" + $("out2").textContent);
-    BIM.copy(t);
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-copy]"); if (!b) return;
+    BIM.copy($(b.getAttribute("data-copy")).textContent);
   });
   $("save").addEventListener("click", saveEntry);
   $("csv").addEventListener("click", csv);
