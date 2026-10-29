@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Meeting | The Broncho Intervention Menu</title>
+<meta name="description" content="A facilitator-led team meeting activity to calibrate how staff use the Sunnyside Behavior Intervention Matrix.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css?v=9ddace7">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Intervention Menu</a>
+    <a href="log.html">PowerSchool Log Builder</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="team.html" aria-current="page">Team Meeting</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Team Meeting: Getting on One Accord</h1>
+  <p>A 30-minute calibration activity for a grade-level team, PLC, or staff meeting. The team works through real Sunnyside scenarios, votes, sees the matrix answer, and talks it through until everyone would respond the same way. Consistent responses across classrooms are how we make discipline fair for every student.</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:28px 56px">
+  <div class="grid g2" style="align-items:start">
+    <div class="card red-top">
+      <h3>Agenda (30 minutes)</h3>
+      <ol class="flow">
+        <li><b>Why we calibrate (5 min).</b> Share the research on the right. Set the norm: we are calibrating a system, not judging anyone's classroom.</li>
+        <li><b>Scenarios (20 min).</b> For each one, everyone decides silently, then votes by show of hands. Tally with the + buttons, reveal the answer, and use the discussion question. Flag anything the team wants to revisit.</li>
+        <li><b>Team agreements (5 min).</b> Edit and print the agreements below, and have everyone sign.</li>
+      </ol>
+      <p class="hint">Facilitator keys: &rarr; next, &larr; back, R reveal, F full screen.</p>
+      <div class="cta"><button class="btn" type="button" id="f-start">Start the activity</button><button class="btn ghost" type="button" id="hand-print">Print participant handout</button><button class="btn ghost" type="button" id="key-print">Print answer key</button></div>
+    </div>
+    <div class="card">
+      <h3>Why calibration matters</h3>
+      <ul class="check">
+        <li>Racial gaps in discipline are largest for <b>subjective</b> referrals like "defiance" and "disrespect," and at predictable decision points (Smolkowski et al., 2016; Girvan, Gion, McIntosh, &amp; Smolkowski, 2017).</li>
+        <li>In one district, the 5% of teachers who referred most often <b>doubled</b> the racial gap in referrals (Liu, Penner, &amp; Gao, 2023).</li>
+        <li>Shared definitions, clear procedures, and looking at data together are recommended strategies for fair discipline (McIntosh, Ellwood, McCall, &amp; Girvan, 2018).</li>
+        <li>Our three problems (consequences without intervention, no proof of intervention, and mild behaviors logged as Discipline) are all consistency problems.</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="facil" id="facil" hidden>
+    <div class="f-top"><span id="f-count"></span><div class="meter" style="flex:1"><span id="f-bar"></span></div>
+      <button class="btn ghost sm" type="button" id="f-full">Full screen</button><button class="btn ghost sm" type="button" id="f-reset">Reset votes</button></div>
+    <div class="f-cat" id="f-cat"></div>
+    <p class="f-text" id="f-text"></p>
+    <div class="f-opts" id="f-opts"></div>
+    <div class="f-answer" id="f-answer" hidden></div>
+    <div class="f-ctrl">
+      <button class="btn ghost" type="button" id="f-prev">&larr; Back</button>
+      <button class="btn dark" type="button" id="f-reveal">Reveal answer</button>
+      <label class="opt"><input type="checkbox" id="f-flag"><span>Flag for follow-up</span></label>
+      <button class="btn" type="button" id="f-next">Next &rarr;</button>
+    </div>
+  </section>
+  <section id="f-summary" hidden style="margin-top:24px"></section>
+
+  <div class="panel" style="margin-top:28px"><header><h2>Our team agreements</h2><button class="btn sm" type="button" id="agree-print">Print to sign</button></header>
+    <div class="body"><p class="hint">Start from these, then edit them together. One agreement per line. Saved on this device.</p><textarea id="agree" style="min-height:200px"></textarea></div></div>
+  <div class="print-only" id="print-area"></div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Sunnyside Intermediate School &middot; Scenarios follow the Sunnyside Behavior Intervention Matrix. See <a href="research.html">References</a>.</div>
+</div></footer>
+
+<script src="js/app.js?v=x"></script>
+<script src="js/team.js?v=x"></script>
+</body>
+</html>

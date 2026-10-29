@@ -20,6 +20,7 @@
     <a href="menu.html">Intervention Menu</a>
     <a href="log.html" aria-current="page">PowerSchool Log Builder</a>
     <a href="tools.html">Classroom Tools</a>
+    <a href="team.html">Team Meeting</a>
     <a href="research.html">Research</a>
   </nav>
 </div></header>
@@ -199,9 +200,22 @@
   <header><h2>3. Proof of Intervention record</h2>
     <div class="filters"><select id="proof-student" aria-label="Choose student" style="width:auto"></select>
       <button class="btn ghost sm" type="button" id="csv">Export CSV</button>
-      <button class="btn ghost sm" type="button" id="print">Print record</button></div></header>
+      <button class="btn ghost sm" type="button" id="print">Print record</button>
+      <button class="btn sm" type="button" id="rfs-open">Request for Support packet</button></div></header>
   <div class="body" id="proof-body"></div>
+  <div class="body" id="rfs" hidden style="border-top:1px solid var(--line)">
+    <h3 class="subhead" style="margin-top:0">Request for Support packet: <span id="rfs-name"></span></h3>
+    <p class="hint">Prints one summary for the MTSS/RTI team: your notes below, every intervention tried with dates, parent contacts, the Daily Behavior Report graph and decision rule, and the full log history saved on this device.</p>
+    <div class="row2"><div><label class="f" for="rfs-teacher">Teacher</label><input type="text" id="rfs-teacher"></div><div><label class="f" for="rfs-grade">Grade</label><input type="text" id="rfs-grade" placeholder="5 or 6"></div></div>
+    <label class="f" for="rfs-concern">Area of concern (objective: what, when, how often)</label><textarea id="rfs-concern"></textarea>
+    <label class="f" for="rfs-strengths">Student strengths and interests</label><textarea id="rfs-strengths"></textarea>
+    <div class="row2"><div><label class="f" for="rfs-fn">Likely function (from the ABC organizer)</label><select id="rfs-fn"></select></div>
+    <div><label class="f" for="rfs-ask">What I am asking the team for</label><select id="rfs-ask"><option>Problem-solving support for new Tier 1 ideas</option><option>Consideration for Tier 2 support</option><option>Consideration for further assessment</option><option>Other</option></select></div></div>
+    <label class="f" for="rfs-asknote">Details (optional)</label><input type="text" id="rfs-asknote">
+    <div class="cta" style="margin-top:12px"><button class="btn" type="button" id="rfs-print">Print packet</button><button class="btn ghost" type="button" id="rfs-close">Close</button></div>
+  </div>
 </section>
+  <div class="print-only" id="print-area"></div>
 </main>
 
 <footer class="foot"><div class="wrap">
@@ -213,5 +227,6 @@
 <script src="js/app.js?v=9ddace7"></script>
 <script src="js/log.js?v=9ddace7"></script>
 <script src="js/logcheck.js?v=9ddace7"></script>
+<script src="js/support.js?v=x"></script>
 </body>
 </html>

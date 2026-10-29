@@ -566,3 +566,52 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .es-sel select { padding: 5px 8px; font-size: .9rem; }
 @media (max-width: 640px) { .es-row { grid-template-columns: 1fr; } }
 #es-fields textarea { min-height: 64px; }
+
+/* trend chart */
+.trend svg { width: 100%; height: auto; display: block; }
+.ct-axis { font-size: 11px; fill: var(--muted, #666); font-family: var(--body); }
+.ct-note { font-size: 11px; fill: var(--ink, #111); font-family: var(--body); font-weight: 600; }
+.ct-hit { cursor: pointer; }
+.chart-tip { position: absolute; transform: translate(-50%, -100%); background: var(--black); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: .8rem; pointer-events: none; z-index: 70; white-space: nowrap; }
+.sheet .ct-axis { fill: #555; } .sheet .ct-note { fill: #111; }
+
+/* DBR tracker */
+.trk-head { background: var(--surface2); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+.trk-table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; }
+.trk-table td { padding: 8px 6px; border-bottom: 1px solid var(--line); font-size: .93rem; vertical-align: middle; }
+.trk-btns { white-space: nowrap; text-align: right; }
+.ckbtn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); font-size: 1.15rem; font-weight: 700; cursor: pointer; margin-left: 4px; }
+.ckbtn.yes { color: var(--ok); } .ckbtn.no { color: var(--red); }
+.ckbtn.yes[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: #fff; }
+.ckbtn.no[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* team meeting facilitator */
+.facil { margin-top: 24px; background: var(--surface); border: 3px solid var(--black); border-top: 10px solid var(--red); border-radius: 14px; padding: 22px 26px; }
+.facil:fullscreen { overflow: auto; padding: 48px 6vw; display: flex; flex-direction: column; justify-content: center; }
+.f-top { display: flex; gap: 12px; align-items: center; font-weight: 700; flex-wrap: wrap; }
+.f-cat { display: inline-block; margin-top: 16px; background: var(--red); color: #fff; font-family: var(--display); text-transform: uppercase; letter-spacing: .08em; padding: 4px 14px; border-radius: 999px; }
+.f-text { font-size: clamp(1.25rem, 2.6vw, 2rem); line-height: 1.35; font-weight: 600; margin: 16px 0 18px; }
+.f-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.f-opt { display: grid; grid-template-columns: 42px 1fr auto; gap: 10px; align-items: center; border: 2px solid var(--line); border-radius: 12px; padding: 12px; font-size: 1.15rem; font-weight: 600; }
+.f-l { width: 38px; height: 38px; border-radius: 50%; background: var(--black); color: #fff; display: grid; place-items: center; font-family: var(--display); }
+:root[data-theme="dark"] .f-l { background: #444; }
+.f-opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.f-opt.right .f-l { background: var(--ok); }
+.f-opt.dim { opacity: .5; }
+.f-tally { display: flex; align-items: center; gap: 6px; }
+.f-tally button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface2); font-weight: 700; cursor: pointer; }
+.f-tally b { min-width: 22px; text-align: center; }
+.f-answer { margin-top: 16px; background: var(--surface2); border-left: 6px solid var(--ok); border-radius: 10px; padding: 14px 18px; font-size: 1.1rem; }
+.f-ans { color: var(--ok); font-size: 1.2rem; }
+.f-talk { border-top: 1px dashed var(--line); padding-top: 8px; }
+.f-ctrl { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 18px; }
+.agree-list { font-size: 1.25em; line-height: 1.5; }
+.agree-list li { margin-bottom: 10px; }
+.hand-list li { margin-bottom: 10px; break-inside: avoid; }
+.hand-list p { margin: 2px 0; }
+.hand-right { font-weight: 700; text-decoration: underline; }
+.hand-why { font-size: .9em; color: #333; font-style: italic; }
+
+/* keep long select options and content from widening grids on phones */
+.grid > *, .row2 > *, .row3 > * { min-width: 0; }
+select { max-width: 100%; }
