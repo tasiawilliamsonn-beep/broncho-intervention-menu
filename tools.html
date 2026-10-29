@@ -32,6 +32,7 @@
 <main id="main" class="wrap" style="padding-block:24px 56px">
   <div class="tabs no-print" role="tablist" aria-label="Tools">
     <button role="tab" type="button" data-tab="tips">Teacher Tips</button>
+    <button role="tab" type="button" data-tab="fourc">4 C's Audit</button>
     <button role="tab" type="button" data-tab="posters">HEART Posters &amp; Reminders</button>
     <button role="tab" type="button" data-tab="incent">Free Incentives</button>
     <button role="tab" type="button" data-tab="jobs">Class Jobs</button>
@@ -51,6 +52,21 @@
       <button class="btn" type="button" id="tips-print">Print a desk reminder card</button>
     </div>
     <div id="tips-list"></div>
+  </section>
+
+  <!-- 4 C'S AUDIT -->
+  <section class="tool" id="tool-fourc" role="tabpanel" hidden>
+    <div class="tool-intro">
+      <h2 class="title">The 4 C's: Tier 1 Classroom Audit</h2>
+      <p class="intro">A strong Tier 1 behavior system rests on four C's: <b>Climate</b>, <b>Communication</b>, <b>Curriculum</b>, and <b>Culture</b>. Rate yourself honestly on each practice. Your results show the behaviors you may be seeing when a C needs work, and specific next steps. Strengthen these before deciding a student needs more than Tier 1. Your ratings stay private on this device.</p>
+      <div class="cta no-print"><button class="btn ghost" type="button" id="fc-print">Print my results</button><button class="btn ghost" type="button" id="fc-reset">Clear my ratings</button></div>
+      <div class="legend fc-scale" style="margin-top:14px"><div><b>1 &middot; Not yet</b>I rarely or never do this.</div><div><b>2 &middot; Beginning</b>I do this sometimes.</div><div><b>3 &middot; Most of the time</b>I do this most days.</div><div><b>4 &middot; Consistently</b>I do this every day, for every student.</div></div>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div id="fc-list"></div>
+      <div class="panel sticky"><header><h2>Your 4 C's</h2></header><div class="body" id="fc-summary"></div></div>
+    </div>
+    <div id="fc-plan"></div>
   </section>
 
   <!-- POSTERS -->
@@ -276,6 +292,8 @@
 <script src="js/tools-data2.js?v=e3d3775"></script>
 <script src="js/app.js?v=e3d3775"></script>
 <script src="js/tools.js?v=e3d3775"></script>
+<script src="js/fourc-data.js?v=x"></script>
 <script src="js/tools2.js?v=e3d3775"></script>
+<script src="js/fourc.js?v=x"></script>
 </body>
 </html>

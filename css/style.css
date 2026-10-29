@@ -541,3 +541,20 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .mode-btn span { color: var(--muted); font-size: .93rem; }
 .mode-btn[aria-pressed="true"] { border-color: var(--red); background: var(--red-soft); box-shadow: inset 6px 0 0 var(--red); }
 .alert.tipbox { background: var(--surface2); border-color: var(--line); }
+
+/* 4 C's audit */
+.fc-letter { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--red); color: #fff; margin-right: 8px; font-size: 1rem; }
+.fc-group .sc-item { grid-template-columns: 1fr; gap: 8px; }
+.fc-chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.fc-chips .chip { padding: 6px 4px; font-weight: 700; border-radius: 8px; text-align: center; line-height: 1.2; }
+.fc-chips .chip small { display: block; font-weight: 400; font-size: .75rem; }
+.fc-scale div { border-top-color: var(--black); }
+.fc-row { display: grid; grid-template-columns: 120px 1fr 44px auto; gap: 8px; align-items: center; margin: 10px 0; font-size: .95rem; font-weight: 600; }
+@media (max-width: 480px) { .fc-row { grid-template-columns: 1fr auto; } .fc-row .meter { grid-column: 1 / -1; } }
+.fc-top { padding-left: 20px; font-size: .93rem; }
+.fc-top li { margin-bottom: 6px; }
+.fc-card header .pill { font-size: .8rem; }
+.fc-h { font-size: 1rem; text-transform: uppercase; margin: 10px 0 6px; }
+.fc-steps { padding-left: 20px; }
+.fc-steps li { margin-bottom: 10px; }
+.fc-steps .pill { margin-right: 4px; }
