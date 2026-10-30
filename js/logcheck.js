@@ -235,7 +235,7 @@
     return out.join(" ");
   }
   function titleFor(a) {
-    var names = a.behs.filter(function (b) { return a.lv < 3 || b.level >= 3; }).map(function (b) { return b.name.split(" after ")[0]; }).slice(0, 2).join(" / ");
+    var names = a.behs.filter(function (b) { return a.lv < 3 || b.level >= 3; }).map(function (b) { return b.key === "L3:2" ? "Peer concern for administrator review" : b.name.split(" after ")[0]; }).slice(0, 2).join(" / ");
     var t = { INTERVENTION: names ? names + " - Tier 1 intervention" : "Tier 1 intervention", COMMUNICATION: names ? "Parent contact - " + names : "Parent contact",
       INFORMATION: names ? "Information - " + names : "Information", DISCIPLINE: names ? "Office referral - " + names : "Office referral" }[a.rec] || names || "";
     return t.length > 60 ? t.slice(0, 57).replace(/\s+\S*$/, "") + "..." : t;
@@ -318,6 +318,7 @@
     if (a.invalid) { renderStrong(a); $("own-out").innerHTML = '<div class="alert red"><h3>' + esc(a.rating[1]) + "</h3><p>" + esc(a.why) + "</p></div>"; return; }
     var typeName = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Not sure yet";
     var h = '<div class="alert ' + a.rating[0] + '"><h3>' + esc(a.rating[1]) + "</h3></div>";
+    if (window.BULLY && (BULLY.rx.test(text) || a.behs.some(function (b) { return b.key === "L3:2"; }))) h += BULLY.html();
     h += '<ul class="checklist" style="margin-bottom:12px">' + a.req.map(function (x) {
       return '<li><span class="ic ' + (x.ok ? "yes" : x.required ? "no" : "") + '">' + (x.ok ? "\u2713" : x.required ? "\u2715" : "\u2013") + "</span><span>" + esc(x.label) + (x.required ? "" : ' <span class="hint">(recommended)</span>') + "</span></li>";
     }).join("") + "</ul>";

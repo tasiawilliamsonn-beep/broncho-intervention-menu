@@ -427,7 +427,7 @@ var BEHAVIORS = [
       { t: "Laughing at a peer's mistake", f: ["peer"] },
       { t: "Exclusion (\"you can't sit here\")", f: ["peer"] },
       { t: "Teasing back and forth between friends", f: ["peer", "skill"] }],
-    note: "Repeated, targeted teasing is harassment/bullying (Level 3).",
+    note: "If teasing is repeated and targeted, tell an administrator so it can be investigated as possible bullying (Level 3). Don't label it bullying in PowerSchool.",
     ints: ["teach", "replacement", "tootling", "gbg", "restorative", "bsp", "precorrect", "stopstart", "supervise", "reentry"] },
   { id: "pda", level: 1, name: "Inappropriate displays of affection", v: [
       { t: "Hugging, hand-holding, or sitting on laps in class", f: ["peer"] },

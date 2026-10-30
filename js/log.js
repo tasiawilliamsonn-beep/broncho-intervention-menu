@@ -17,7 +17,8 @@
     [/\b(liar|lied|sneaky|manipulative)\b/i, "Avoid judgments of intent; record what was said and what you observed."],
     [/\b(annoying|obnoxious|whin(y|ing)|mean|brat|terrible|awful|horrible)\b/i, "Avoid judgmental words; record the observable behavior."],
     [/\bhates?\b/i, "Avoid guessing feelings; quote what the student said."],
-    [/\bADHD\b|\bbipolar\b|\bautis(m|tic)\b|\bdisorder\b/i, "Do not diagnose or reference a disability in a behavior log."]
+    [/\bADHD\b|\bbipolar\b|\bautis(m|tic)\b|\bdisorder\b/i, "Do not diagnose or reference a disability in a behavior log."],
+    [/\b(bull(y|ies|ied|ying)|cyber-?bull\w*)\b/i, "\"bullying\": leave this word out until an administrator investigates. Describe exactly what you saw or were told."]
   ];
 
   var byId = {};
@@ -165,6 +166,7 @@
   };
   function behaviorPhrase() {
     return joinAnd(state.behaviors.map(function (b) {
+      if (b.key === "L3:2") return "repeated behavior directed at a peer that I am reporting to an administrator for review";
       return b.bid.charAt(0) === "L" ? b.name.toLowerCase() : b.name.toLowerCase() + " (" + lcFirst(b.look.replace(/\s*\(.*\)\s*/g, " ").trim()) + ")";
     }));
   }
@@ -218,7 +220,7 @@
     return out.join(" ");
   }
   function titleFor(type) {
-    var names = state.behaviors.map(function (b) { return b.bid.charAt(0) === "L" ? b.name.split(" after ")[0] : b.name; }).join(" / ");
+    var names = state.behaviors.map(function (b) { return b.key === "L3:2" ? "Peer concern for administrator review" : b.bid.charAt(0) === "L" ? b.name.split(" after ")[0] : b.name; }).join(" / ");
     var t = { INTERVENTION: names ? names + " - Tier 1 intervention" : "Tier 1 intervention",
       COMMUNICATION: names ? "Parent contact - " + names : "Parent contact",
       INFORMATION: names ? "Information - " + names : "Information",
@@ -239,7 +241,8 @@
     $("type-t").textContent = d.type;
     $("type-s").textContent = LOG_TYPES[d.type];
     $("type-lv").textContent = d.sub;
-    $("guards").innerHTML = d.guards.map(function (x) { return '<div class="alert ' + x[0] + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + "</p></div>"; }).join("");
+    $("guards").innerHTML = ((state.behaviors.some(function (b) { return b.key === "L3:2"; }) || (window.BULLY && BULLY.rx.test($("desc").value))) && window.BULLY ? BULLY.html() : "") +
+      d.guards.map(function (x) { return '<div class="alert ' + x[0] + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + "</p></div>"; }).join("");
     var tName = d.type.charAt(0) + d.type.slice(1).toLowerCase();
     $("ps-type").textContent = tName;
     $("ps-title").textContent = titleFor(d.type);
