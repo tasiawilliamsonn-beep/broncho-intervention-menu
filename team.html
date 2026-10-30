@@ -28,46 +28,11 @@
 
 <div class="page-head"><div class="wrap">
   <h1>Team Meeting</h1>
-  <p>Tools for our weekly team meeting with the counselor: record what you've noticed so it is on the counselor's and administrators' radar, and calibrate how we respond to behavior.</p>
+  <p>A short activity to make sure every Sunnyside staff member responds to behavior the same way.</p>
 </div></div>
 
 <main id="main" class="wrap" style="padding-block:28px 56px">
-  <div class="cta no-print" style="margin-bottom:18px"><a class="btn dark" href="#counselor">Counselor check-in notes</a><a class="btn ghost" href="#calibrate">Calibration activity</a></div>
-
-  <section id="counselor">
-    <h2 class="title">Counselor Check-In Notes</h2>
-    <p class="intro">For things you've noticed that may not need a PowerSchool log entry but should be on the counselor's and administrators' radar. Use initials only. Notes stay on this device until resolved, and open notes carry over to next week.</p>
-    <div class="alert red"><h3>Don't wait for the meeting</h3><ul style="margin:6px 0 0;padding-left:20px">
-      <li><b>Suspected abuse or neglect:</b> Indiana law requires you to report it yourself, right away, to DCS at <b>1-800-800-5556</b> or to law enforcement, then tell the principal. Telling the counselor or principal does not replace your report (IC 31-33-5).</li>
-      <li><b>Talk of suicide or self-harm, or a threat to hurt someone:</b> stay with the student and get the counselor or an administrator now. Follow Sunnyside's crisis procedures. The 988 Suicide &amp; Crisis Lifeline is available by call or text.</li>
-      <li><b>Weapons, drugs, or immediate danger:</b> Level 4. Contact an administrator immediately.</li></ul></div>
-    <div class="grid g2" style="align-items:start;margin-top:16px">
-      <div class="panel"><header><h2>This week's meeting</h2></header><div class="body">
-        <div class="row2"><div><label class="f" for="cn-date">Date</label><input type="date" id="cn-date"></div><div><label class="f" for="cn-team">Team</label><input type="text" id="cn-team" placeholder="e.g., 6th grade, Team 6_2"></div></div>
-        <div class="row2"><div><label class="f" for="cn-counselor">Counselor</label><input type="text" id="cn-counselor"></div><div><label class="f" for="cn-who">Attending</label><input type="text" id="cn-who" placeholder="Names or initials"></div></div>
-        <h3 class="fc-h" style="margin-top:16px">Add a student note</h3>
-        <div class="row2"><div><label class="f" for="cn-student">Student (initials)</label><input type="text" id="cn-student" placeholder="e.g., A.B."></div><div><label class="f" for="cn-cat">Type of concern</label><select id="cn-cat"></select></div></div>
-        <label class="f" for="cn-noticed">What did you notice? (what you saw or heard)</label>
-        <textarea id="cn-noticed" placeholder="e.g., Has eaten very little at lunch for the past week and put her head down in 3 classes."></textarea>
-        <p class="note" id="cn-flag" hidden>Describe what you saw or heard instead of judgment words.</p>
-        <label class="f" for="cn-since">How often or since when?</label><input type="text" id="cn-since" placeholder="e.g., daily since 10/20">
-        <label class="f">Already done</label><div id="cn-done"></div>
-        <label class="f">Who needs to know?</label>
-        <div class="cn-radar">
-          <label class="opt"><input type="radio" name="cn-radar" value="watch" checked><span><b>Watch</b>: check back next week</span></label>
-          <label class="opt"><input type="radio" name="cn-radar" value="counselor"><span><b>Counselor</b>: follow up this week</span></label>
-          <label class="opt"><input type="radio" name="cn-radar" value="admin"><span><b>Administrator</b>: put on admin radar</span></label>
-        </div>
-        <div class="row2"><div><label class="f" for="cn-owner">Follow-up by (who)</label><input type="text" id="cn-owner" placeholder="e.g., Counselor"></div><div><label class="f" for="cn-by">By when</label><input type="date" id="cn-by"></div></div>
-        <button class="btn" type="button" id="cn-add" style="margin-top:12px">Add note</button>
-      </div></div>
-      <div class="panel"><header><h2>Open notes <span class="hint" id="cn-count"></span></h2><button class="btn sm" type="button" id="cn-print">Print meeting notes</button></header><div class="body" id="cn-list"></div></div>
-    </div>
-  </section>
-
-  <section id="calibrate" style="margin-top:44px">
-  <h2 class="title">Calibration Activity</h2>
-  <p class="intro">Use this during a team meeting, about once a month, so every Sunnyside staff member responds to behavior the same way.</p>
+  <section id="calibrate">
   <div class="grid g2" style="align-items:start">
     <div class="card red-top">
       <h3>Agenda: 30 minutes</h3>
@@ -116,7 +81,6 @@
 </div></footer>
 
 <script src="js/app.js?v=4a8578f"></script>
-<script src="js/counsel.js?v=4a8578f"></script>
 <script src="js/team.js?v=4a8578f"></script>
 </body>
 </html>

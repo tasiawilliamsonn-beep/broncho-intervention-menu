@@ -631,15 +631,7 @@ select { max-width: 100%; }
 .linkbtn { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: .85rem; padding: 2px; }
 #facil, #f-summary { scroll-margin-top: 96px; }
 
-/* counselor notes */
-.cn-radar { display: grid; gap: 2px; }
-.cn-item { border: 1px solid var(--line); border-left: 6px solid var(--ok); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
-.cn-item.red { border-left-color: var(--red); } .cn-item.warn { border-left-color: var(--warn); }
-.cn-item p { margin: 6px 0; }
-.cn-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.cn-actions { display: flex; gap: 6px; }
-.cn-print td:nth-child(5) { width: 18%; }
-#counselor, #calibrate { scroll-margin-top: 96px; }
+#calibrate { scroll-margin-top: 96px; }
 
 /* parent contact */
 .pc-types { display: flex; flex-wrap: wrap; gap: 4px 10px; }
@@ -649,9 +641,5 @@ select { max-width: 100%; }
 .say .say-no { color: var(--muted); text-decoration: line-through; }
 .say .say-yes { font-weight: 600; }
 .sheet .pc-step { grid-template-columns: 1fr; } .sheet .pc-n { display: none; }
-.cn-print th:nth-child(1), .cn-print td:nth-child(1) { width: 17%; }
-.cn-print th:nth-child(2), .cn-print td:nth-child(2) { width: 41%; }
-.cn-print th:nth-child(3), .cn-print td:nth-child(3) { width: 14%; }
-.cn-print th:nth-child(4), .cn-print td:nth-child(4) { width: 12%; }
 @media print { .toast, .chart-tip { display: none !important; } }
 @media (max-width: 1200px) { .top { position: static; } .sticky { top: 16px; } }
