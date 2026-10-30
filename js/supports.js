@@ -21,7 +21,7 @@
   $("pr-req").addEventListener("click", function () {
     var es = $("pr-es").checked;
     BIM.printHTML(sheet("Request Cards", '<div class="sup-cards">' + REQUEST_CARDS.map(function (c) {
-      return '<div class="sup-pc"><span class="sup-ic">' + c[2] + "</span><b>" + esc(c[0]) + "</b>" + (es ? "<i>" + esc(c[1]) + "</i>" : "") + "</div>";
+      return '<div class="sup-pc"><b>' + esc(c[0]) + "</b>" + (es ? "<i>" + esc(c[1]) + "</i>" : "") + "</div>";
     }).join("") + "</div>"));
   });
   $("pr-talk").addEventListener("click", function () {
@@ -32,7 +32,7 @@
     BIM.printHTML(sheet("First / Then", '<div class="sup-ft"><div><span>First</span><p>' + (f ? esc(f) : "") + '</p></div><div><span>Then</span><p>' + (t ? esc(t) : "") + "</p></div></div>"));
   });
   $("pr-break").addEventListener("click", function () {
-    var one = '<div class="sup-pc big"><span class="sup-ic">⏸️</span><b>I need a break.</b><i>Necesito un descanso.</i><small>Hand this card to your teacher.</small></div>';
+    var one = '<div class="sup-pc big"><b>I need a break.</b><i>Necesito un descanso.</i><small>Hand this card to your teacher.</small></div>';
     BIM.printHTML(sheet("Break Cards", '<div class="sup-cards">' + one + one + one + one + "</div>"));
   });
   $("pr-vs").addEventListener("click", function () {

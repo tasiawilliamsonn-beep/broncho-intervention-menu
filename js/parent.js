@@ -70,7 +70,7 @@
     showFields();
     var steps = script();
     $("pc-out").innerHTML = steps.map(function (x, i) {
-      return '<div class="pc-step"><span class="pc-n">' + (steps.length > 2 ? i + 1 : "&#9742;") + '</span><div><b>' + esc(x[0]) + "</b><p>" + esc(x[1]).replace(/\n/g, "<br>") + "</p></div></div>";
+      return '<div class="pc-step"><span class="pc-n">' + (i + 1) + '</span><div><b>' + esc(x[0]) + "</b><p>" + esc(x[1]).replace(/\n/g, "<br>") + "</p></div></div>";
     }).join("");
     $("pc-copytext").textContent = steps.filter(function (x) { return x[0] !== "Tip"; }).map(function (x) { return x[1]; }).join("\n\n");
     var lvl = byId[$("pc-beh").value] ? byId[$("pc-beh").value].level : 0;

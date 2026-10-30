@@ -229,7 +229,7 @@
       days.map(function (d) { return '<div><b>' + d + '</b><span class="mbox">?</span></div>'; }).join("") + '</div><div class="mystery-env"><b>Mystery reward</b> (sealed until earned)</div><p class="sheet-cite">Davis et al. (2024); Maggin et al. (2017).</p></div>');
   });
   $("inc-punch").addEventListener("click", function () {
-    var card = '<div class="punch"><div class="pass-head"><img src="img/broncho-logo.png" alt=""><div><b>HEART Punch Card</b><span>Name ____________</span></div></div><div class="holes">' + Array(10).join(",").split(",").map(function () { return '<span class="hole">&#9825;</span>'; }).join("") + '</div><small>Fill all 10 to choose a reward from the menu.</small></div>';
+    var card = '<div class="punch"><div class="pass-head"><img src="img/broncho-logo.png" alt=""><div><b>HEART Punch Card</b><span>Name ____________</span></div></div><div class="holes">' + Array(10).join(",").split(",").map(function () { return '<span class="hole"></span>'; }).join("") + '</div><small>Fill all 10 to choose a reward from the menu.</small></div>';
     print('<div class="sheet"><div class="bucks-grid">' + Array(8).join(",").split(",").map(function () { return card; }).join("") + "</div></div>");
   });
 })();

@@ -39,14 +39,14 @@ var SPED_SUPPORTS = [
 
 /* request cards: English and Spanish */
 var REQUEST_CARDS = [
-  ["May I have a break, please?", "¿Puedo tomar un descanso, por favor?", "✋"],
-  ["I need help with ____.", "Necesito ayuda con ____.", "🙋"],
-  ["Can you say that again, please?", "¿Puede repetirlo, por favor?", "🔁"],
-  ["I don't understand ____.", "No entiendo ____.", "❓"],
-  ["May I get a drink of water?", "¿Puedo tomar agua?", "💧"],
-  ["May I go to the restroom?", "¿Puedo ir al baño?", "🚻"],
-  ["I am finished. What do I do next?", "Terminé. ¿Qué hago ahora?", "✅"],
-  ["I feel upset. I need a minute.", "Me siento molesto/a. Necesito un minuto.", "⏸️"]
+  ["May I have a break, please?", "¿Puedo tomar un descanso, por favor?"],
+  ["I need help with ____.", "Necesito ayuda con ____."],
+  ["Can you say that again, please?", "¿Puede repetirlo, por favor?"],
+  ["I don't understand ____.", "No entiendo ____."],
+  ["May I get a drink of water?", "¿Puedo tomar agua?"],
+  ["May I go to the restroom?", "¿Puedo ir al baño?"],
+  ["I am finished. What do I do next?", "Terminé. ¿Qué hago ahora?"],
+  ["I feel upset. I need a minute.", "Me siento molesto/a. Necesito un minuto."]
 ];
 var TALK_FRAMES = [
   "I agree with ____ because ____.",
