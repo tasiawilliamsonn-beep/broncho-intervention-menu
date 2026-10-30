@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML &amp; SPED Supports</title>
+<meta name="description" content="Research-based classroom supports for Multilingual Learners and students with IEPs or 504 plans at Lafayette Sunnyside Intermediate School.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css?v=26cc39b">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Interventions</a>
+    <a href="log.html">Log Builder</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="supports.html" aria-current="page">ML &amp; SPED</a>
+    <a href="parent.html">Parent Contact</a>
+    <a href="mtss.html">MTSS Team</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Multilingual Learners &amp; Students with IEPs / 504 Plans</h1>
+  <p>Tier 1 is for every student. These supports layer on top of the Intervention Menu so every Sunnyside student can understand and meet the HEART expectations.</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:24px 56px">
+  <div class="tabs" role="tablist">
+    <button role="tab" type="button" data-tab="ml" aria-selected="true">Multilingual Learners</button>
+    <button role="tab" type="button" data-tab="sped" aria-selected="false">IEP &amp; 504</button>
+    <button role="tab" type="button" data-tab="print" aria-selected="false">Printables</button>
+  </div>
+
+  <section class="tool" id="tab-ml">
+    <div class="alert tipbox"><p><b>Start here:</b> a student who did not understand a direction is not being defiant. Check language first, then use the matched intervention from the menu.</p></div>
+    <div class="grid g2 sup-grid" id="ml-list"></div>
+  </section>
+
+  <section class="tool" id="tab-sped" hidden>
+    <div class="alert warn"><p><b>The plan comes first.</b> IEP and 504 accommodations and any Behavior Intervention Plan are required, not optional. Tier 1 interventions are added to them, never used in place of them.</p></div>
+    <div class="grid g2 sup-grid" id="sped-list"></div>
+  </section>
+
+  <section class="tool" id="tab-print" hidden>
+    <div class="grid g2" style="align-items:start">
+      <div class="card red-top"><h3>Request cards</h3><p class="hint">Words to use instead of acting out. Cut apart and keep on the desk or a ring. Sentence frames support English learners (Baker et al., 2014).</p>
+        <label class="opt" style="padding-left:0"><input type="checkbox" id="pr-es" checked><span>Include Spanish</span></label>
+        <button class="btn" type="button" id="pr-req">Print request cards</button></div>
+      <div class="card red-top"><h3>Partner talk frames</h3><p class="hint">For structured partner talk (Baker et al., 2014; Sáenz, Fuchs, &amp; Fuchs, 2005).</p>
+        <button class="btn" type="button" id="pr-talk">Print talk frames</button></div>
+      <div class="card red-top"><h3>First / Then board</h3><p class="hint">Visual support (Steinbrenner et al., 2020). Leave blank to write with a dry-erase marker.</p>
+        <div class="row2"><div><label class="f" for="ft-first">First</label><input type="text" id="ft-first" placeholder="e.g., 5 math problems"></div><div><label class="f" for="ft-then">Then</label><input type="text" id="ft-then" placeholder="e.g., 2-minute break"></div></div>
+        <button class="btn" type="button" id="pr-ft" style="margin-top:10px">Print First / Then</button></div>
+      <div class="card red-top"><h3>Break cards</h3><p class="hint">Teach it first; honor it quickly at first (Kern &amp; Clemens, 2007).</p>
+        <button class="btn" type="button" id="pr-break">Print break cards</button></div>
+      <div class="card red-top" style="grid-column:1/-1"><h3>Visual schedule</h3><p class="hint">One step per line. The student checks off each step (Spriggs et al., 2017).</p>
+        <div class="row2"><div><label class="f" for="vs-title">Title</label><input type="text" id="vs-title" value="My class schedule"></div><div></div></div>
+        <label class="f" for="vs-steps">Steps</label>
+        <textarea id="vs-steps">Bell-ringer
+Mini-lesson
+Practice with a partner
+Work on my own
+Clean up and exit ticket</textarea>
+        <button class="btn" type="button" id="pr-vs" style="margin-top:10px">Print visual schedule</button></div>
+    </div>
+  </section>
+  <div class="print-only" id="print-area"></div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Lafayette Sunnyside Intermediate School</div>
+</div></footer>
+
+<script src="js/data.js?v=6c08894"></script>
+<script src="js/app.js?v=6c08894"></script>
+<script src="js/supports-data.js?v=6c08894"></script>
+<script src="js/supports.js?v=6c08894"></script>
+</body>
+</html>

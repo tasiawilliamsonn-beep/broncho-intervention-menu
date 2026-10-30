@@ -33,9 +33,12 @@ var BIM = (function () {
   /* "(Allday & Pakurar, 2007)" style short cite from a full APA reference */
   function shortCite(key) {
     var full = REFS[key]; if (!full) return key;
+    var law = full.match(/^(Individuals with Disabilities Education Act regulations, 34 C\.F\.R\. § [\d.()a-z]+|Section 504[^,]*)/);
+    if (law) return law[1].replace("Individuals with Disabilities Education Act regulations", "IDEA").replace(" of the Rehabilitation Act of 1973", "");
     var year = (full.match(/\((\d{4})\)/) || [])[1] || "";
     var authors = full.split(" (" + year + ")")[0];
     var names = authors.split(/\.,\s(?:&\s)?/).map(function (s) { return s.split(",")[0].trim(); });
+    if (/^U\.S\. Department of Justice/.test(authors)) return "U.S. Depts. of Justice & Education, " + year;
     if (/^U\.S\./.test(authors)) return "U.S. Dept. of Education, " + year;
     if (/^American Psychological/.test(authors)) return "APA Zero Tolerance Task Force, " + year;
     if (names.length === 1) return names[0] + ", " + year;
