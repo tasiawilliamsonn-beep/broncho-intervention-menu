@@ -595,3 +595,9 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .sheet .pc-step { grid-template-columns: 1fr; } .sheet .pc-n { display: none; }
 @media print { .toast, .chart-tip { display: none !important; } }
 @media (max-width: 1200px) { .top { position: static; } .sticky { top: 16px; } }
+
+/* MTSS team */
+.mtss-card { border-top: 5px solid var(--black); }
+.mtss-role { font-family: var(--display); text-transform: uppercase; letter-spacing: .06em; color: var(--red); font-size: .85rem; margin-bottom: 4px; }
+.mtss-card h3 { margin-bottom: 6px; }
+.mtss-card p { font-size: .93rem; color: var(--muted); }

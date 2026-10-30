@@ -157,7 +157,7 @@
     "Add or change an intervention": "I will add or adjust an intervention.",
     "Follow-up parent contact": "I will follow up with the family.",
     "Begin ABC data / Daily Behavior Rating": "I will begin collecting ABC data and a Daily Behavior Report to monitor progress.",
-    "Bring documented interventions to the MTSS/RTI team": "I will bring the documented interventions to the MTSS/RTI team.",
+    "Bring documented interventions to the MTSS team": "I will bring the documented interventions to the MTSS team.",
     "Administrator to address (Level 3/4)": "I am requesting that an administrator address this behavior."
   };
   var METHOD_TEXT = {
@@ -286,7 +286,7 @@
       item(il.length > 0, "<b>" + il.length + "</b> documented intervention entr" + (il.length === 1 ? "y" : "ies")) +
       item(Object.keys(distinct).length >= 2, "<b>" + Object.keys(distinct).length + "</b> different Tier 1 interventions tried") +
       item(types.prevent || types.teach, "Includes a Prevent or Teach strategy" + (Object.keys(types).length ? " (" + Object.keys(types).map(function (t) { return TYPES[t].name; }).join(", ") + ")" : "")) +
-      item(span >= 14, "Interventions span <b>" + span + "</b> day" + (span === 1 ? "" : "s") + " (RTI guidance: monitor at least 2 to 3 weeks)") +
+      item(span >= 14, "Interventions span <b>" + span + "</b> day" + (span === 1 ? "" : "s") + " (MTSS guidance: monitor at least 2 to 3 weeks)") +
       item(cm >= 3, "<b>" + cm + "</b> of 3 logged parent/guardian communications (matrix requirement for a Level 3 \"little/no change\" referral)") +
       item(true, "<b>" + noChangeCount + "</b> entr" + (noChangeCount === 1 ? "y" : "ies") + " show partial, no change, or escalation") +
       "</ul></div><div>" +

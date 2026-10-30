@@ -1,5 +1,5 @@
 /* Request for Support packet: one printable summary of a student's documented Tier 1 record
-   for the MTSS/RTI team (interventions, parent contacts, progress data, log history). */
+   for the MTSS team (interventions, parent contacts, progress data, log history). */
 (function () {
   var esc = BIM.esc;
   var $ = function (id) { return document.getElementById(id); };
@@ -30,7 +30,7 @@
     var track = BIM.getTrack()[k], dec = track ? BIM.decision(track) : null, days = track ? BIM.series(track).length : 0;
     function chk(ok, t) { return '<li><span class="ic ' + (ok ? "yes" : "no") + '">' + (ok ? "&#10003;" : "!") + "</span><span>" + t + "</span></li>"; }
 
-    var h = '<div class="sheet">' + BIM.sheetHead("Request for Support: MTSS/RTI Team") +
+    var h = '<div class="sheet">' + BIM.sheetHead("Request for Support: MTSS Team") +
       '<table class="sheet-meta"><tr><td>Student: <b>' + esc(name) + "</b></td><td>Grade: <b>" + esc(v("rfs-grade")) + "</b></td></tr>" +
       "<tr><td>Teacher: <b>" + esc(v("rfs-teacher")) + "</b></td><td>Date prepared: <b>" + fmt(new Date().toISOString().slice(0, 10)) + "</b></td></tr></table>" +
       '<div class="ct-box"><b>Area of concern</b><p>' + para(v("rfs-concern")) + "</p></div>" +
@@ -64,7 +64,7 @@
 
       '<h3>For the team</h3><div class="ct-box"><b>Team decision</b><p><span class="box"></span> Continue Tier 1 with adjustments &nbsp; <span class="box"></span> Add Tier 2 support &nbsp; <span class="box"></span> Further assessment &nbsp; <span class="box"></span> Other</p><p class="rl"></p><p class="rl"></p></div>' +
       '<p class="sheet-sign">Next review date: ____________ &nbsp; Team members: ____________________________________________</p>' +
-      '<p class="sheet-cite">Prepared with The Broncho Intervention Menu. Tier 1 process and decision rules: RTI Handbook; Sunnyside Behavior Intervention Matrix.</p></div>';
+      '<p class="sheet-cite">Prepared with The Broncho Intervention Menu. Tier 1 process and decision rules: Sunnyside MTSS process; Sunnyside Behavior Intervention Matrix.</p></div>';
     return h;
   }
   $("rfs-print").addEventListener("click", function () { BIM.printHTML(packet()); });

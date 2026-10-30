@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTSS Team | The Broncho Intervention Menu</title>
+<meta name="description" content="Who is on the Lafayette Sunnyside Intermediate School MTSS team and how to bring a student to the team.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css?v=9d6c492">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Interventions</a>
+    <a href="log.html">Log Builder</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="parent.html">Parent Contact</a>
+    <a href="mtss.html" aria-current="page">MTSS Team</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Sunnyside MTSS Team</h1>
+  <p>The team that helps when a student needs more than Tier 1 support. Start with documented Tier 1 interventions, then bring your data to the team.</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:28px 56px">
+  <h2 class="title">Who is on the team</h2>
+  <div class="grid g4" id="mtss-team"></div>
+
+  <div class="grid g2" style="margin-top:32px;align-items:start">
+    <div class="card red-top">
+      <h3>How to bring a student to the team</h3>
+      <ol class="flow">
+        <li><b>Use Tier 1 first.</b> Choose matched interventions from the <a href="menu.html">Intervention Menu</a> and log each one in the <a href="log.html">Log Builder</a>.</li>
+        <li><b>Contact the family.</b> Log each contact as Communication. See <a href="parent.html">Parent Contact</a>.</li>
+        <li><b>Track progress for 2 to 3 weeks.</b> Use the <a href="tools.html#dbr">Daily Behavior Report</a>.</li>
+        <li><b>Print the Request for Support packet</b> from the Proof of Intervention record in the <a href="log.html">Log Builder</a>.</li>
+        <li><b>Submit it to the team</b> using the process on the right.</li>
+      </ol>
+    </div>
+    <div class="card red-top">
+      <h3>When and how we meet</h3>
+      <ul class="check" id="mtss-info"></ul>
+    </div>
+  </div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Lafayette Sunnyside Intermediate School</div>
+</div></footer>
+
+<script src="js/app.js?v=x"></script>
+<script src="js/mtss-data.js?v=x"></script>
+<script>
+(function () {
+  var esc = BIM.esc, tba = '<span class="pill no">To be added</span>';
+  document.getElementById("mtss-team").innerHTML = MTSS_TEAM.map(function (m) {
+    return '<div class="card mtss-card"><div class="mtss-role">' + esc(m.role) + "</div><h3>" + (m.name ? esc(m.name) : tba) + "</h3>" +
+      "<p>" + esc(m.does) + "</p>" + (m.email ? '<p><a href="mailto:' + esc(m.email) + '">' + esc(m.email) + "</a></p>" : "") + "</div>";
+  }).join("");
+  var info = [["Meets", MTSS_INFO.meets], ["Where", MTSS_INFO.where], ["How to submit a request", MTSS_INFO.submit]];
+  document.getElementById("mtss-info").innerHTML = info.map(function (x) { return "<li><b>" + x[0] + ":</b> " + (x[1] ? esc(x[1]) : tba) + "</li>"; }).join("");
+})();
+</script>
+</body>
+</html>

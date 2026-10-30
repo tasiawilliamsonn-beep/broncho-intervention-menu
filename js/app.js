@@ -69,7 +69,7 @@ var BIM = (function () {
     }).filter(Boolean);
   }
   function avg(a) { return a.length ? Math.round(a.reduce(function (s, x) { return s + x.pct; }, 0) / a.length) : 0; }
-  /* Decision rules: monitor every 2-3 weeks; refer after two intervention periods without adequate response (RTI Handbook). */
+  /* Decision rules: monitor every 2-3 weeks; refer after two intervention periods without adequate response (MTSS process). */
   function decision(rec) {
     var pts = series(rec), goal = rec.goal || 80;
     var phases = (rec.phases || []).slice().sort(function (a, b) { return a.start.localeCompare(b.start); });
@@ -79,7 +79,7 @@ var BIM = (function () {
     var last = cur.slice(-10), first5 = cur.slice(0, 5), last5 = cur.slice(-5), a10 = avg(last), gain = avg(last5) - avg(first5);
     if (a10 >= goal) return { cls: "ok", title: "Responding: keep going", text: "The last 10 days average " + a10 + "%, at or above the " + goal + "% goal. Continue the intervention. After the goal is met for 2 more weeks, begin fading it (less frequent prompts and rewards), and keep praising the behavior." };
     if (gain >= 10) return { cls: "warn", title: "Some response: strengthen and recheck", text: "Scores are improving (+" + gain + " points) but the last 10 days average " + a10 + "%, below the " + goal + "% goal. Continue, increase how often you use the intervention, or add a Prevent or Teach strategy. Recheck in 1 to 2 weeks." };
-    if (phases.length >= 2) return { cls: "red", title: "Bring it to the MTSS/RTI team", text: "This is the second intervention period without adequate response (last 10 days average " + a10 + "%, goal " + goal + "%). The RTI process calls for a team review after two periods of intervention. Print the Request for Support packet from the Log Builder." };
+    if (phases.length >= 2) return { cls: "red", title: "Bring it to the MTSS team", text: "This is the second intervention period without adequate response (last 10 days average " + a10 + "%, goal " + goal + "%). The MTSS process calls for a team review after two periods of intervention. Print the Request for Support packet from the Log Builder." };
     return { cls: "red", title: "Not yet responding: change the intervention", text: "The last 10 days average " + a10 + "% with little improvement (goal " + goal + "%). Check that the intervention is being used consistently, check the likely function with the ABC organizer, and choose a different matched intervention. Mark the change below to start a new 2-3 week period." };
   }
   function trendChart(rec, opts) {

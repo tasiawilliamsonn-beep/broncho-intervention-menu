@@ -79,7 +79,7 @@ var SELFCHECK = [
     { t: "Holding re-entry conferences", d: "After a significant incident, the teacher meets privately with the student to find triggers and make a plan.", c: "Fields, 2004", i: ["reentry"] }] }
 ];
 
-/* RTI Daily Behavior Report items (Chafouleas, Riley-Tillman, & Sugai, 2007; Wright) */
+/* Daily Behavior Report items (Chafouleas, Riley-Tillman, & Sugai, 2007; Wright) */
 var DBR_ITEMS = [
   "The student got along with classmates and used socially appropriate behaviors.",
   "The student was respectful to the teacher and other adults and complied with their requests in a timely manner.",

@@ -204,7 +204,7 @@
   var sig = "";
   var RESP = ["The student corrected the behavior right away.", "The student corrected the behavior after a second prompt.", "The student showed partial improvement.", "The behavior did not change.", "The behavior escalated."];
   var METHODS = { "": "", "phone": "by phone", "email": "by email", "conference": "in a conference", "note": "with a written note", "app": "through the school messaging app", "voicemail": "by phone and left a voicemail" };
-  var NEXTS = ["I will continue these interventions and monitor progress.", "I will add or adjust an intervention.", "I will follow up with the family.", "I will begin a Daily Behavior Report to monitor progress.", "I will bring the documented interventions to the MTSS/RTI team."];
+  var NEXTS = ["I will continue these interventions and monitor progress.", "I will add or adjust an intervention.", "I will follow up with the family.", "I will begin a Daily Behavior Report to monitor progress.", "I will bring the documented interventions to the MTSS team."];
   function joinAnd(l) { return l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + (l.length > 2 ? "," : "") + " and " + l[l.length - 1]; }
   function cleanText(t) {
     var s = t.replace(/^\s*[A-Z][A-Za-z /]{2,25}:\s*/gm, "");
