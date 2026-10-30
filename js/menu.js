@@ -25,7 +25,7 @@
       else if (p[0] === "L4") out.push({ key: k, bid: "L4", level: 4, name: LEVEL4[i], look: LEVEL4[i], f: [] });
       else if (byId[p[0]] && byId[p[0]].v[i]) {
         var b = byId[p[0]];
-        out.push({ key: k, bid: b.id, level: b.level, name: b.name, look: b.v[i].t, f: b.v[i].f });
+        out.push({ key: k, bid: b.id, level: b.level, name: b.name, look: b.v[i].t, f: b.v[i].f, d: b.v[i].d || [] });
       }
     });
     return out;
@@ -79,6 +79,10 @@
     }).join("");
   }
 
+  function savedLogsBtn() {
+    var n = BIM.getLogs().length;
+    return '<div class="saved-logs"><a class="btn dark" href="logs.html">View saved logs (' + n + ")</a><span class=\"hint\">Every entry you saved in the Log Builder, by student, with filters and sorting.</span></div>";
+  }
   /* ---------- results ---------- */
   function rank(sb) {
     var scores = {}, why = {};
@@ -88,6 +92,7 @@
         scores[id] = (scores[id] || 0) + 4 + Math.max(0, 3 - pos * 0.25);
         (why[id] = why[id] || {})[beh.name] = true;
       });
+      (b.d || []).forEach(function (id, pos) { scores[id] = (scores[id] || 0) + 12 - pos * 2; });
     });
     var fl = Object.keys(funcs);
     Object.keys(scores).forEach(function (id) {
@@ -139,14 +144,14 @@
     if (sel["L3:2"] && window.BULLY) alerts += BULLY.html();
     if (levels[3]) alerts += '<div class="alert red"><h3>Level 3: office referral (DISCIPLINE log)</h3><p>This behavior is for an administrator to address. Use the <a href="log.html">Log Builder</a> to write an objective DISCIPLINE entry and list the Tier 1 interventions you already documented. If you chose "little/no change in Level 2 behaviors," the matrix requires at least <b>three logged parent/guardian communications</b> first.</p></div>';
     if (levels[2]) alerts += '<div class="alert warn"><h3>Level 2: parent notification is required</h3><p>Handle it in the classroom with the interventions below, log each one as <b>INTERVENTION</b>, and contact the family as a partner (log that call or email as <b>COMMUNICATION</b>). Do not log Level 2 behaviors as DISCIPLINE.</p></div>';
-    if (levels[1] && !levels[2] && !levels[3] && !levels[4]) alerts += '<div class="alert ok"><h3>Level 1: handled within the classroom</h3><p>Choose 2 or 3 interventions below, use them consistently, and log as <b>INTERVENTION</b> including what you did and how the student responded. Do not log Level 1 behaviors as DISCIPLINE.</p></div>';
+    if (levels[1] && !levels[2] && !levels[3] && !levels[4]) alerts += '<div class="alert ok"><h3>Level 1: handled within the classroom</h3><p>Start with one matched intervention below, use it consistently for 2 to 3 weeks, and log each use as <b>INTERVENTION</b> including what you did and how the student responded. Do not log Level 1 behaviors as DISCIPLINE.</p></div>';
     document.getElementById("alerts").innerHTML = alerts;
 
     var tier = sb.filter(function (b) { return b.level <= 2; });
     var out = document.getElementById("results");
     var byFn = !tier.length && !sb.length && Object.keys(funcs).length;
     if (!tier.length && !byFn) {
-      out.innerHTML = sb.length ? "" : '<div class="panel empty"><img src="img/broncho-logo.png" alt=""><h2 style="text-transform:uppercase">Start with what you see</h2><p>Open a behavior on the left and check what it looks like in your classroom. You can choose more than one.</p>' + legend() + "</div>";
+      out.innerHTML = sb.length ? "" : '<div class="panel empty"><img src="img/broncho-logo.png" alt=""><h2 style="text-transform:uppercase">Start with what you see</h2><p>Open a behavior on the left and check what it looks like in your classroom. You can choose more than one.</p>' + legend() + "</div>" + savedLogsBtn();
       return;
     }
     var ranked = byFn ? rankByFunction() : rank(tier);
@@ -159,10 +164,19 @@
         return '<button type="button" class="chip" data-type="' + t + '" aria-pressed="' + (typeFilter === t) + '">' + (t === "all" ? "All" : TYPES[t].name) + " (" + (counts[t] || 0) + ")</button>";
       }).join("") + "</div></div>";
     if (byFn) html += '<div class="alert ok"><p>Showing interventions matched to the <b>function</b> you chose. Add the behavior on the left to rank them by behavior too and see the matrix level.</p></div>';
+    var firsts = tier.filter(function (b) { return b.d && b.d.length; });
+    if (firsts.length && !byFn) html += '<div class="panel first-resp"><header><h2>Best first response</h2></header><div class="body">' + firsts.map(function (b) {
+      return '<div class="fr-row"><b>' + esc(b.look) + "</b><ul>" + b.d.map(function (id) {
+        var it = INTERVENTIONS[id];
+        return "<li><b>" + esc(it.name) + "</b> (" + esc(TYPES[it.type].name) + "): " + esc(it.summary) + ' <span class="cite">' + esc(it.refs.map(BIM.shortCite).join("; ")) + "</span></li>";
+      }).join("") + "</ul></div>";
+    }).join("") + '<p class="hint" style="margin:0">Matched to this behavior and its most likely function. Use it for 2 to 3 weeks before changing.</p></div></div>';
     html += '<p class="hint">Ranked by how directly each one addresses the behaviors you chose and the likely function. A strong plan uses at least one <b>Prevent</b> or <b>Teach</b> strategy, plus <b>Reinforce</b>, not only in-the-moment responses.</p>';
     var notes = tier.map(function (b) { return byId[b.bid].note; }).filter(Boolean);
     notes.filter(function (n, i) { return notes.indexOf(n) === i; }).forEach(function (n) { html += '<div class="alert warn"><p>' + esc(n) + "</p></div>"; });
     html += shown.map(function (r, i) { return card(r, typeFilter === "all" && i < 3); }).join("");
+    html += BIM.ownNote() + '<p class="hint">Add it to a log in the <a href="log.html">Log Builder</a>, step 2: "Add my own intervention."</p>';
+    html += savedLogsBtn();
     out.innerHTML = html;
   }
 

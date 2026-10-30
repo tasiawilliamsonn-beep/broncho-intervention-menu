@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Logs</title>
+<meta name="description" content="Every saved log entry by student, with filters and sorting.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css?v=c5bcb69">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Interventions</a>
+    <a href="log.html">Log Builder</a>
+    <a href="logs.html" aria-current="page">Student Logs</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="supports.html">ML &amp; SPED</a>
+    <a href="parent.html">Parent Contact</a>
+    <a href="mtss.html">MTSS Team</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Student Logs</h1>
+  <p>Every log entry saved on this device. Filter by student, log type, behavior, location, and more, and sort any column.</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:24px 56px">
+  <div class="chips" id="sl-students" aria-label="Students"></div>
+
+  <section class="panel" style="margin-top:14px">
+    <header><h2>Filter</h2><div class="filters"><button class="btn ghost sm" type="button" id="sl-clear">Clear filters</button></div></header>
+    <div class="body sl-filters">
+      <div><label class="f" for="sl-q">Search log text</label><input type="search" id="sl-q" placeholder="e.g., break card"></div>
+      <div><label class="f" for="sl-student">Student</label><select id="sl-student"></select></div>
+      <div><label class="f" for="sl-type">Log type</label><select id="sl-type"></select></div>
+      <div><label class="f" for="sl-level">Matrix level</label><select id="sl-level"></select></div>
+      <div><label class="f" for="sl-beh">Behavior</label><select id="sl-beh"></select></div>
+      <div><label class="f" for="sl-setting">Location</label><select id="sl-setting"></select></div>
+      <div><label class="f" for="sl-int">Intervention</label><select id="sl-int"></select></div>
+      <div><label class="f" for="sl-resp">Student response</label><select id="sl-resp"></select></div>
+      <div><label class="f" for="sl-contact">Parent contact</label><select id="sl-contact"><option value="">Any</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div><label class="f" for="sl-from">From</label><input type="date" id="sl-from"></div>
+      <div><label class="f" for="sl-to">To</label><input type="date" id="sl-to"></div>
+      <div><label class="f" for="sl-sort">Sort by</label><select id="sl-sort">
+        <option value="date:-1">Newest first</option><option value="date:1">Oldest first</option>
+        <option value="student:1">Student A-Z</option><option value="type:1">Log type</option>
+        <option value="level:-1">Level (high to low)</option><option value="behavior:1">Behavior A-Z</option><option value="setting:1">Location A-Z</option>
+      </select></div>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <header><h2 id="sl-count">Log entries</h2>
+      <div class="filters"><button class="btn ghost sm" type="button" id="sl-csv">Export CSV</button><button class="btn ghost sm" type="button" id="sl-print">Print</button>
+      <button class="btn ghost sm" type="button" id="bk-save">Save backup file</button><label class="btn ghost sm" style="cursor:pointer">Restore from file<input type="file" id="bk-load" accept=".json,application/json" hidden></label></div></header>
+    <div class="body" id="sl-sum"></div>
+    <div class="table-scroll"><table class="hist sl-table"><thead><tr>
+      <th><button type="button" data-sort="date">Date</button></th><th><button type="button" data-sort="student">Student</button></th>
+      <th><button type="button" data-sort="type">Log type</button></th><th><button type="button" data-sort="level">Level</button></th>
+      <th><button type="button" data-sort="behavior">Behavior</button></th><th><button type="button" data-sort="setting">Location</button></th>
+      <th>Intervention(s)</th><th><button type="button" data-sort="response">Response</button></th><th>Parent contact</th><th></th>
+    </tr></thead><tbody id="sl-body"></tbody></table></div>
+    <div class="body"><p class="hint">Logs are stored in this browser on this device. Save a backup file to keep a copy or move them to another computer.</p></div>
+  </section>
+  <div class="print-only" id="print-area"></div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Lafayette Sunnyside Intermediate School</div>
+</div></footer>
+
+<script src="js/data.js?v=d695f8d"></script>
+<script src="js/app.js?v=d695f8d"></script>
+<script src="js/logs.js?v=d695f8d"></script>
+</body>
+</html>

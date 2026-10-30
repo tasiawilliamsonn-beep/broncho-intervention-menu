@@ -25,3 +25,21 @@
   $("startover").addEventListener("click", function () { show(1); });
   show(1);
 })();
+
+/* Add my own intervention (researched on PBIS World), aligned to the function of the behavior. */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  $("own-note").innerHTML = BIM.ownNote();
+  $("oi-fn").innerHTML = '<option value="">Choose...</option>' + Object.keys(FUNCTIONS).map(function (f) { return '<option value="' + f + '">' + BIM.esc(FUNCTIONS[f].name) + "</option>"; }).join("");
+  $("oi-add").addEventListener("click", function () {
+    var v = function (id) { return $(id).value.trim(); };
+    var missing = [["oi-name", "the intervention name"], ["oi-did", "what you did"], ["oi-fn", "why the behavior happens"], ["oi-why", "how it matches the behavior"]].filter(function (x) { return !v(x[0]); });
+    if (missing.length) { BIM.toast("Add " + missing[0][1] + " first"); $(missing[0][0]).focus(); return; }
+    var did = v("oi-did").replace(/^I\s+/i, "").replace(/\.$/, "");
+    var id = BIM.addOwn({ name: v("oi-name"), did: did, type: $("oi-type").value, functions: [$("oi-fn").value], why: v("oi-why"), src: v("oi-src") });
+    window.BIMAddInt(id);
+    ["oi-name", "oi-did", "oi-why"].forEach(function (k) { $(k).value = ""; });
+    $("own-int").open = false;
+    BIM.toast("Added and checked: " + INTERVENTIONS[id].name);
+  });
+})();

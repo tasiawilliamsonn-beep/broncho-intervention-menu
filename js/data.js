@@ -57,6 +57,7 @@ var REFS = {
   hester2009: "Hester, P. P., Hendrickson, J. M., & Gable, R. A. (2009). Forty years later: The value of praise, ignoring, and rules for preschoolers at risk for behavior disorders. Education and Treatment of Children, 32(4), 513-535.",
   hirn2012: "Hirn, R. G., & Park, K. L. (2012). Teacher-mediated instructional strategies for students with emotional or behavioral disorders. Beyond Behavior, 22(1), 32-39.",
   horner2009: "Horner, R. H., Sugai, G., Smolkowski, K., Eber, L., Nakasato, J., Todd, A. W., & Esperanza, J. (2009). A randomized, wait-list controlled effectiveness trial assessing school-wide positive behavior support in elementary schools. Journal of Positive Behavior Interventions, 11(3), 133-144.",
+  ingram2005: "Ingram, K., Lewis-Palmer, T., & Sugai, G. (2005). Function-based intervention planning: Comparing the effectiveness of FBA function-based and non-function-based intervention plans. Journal of Positive Behavior Interventions, 7(4), 224-236.",
   jolivette2001: "Jolivette, K., Wehby, J. H., Canale, J., & Massey, N. G. (2001). Effects of choice-making opportunities on the behavior of students with emotional and behavioral disorders. Behavioral Disorders, 26(2), 131-145.",
   kazdin2013: "Kazdin, A. E. (2013). Behavior modification in applied settings (7th ed.). Long Grove, IL: Waveland Press.",
   kelley1990: "Kelley, M. L. (1990). School-home notes: Promoting children's classroom success. New York: Guilford Press.",
@@ -387,7 +388,8 @@ var BEHAVIORS = [
       { t: "Head down, sits inactive, or stares into space", f: ["blocker", "escape"] },
       { t: "Plays with objects, doodles, or taps", f: ["blocker", "escape"] },
       { t: "On a device or website that isn't the assignment", f: ["tangible", "escape"] },
-      { t: "Works on something else", f: ["escape", "tangible"] }],
+      { t: "Works on something else", f: ["escape", "tangible"] },
+      { t: "Classwork left unfinished at the end of the period", f: ["escape", "skill"] }],
     ints: ["match", "chunk", "steps", "fixup", "otr", "choice", "goal", "momentum", "selfmonitor", "schedattn", "feedback", "bsp", "proximity", "redirect", "schedbreak", "breakcard", "pace", "directions"] },
   { id: "outofarea", level: 1, name: "Out of assigned area", v: [
       { t: "Out of seat without permission", f: ["escape", "blocker", "peer"] },
@@ -404,7 +406,12 @@ var BEHAVIORS = [
   { id: "homework", level: 1, name: "Homework infraction(s)", v: [
       { t: "Homework not turned in", f: ["escape", "skill", "blocker"] },
       { t: "Homework incomplete or rushed", f: ["skill", "escape"] },
-      { t: "Missing materials (pencil, notebook, folder)", f: ["skill", "blocker"] }],
+      { t: "Missing materials (pencil, notebook, folder)", f: ["skill", "blocker"] },
+      { t: "Did not write down the assignment or does not know what is due", f: ["skill", "blocker"] },
+      { t: "Left homework at home or in a locker", f: ["skill", "blocker"] },
+      { t: "Turns in work late", f: ["skill", "escape"] },
+      { t: "Copied a classmate's work", f: ["escape", "skill"] },
+      { t: "Says the work is too hard and gives up", f: ["skill", "escape"] }],
     ints: ["match", "chunk", "steps", "goal", "selfmonitor", "feedback", "choice", "teach", "homenote", "greet"] },
   { id: "language", level: 1, name: "Inappropriate language/comments", v: [
       { t: "Profanity not directed at anyone (frustration)", f: ["blocker", "escape"] },
@@ -476,6 +483,34 @@ var BEHAVIORS = [
     note: "Chronic means you have already logged Level 1 interventions. Now find the function, monitor progress, and partner with the family.",
     ints: ["abc", "dbr", "selfmonitor", "goal", "homenote", "schedattn", "bsp", "ratio", "relationship", "ladder", "replacement"] }
 ];
+
+/* Best first responses for each "what it looked like": the two interventions most directly matched to that
+   behavior and its likely function. Shown first in the menu and the Log Builder. */
+var FIRST = {
+  "talking:0": ["otr", "praisepeers"], "talking:1": ["proximity", "gbg"], "talking:2": ["praisepeers", "gbg"], "talking:3": ["precorrect", "proximity"], "talking:4": ["proximity", "schedbreak"],
+  "offtask:0": ["match", "momentum"], "offtask:1": ["chunk", "schedbreak"], "offtask:2": ["openq", "breakcard"], "offtask:3": ["selfmonitor", "schedbreak"], "offtask:4": ["supervise", "ifthen"], "offtask:5": ["ifthen", "choice"], "offtask:6": ["chunk", "selfmonitor"],
+  "outofarea:0": ["schedbreak", "precorrect"], "outofarea:1": ["supervise", "bsp"], "outofarea:2": ["practice", "proximity"], "outofarea:3": ["teach", "supervise"],
+  "tone:0": ["calm", "reentry"], "tone:1": ["ignore", "bsp"], "tone:2": ["calm", "replacement"], "tone:3": ["teach", "gbg"],
+  "homework:0": ["steps", "homenote"], "homework:1": ["match", "feedback"], "homework:2": ["practice", "steps"], "homework:3": ["steps", "homenote"], "homework:4": ["steps", "homenote"], "homework:5": ["goal", "feedback"], "homework:6": ["match", "teach"], "homework:7": ["match", "fixup"],
+  "language:0": ["calm", "replacement"], "language:1": ["ignore", "praisepeers"], "language:2": ["stopstart", "restorative"],
+  "unsafe:0": ["teach", "bsp"], "unsafe:1": ["precorrect", "supervise"], "unsafe:2": ["supervise", "precorrect"], "unsafe:3": ["stopstart", "teach"],
+  "running:0": ["precorrect", "supervise"], "running:1": ["practice", "bsp"], "running:2": ["practice", "supervise"],
+  "putdowns:0": ["stopstart", "restorative"], "putdowns:1": ["teach", "tootling"], "putdowns:2": ["restorative", "teach"], "putdowns:3": ["teach", "precorrect"],
+  "pda:0": ["teach", "seating"], "pda:1": ["supervise", "teach"],
+  "hands:0": ["seating", "replacement"], "hands:1": ["precorrect", "supervise"], "hands:2": ["teach", "restorative"], "hands:3": ["stopstart", "restorative"],
+  "horseplay:0": ["precorrect", "supervise"], "horseplay:1": ["practice", "supervise"], "horseplay:2": ["supervise", "gbg"],
+  "intimidation:0": ["calm", "reentry"], "intimidation:1": ["calm", "reentry"], "intimidation:2": ["supervise", "restorative"],
+  "vandalism:0": ["restorative", "teach"], "vandalism:1": ["breakcard", "match"], "vandalism:2": ["restorative", "calm"],
+  "refusal:0": ["match", "choice"], "refusal:1": ["momentum", "choice"], "refusal:2": ["commands", "noalt"], "refusal:3": ["commands", "relationship"],
+  "tardy:0": ["greet", "bsp"], "tardy:1": ["supervise", "precorrect"], "tardy:2": ["relationship", "goal"],
+  "chronic:0": ["abc", "dbr"], "chronic:1": ["abc", "dbr"]
+};
+BEHAVIORS.forEach(function (b) {
+  b.v.forEach(function (v, i) {
+    v.d = FIRST[b.id + ":" + i] || [];
+    v.d.forEach(function (id) { if (b.ints.indexOf(id) < 0) b.ints.push(id); });
+  });
+});
 
 var LEVEL3 = ["Little/no change in Level 2 behaviors after at least three logged parent/guardian communications", "Aggressive language", "Harassment/bullying", "Inappropriate racial/sexual comments/behavior", "Serious vandalism", "Chronic stealing/theft", "Aggressive push/shove", "Overt defiance"];
 var LEVEL4 = ["Truancy with inability to locate", "Weapon at school", "Drug/alcohol at school", "Battery", "Fighting with intent to harm", "Harming an adult"];

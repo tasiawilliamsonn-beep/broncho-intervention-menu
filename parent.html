@@ -19,6 +19,7 @@
     <a href="index.html">Home</a>
     <a href="menu.html">Interventions</a>
     <a href="log.html">Log Builder</a>
+    <a href="logs.html">Student Logs</a>
     <a href="tools.html">Classroom Tools</a>
     <a href="supports.html">ML &amp; SPED</a>
     <a href="parent.html" aria-current="page">Parent Contact</a>
@@ -53,11 +54,6 @@
       <li>For Level 3 and 4, an administrator contacts the family. Coordinate first.</li></ul></div>
   </div>
 
-  <div class="grid g3" style="margin-top:16px">
-    <div class="card"><div class="stat">42%</div><p>Regular teacher contact with families raised the odds of homework completion by 42% and cut the need for redirection by 25%.</p><p class="cite">Kraft &amp; Dougherty, 2013</p></div>
-    <div class="card"><div class="stat">41%</div><p>A weekly one-sentence message home cut course failure by 41%. Messages about what students could improve worked best.</p><p class="cite">Kraft &amp; Rogers, 2015</p></div>
-    <div class="card"><div class="stat">Team</div><p>When teachers and families solve problems together, student behavior improves.</p><p class="cite">Sheridan et al., 2012</p></div>
-  </div>
 
   <h2 class="title" style="margin-top:36px">Script Builder</h2>
   <div class="grid g2" style="align-items:start">
@@ -76,6 +72,7 @@
       <div data-for="concern email"><label class="f" for="pc-strength">A strength to share first</label><input type="text" id="pc-strength" placeholder="e.g., is kind to classmates and works hard in reading"></div>
       <div data-for="concern"><label class="f" for="pc-example">One specific example (what you saw or heard)</label><input type="text" id="pc-example" placeholder="e.g., on Tuesday he said &quot;I'm not doing this&quot; and put his head down"></div>
       <div data-for="concern followup email"><label class="f">What you're doing in class</label><div id="pc-ints"></div></div>
+      <div data-for="concern followup email"><label class="f">Ideas to share for home</label><p class="hint">Research-based options matched to the behavior. Check the ones to suggest; pick 1 or 2 so it stays doable.</p><div id="pc-home"></div></div>
       <div data-for="good followup"><label class="f" for="pc-good">What the student did well</label><input type="text" id="pc-good" placeholder="e.g., started every assignment right away this week"></div>
       <div data-for="good"><label class="f" for="pc-heart">HEART value it shows</label><select id="pc-heart"><option>Honesty</option><option selected>Effort</option><option>Attitude</option><option>Respect</option><option>Teamwork</option></select></div>
       <div data-for="voicemail"><label class="f" for="pc-phone">Callback number</label><input type="text" id="pc-phone"></div>
@@ -85,6 +82,11 @@
       <div class="body"><div id="pc-note"></div><div id="pc-out"></div><div id="pc-copytext" hidden></div>
       <p class="hint">Use it as a guide, not word for word. Replace anything in [brackets].</p></div></div>
   </div>
+
+  <h2 class="title" style="margin-top:36px">Support at Home Menu</h2>
+  <p class="hint">Research-based things families can do at home, matched to the behavior. Choose the behavior in the Script Builder above, or see all of them here. Print it as a family handout.</p>
+  <div class="panel"><header><h2 id="hm-title">All ideas for home</h2><div class="filters"><button class="btn sm" type="button" id="hm-print">Print family handout</button></div></header>
+    <div class="body"><div class="grid g2" id="hm-list"></div></div></div>
 
   <div class="grid g2" style="margin-top:28px;align-items:start">
     <div class="panel"><header><h2>Say this instead</h2></header><div class="body"><table class="hist say"><thead><tr><th>Instead of</th><th>Try</th></tr></thead><tbody id="say-list"></tbody></table></div></div>

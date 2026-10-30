@@ -19,6 +19,7 @@
     <a href="index.html">Home</a>
     <a href="menu.html">Interventions</a>
     <a href="log.html" aria-current="page">Log Builder</a>
+    <a href="logs.html">Student Logs</a>
     <a href="tools.html">Classroom Tools</a>
     <a href="supports.html">ML &amp; SPED</a>
     <a href="parent.html">Parent Contact</a>
@@ -96,6 +97,19 @@
         <p class="hint" id="int-hint">Matched to the behavior. Check every one you actually used.</p>
         <div id="int-list" class="lb-ints"></div>
         <button class="btn ghost sm" type="button" id="more-int" style="margin-top:8px">Show all interventions</button>
+        <div id="own-note"></div>
+        <details class="lb-more" id="own-int"><summary>Add my own intervention</summary>
+          <label class="f" for="oi-name">Intervention name</label><input type="text" id="oi-name" placeholder="e.g., Choral responding">
+          <label class="f" for="oi-did">What you did (finishes the sentence "I ...")</label><input type="text" id="oi-did" placeholder="e.g., had the class answer key questions together out loud">
+          <div class="row2">
+            <div><label class="f" for="oi-type">Type</label><select id="oi-type"><option value="prevent">Prevent</option><option value="teach">Teach</option><option value="reinforce">Reinforce</option><option value="respond">Respond</option></select></div>
+            <div><label class="f" for="oi-fn">Why the behavior happens (function)</label><select id="oi-fn"></select></div>
+          </div>
+          <label class="f" for="oi-why">How it matches this behavior</label><input type="text" id="oi-why" placeholder="e.g., gives the student a way to get attention appropriately">
+          <label class="f" for="oi-src">Source link</label><input type="url" id="oi-src" value="https://www.pbisworld.com/tier-1/">
+          <button class="btn dark sm" type="button" id="oi-add" style="margin-top:10px">Add and check it</button>
+          <p class="hint">Saved on this device so you can choose it again.</p>
+        </details>
         <label class="f" for="response">How did the student respond?</label>
         <select id="response">
           <option value="">Choose...</option>
@@ -168,7 +182,8 @@
             <div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="out2" tabindex="0"></div><button class="btn sm" type="button" data-copy="out2">Copy log entry</button></div></div>
           </div>
         </div>
-        <button class="btn dark" type="button" id="save" style="margin-top:12px;width:100%">Save to student record</button>
+        <button class="btn dark" type="button" id="save" style="margin-top:12px;width:100%">Save to student record (this device)</button>
+        <a class="btn ghost sm" href="logs.html" style="margin-top:8px">View saved logs</a>
       </div>
     </div>
   </section>
@@ -183,6 +198,15 @@
       <div><label class="f" for="own-student">Student (initials or ID)</label><input type="text" id="own-student" placeholder="e.g., A.B." list="students"></div>
       <div><label class="f" for="own-date">Date</label><input type="date" id="own-date"></div>
     </div>
+    <label class="f" for="own-setting">Where / during what</label>
+    <select id="own-setting">
+          <option value="">Choose...</option>
+          <option>Start of class / bell-ringer</option><option>Whole-group instruction</option><option>Teacher-led discussion</option>
+          <option>Independent work</option><option>Partner work</option><option>Small-group / cooperative work</option>
+          <option>Computer / device work</option><option>Test or quiz</option><option>Transition between activities</option>
+          <option>Hallway</option><option>Cafeteria / lunch</option><option>Recess</option><option>Specials / related arts</option>
+          <option>Arrival / dismissal</option><option>Other</option>
+        </select>
     <label class="f" for="own-type">Log Type you plan to use</label>
     <select id="own-type"><option value="">Not sure</option><option value="INTERVENTION">Intervention</option><option value="INFORMATION">Information</option><option value="COMMUNICATION">Communication</option><option value="DISCIPLINE">Discipline</option></select>
     <label class="f" for="own-title">Title</label><input type="text" id="own-title" placeholder="e.g., Refusal to comply - Tier 1 intervention">
@@ -191,9 +215,18 @@
     <label class="f" for="own-beh">Matrix behavior <span class="hint">(if it isn't found automatically)</span></label>
     <select id="own-beh"></select>
     <button class="btn dark" type="button" id="own-save" style="margin-top:12px">Save to student record</button>
+    <a class="btn ghost sm" href="logs.html" style="margin-top:12px">View saved logs</a>
+    <details class="lb-more"><summary>Intervention vs. consequence</summary>
+      <table class="hist ob-ref"><thead><tr><th>Category</th><th>Definition</th><th>Example</th></tr></thead><tbody>
+        <tr><td><b>Behavior</b></td><td>What the student did, described objectively.</td><td>Talked to peers during instruction and passed notes.</td></tr>
+        <tr><td><b>Intervention</b></td><td>What the teacher did to redirect the behavior or support improvement.</td><td>Verbal redirection, proximity, private conversation, reteaching expectations, a seat change.</td></tr>
+        <tr><td><b>Student response</b></td><td>How the student responded to the intervention.</td><td>Returned to the assignment after redirection, then began talking again several minutes later.</td></tr>
+        <tr><td><b>Consequence</b></td><td>A disciplinary action or outcome resulting from the behavior.</td><td>Loss of recess, parent contact as part of a disciplinary response, an office referral.</td></tr>
+      </tbody></table></details>
     <p class="why"><b>Checked against:</b> the Sunnyside matrix log instructions; objective language (Girvan et al., 2017); intervention before consequence (Conroy &amp; Sutherland, 2012); student response data (Chafouleas et al., 2007).</p>
   </div></div>
   <section>
+    <div id="own-block"></div>
     <div class="panel"><header><h2>Strengthened entry</h2></header><div class="body" id="own-strong"></div></div>
     <div class="panel" style="margin-top:18px"><header><h2>Feedback</h2></header><div class="body" id="own-out"></div></div>
   </section>
@@ -206,9 +239,12 @@
   <header><h2>Proof of Intervention</h2>
     <div class="filters"><select id="proof-student" aria-label="Choose student" style="width:auto"></select>
       <button class="btn ghost sm" type="button" id="csv">Export CSV</button>
+      <a class="btn ghost sm" href="logs.html">All student logs</a>
       <button class="btn ghost sm" type="button" id="print">Print record</button>
       <button class="btn sm" type="button" id="rfs-open">MTSS Request for Support</button></div></header>
-  <div class="body"><h3 class="subhead" style="margin-top:0">The Tier 1 timeline: at least 3 interventions, 2 to 3 weeks each</h3><div id="tl"></div><p class="hint">Records are saved only on this device.</p></div>
+  <div class="body"><h3 class="subhead" style="margin-top:0">The Tier 1 timeline: at least 3 interventions, 2 to 3 weeks each</h3><div id="tl"></div>
+    <div class="alert tipbox store"><h3>Where your logs are stored</h3><p>Every saved entry is stored in this browser on this device, and it stays there when you close the page. Save a backup file to keep a copy or move your logs to another computer. Clearing browser data deletes them.</p>
+      <div class="cta"><button class="btn sm" type="button" id="bk-save">Save backup file</button><label class="btn ghost sm" style="cursor:pointer">Restore from file<input type="file" id="bk-load" accept=".json,application/json" hidden></label></div></div></div>
   <div class="body" id="proof-body"></div>
   <div class="body" id="rfs" hidden style="border-top:1px solid var(--line)">
     <h3 class="subhead" style="margin-top:0">MTSS Request for Support: <span id="rfs-name"></span></h3>
@@ -238,6 +274,8 @@
 <script src="js/logcheck.js?v=c5bcb69"></script>
 <script src="js/support.js?v=c5bcb69"></script>
 <script src="js/logui.js?v=c5bcb69"></script>
-<script>document.getElementById("tl").innerHTML = BIM.timeline();</script>
+<script>document.getElementById("tl").innerHTML = BIM.timeline();
+document.getElementById("bk-save").addEventListener("click", BIM.backup);
+document.getElementById("bk-load").addEventListener("change", function (e) { if (e.target.files[0]) BIM.restore(e.target.files[0], function () { location.reload(); }); });</script>
 </body>
 </html>

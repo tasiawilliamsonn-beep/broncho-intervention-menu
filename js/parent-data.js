@@ -1,6 +1,10 @@
 /* Parent Contact: family-friendly wording for each matrix behavior and for common interventions. */
 (function () {
   var add = {
+    kaminski2008: "Kaminski, J. W., Valle, L. A., Filene, J. H., & Boyle, C. L. (2008). A meta-analytic review of components associated with parent training program effectiveness. Journal of Abnormal Child Psychology, 36(4), 567-589.",
+    patall2008: "Patall, E. A., Cooper, H., & Robinson, J. C. (2008). Parent involvement in homework: A research synthesis. Review of Educational Research, 78(4), 1039-1101.",
+    paruthi2016: "Paruthi, S., Brooks, L. J., D'Ambrosio, C., Hall, W. A., Kotagal, S., Lloyd, R. M., Malow, B. A., Maski, K., Nichols, C., Quan, S. F., Rosen, C. L., Troester, M. M., & Wise, M. S. (2016). Recommended amount of sleep for pediatric populations: A consensus statement of the American Academy of Sleep Medicine. Journal of Clinical Sleep Medicine, 12(6), 785-786.",
+    elnokali2010: "El Nokali, N. E., Bachman, H. J., & Votruba-Drzal, E. (2010). Parent involvement and children's academic and social development in elementary school. Child Development, 81(3), 988-1005.",
     kraft2015: "Kraft, M. A., & Rogers, T. (2015). The underutilized potential of teacher-to-parent communication: Evidence from a field experiment. Economics of Education Review, 47, 49-63."
   };
   Object.keys(add).forEach(function (k) { if (!REFS[k]) REFS[k] = add[k]; });
@@ -63,3 +67,25 @@ var HARD_CALL = [
   "Don't debate details. Offer a next step: \"Could we meet with our counselor together?\"",
   "If the call becomes abusive, end it politely and let an administrator know."
 ];
+
+/* At-home menu: research-based things families can do, matched to the behavior. [title, how (family wording), citation keys] */
+var HOME = {
+  note: ["Check the daily note", "Look at {s}'s daily note or behavior report each evening. Praise the good parts first, and give a small, agreed-on reward when {s} meets the goal.", ["kelley1990"]],
+  praise: ["Notice and name it", "When {s} does the expected behavior at home, say exactly what you liked: \"You started your homework without a reminder. That's effort.\" Give many more positive comments than corrections.", ["kaminski2008"]],
+  practice: ["Practice the skill", "Act out the school situation for a few minutes: raising a hand, asking for help, walking away, or disagreeing politely. Practicing works better than only talking about it.", ["kaminski2008"]],
+  commands: ["Short, clear directions", "Get {s}'s attention, give one direction at a time, say what to do instead of what to stop, then wait calmly and follow through every time.", ["kaminski2008", "kazdin2013"]],
+  routine: ["A set homework routine", "Same time and place each day, materials ready, phone and TV off. Set clear rules, check in after the first 10 minutes, and help with planning instead of doing the work.", ["patall2008"]],
+  planner: ["Check the planner together", "Look at the planner or assignment list together each night and pack the bag before bed.", ["patall2008", "kelley1990"]],
+  feelings: ["Name feelings and plan a calm-down", "Help {s} name the feeling (\"You seem frustrated\") and pick a calm-down step to use: deep breaths, a short break, a drink of water, then try again.", ["kaminski2008"]],
+  sleep: ["Protect sleep", "Children ages 6 to 12 need 9 to 12 hours of sleep. Too little sleep is linked to attention, behavior, and learning problems. Keep a regular bedtime with screens off.", ["paruthi2016"]],
+  talk: ["Talk about school every day", "Ask about one good thing and one hard thing from the school day. Family involvement in school is linked to better social skills and fewer behavior problems.", ["elnokali2010"]],
+  same: ["Use the same words as school", "Use our HEART words (Honesty, Effort, Attitude, Respect, Teamwork) and the same plan the teacher is using, so {s} hears one consistent message.", ["sheridan2012"]]
+};
+var HOME_FOR = {
+  talking: ["praise", "practice", "note", "same"], offtask: ["routine", "sleep", "note", "praise"], outofarea: ["practice", "sleep", "praise", "note"],
+  tone: ["feelings", "practice", "commands", "praise", "same"], homework: ["routine", "planner", "note", "praise", "sleep"], language: ["feelings", "practice", "praise", "same"],
+  unsafe: ["practice", "commands", "praise", "same"], running: ["practice", "praise", "same"], putdowns: ["practice", "feelings", "talk", "praise", "same"],
+  pda: ["talk", "practice", "same"], hands: ["feelings", "practice", "commands", "praise"], horseplay: ["practice", "praise", "same"],
+  intimidation: ["feelings", "talk", "practice", "same"], vandalism: ["feelings", "talk", "practice"], refusal: ["commands", "feelings", "routine", "praise", "note"],
+  tardy: ["routine", "sleep", "note", "praise"]
+};

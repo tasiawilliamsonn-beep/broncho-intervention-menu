@@ -85,6 +85,54 @@ var BIM = (function () {
     if (phases.length >= 3) return { cls: "red", title: "Bring it to the MTSS team", text: "This is intervention period " + phases.length + " without adequate response (last 10 days average " + a10 + "%, goal " + goal + "%). Three Tier 1 interventions, each tried for 2 to 3 weeks, meet the Sunnyside MTSS expectation. Print the Request for Support packet from the Log Builder." };
     return { cls: "red", title: "Not yet responding: change the intervention", text: "Intervention period " + Math.max(1, phases.length) + " of 3. The last 10 days average " + a10 + "% with little improvement (goal " + goal + "%). Check that the intervention is being used consistently, check the likely function with the ABC organizer, and choose a different matched intervention. Mark the change below to start the next 2-3 week period." };
   }
+  /* Backup: every saved record on this device (logs, tracking, plans, own interventions) as one file. */
+  function backup() {
+    var data = { app: "broncho-intervention-menu", saved: new Date().toISOString(), keys: {} };
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k.indexOf("bim.") === 0) data.keys[k] = localStorage.getItem(k); } } catch (e) {}
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: "application/json" }));
+    a.download = "broncho-logs-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    toast("Backup file saved to your downloads");
+  }
+  /* restore merges logs by id, so nothing already on this device is lost */
+  function restore(file, done) {
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var d = JSON.parse(r.result); if (!d || !d.keys) throw 0;
+        Object.keys(d.keys).forEach(function (k) {
+          if (k.indexOf("bim.") !== 0) return;
+          if (k === LOGS_KEY) {
+            var have = read(LOGS_KEY, []), ids = {}; have.forEach(function (l) { ids[l.id] = 1; });
+            JSON.parse(d.keys[k]).forEach(function (l) { if (!ids[l.id]) have.push(l); });
+            write(LOGS_KEY, have);
+          } else if (localStorage.getItem(k) == null) localStorage.setItem(k, d.keys[k]);
+        });
+        toast("Backup restored"); if (done) done();
+      } catch (e) { toast("That file is not a Broncho backup"); }
+    };
+    r.readAsText(file);
+  }
+
+  /* Teacher-researched interventions: saved on this device and merged into the menu's list. */
+  var OWN_KEY = "bim.ownints.v1";
+  function getOwn() { return read(OWN_KEY, {}); }
+  function addOwn(o) {
+    var all = getOwn(), id = "own_" + Date.now().toString(36);
+    all[id] = { name: o.name, type: o.type, time: "Teacher-added", summary: o.did, steps: [], functions: o.functions,
+      research: "Teacher-researched intervention. Source: " + (o.src || "not given") + ". How it matches the behavior: " + o.why,
+      refs: [], log: o.did, own: true, src: o.src, why: o.why };
+    write(OWN_KEY, all);
+    if (typeof INTERVENTIONS !== "undefined") INTERVENTIONS[id] = all[id];
+    return id;
+  }
+  if (typeof INTERVENTIONS !== "undefined") { var own0 = getOwn(); Object.keys(own0).forEach(function (id) { INTERVENTIONS[id] = own0[id]; }); }
+  /* note shown at the end of every intervention list */
+  function ownNote() {
+    return '<div class="alert tipbox own-note"><h3>None of these fit?</h3><p>Research another Tier 1 intervention on <a href="https://www.pbisworld.com/tier-1/" target="_blank" rel="noopener">PBIS World: Tier 1</a>. It must match <b>the behavior and the reason it happens</b> (its function). Function-matched interventions work better than ones that are not matched (Ingram, Lewis-Palmer, &amp; Sugai, 2005), and a mismatched one can reward the behavior. For example, sending a student who wants to avoid work out of the room gives them exactly that.</p></div>';
+  }
+
   /* Tier 1 timeline: at least 3 interventions, each tried for 2-3 weeks, before an MTSS referral (Level 1-2 behaviors). */
   function timeline() {
     return '<div class="tl">' +
@@ -142,7 +190,7 @@ var BIM = (function () {
     getTrack: function () { return read(TRACK_KEY, {}); },
     setTrack: function (t) { return write(TRACK_KEY, t); },
     skey: skey, series: series, decision: decision, trendChart: trendChart,
-    esc: esc, timeline: timeline, toast: toast, copy: copy, shortCite: shortCite,
+    esc: esc, backup: backup, restore: restore, timeline: timeline, getOwn: getOwn, addOwn: addOwn, ownNote: ownNote, toast: toast, copy: copy, shortCite: shortCite,
     getPlan: function () { return read(PLAN_KEY, { behaviors: [], interventions: [] }); },
     setPlan: function (p) { return write(PLAN_KEY, p); },
     getLogs: function () { return read(LOGS_KEY, []); },

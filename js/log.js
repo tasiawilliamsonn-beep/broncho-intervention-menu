@@ -8,6 +8,7 @@
 
   var HEART = ["Honesty", "Effort", "Attitude", "Respect", "Teamwork"];
   var SUBJECTIVE = [
+    [/\b(rough|bad|tough|hard|off) day\b|\bhaving a day\b/i, "\"had a rough day\": this is a judgment. Describe what the student did and said."],
     [/\b(disrespectful|rude)\b/i, "\"disrespectful/rude\": describe the words or actions instead (e.g., said \"...\" in a raised voice)."],
     [/\blazy\b|\bunmotivated\b|\bdoesn'?t care\b/i, "\"lazy/unmotivated\": describe the work behavior (e.g., completed 1 of 10 problems in 20 minutes)."],
     [/\b(bad|negative|poor|an|a|his|her|their) attitude\b/i, "\"attitude\": name the observable behavior (eye rolling, sighing, muttering \"...\")."],
@@ -67,8 +68,15 @@
   function suggestedInts() {
     var ids = [];
     (plan.interventions || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); });
+    state.behaviors.forEach(function (b) { var beh = byId[b.bid], v = beh && beh.v.filter(function (x) { return x.t === b.look; })[0]; if (v && v.d) v.d.forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
     state.behaviors.forEach(function (b) { var beh = byId[b.bid]; if (beh) beh.ints.forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
     state.ints.forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); });
+    Object.keys(BIM.getOwn()).forEach(function (id) { if (ids.indexOf(id) < 0 && INTERVENTIONS[id]) ids.push(id); });
+    return ids;
+  }
+  function firstIds() {
+    var ids = [];
+    state.behaviors.forEach(function (b) { var beh = byId[b.bid], v = beh && beh.v.filter(function (x) { return x.t === b.look; })[0]; if (v && v.d) ids = ids.concat(v.d); });
     return ids;
   }
   function renderInts() {
@@ -80,7 +88,7 @@
     $("int-list").innerHTML = Object.keys(TYPES).filter(function (t) { return groups[t]; }).map(function (t) {
       return '<div class="lvl-head"><span class="tag type ' + t + '">' + TYPES[t].name + "</span></div>" + groups[t].map(function (id) {
         return '<label class="opt"><input type="checkbox" data-int="' + id + '"' + (state.ints.indexOf(id) > -1 ? " checked" : "") + "><span>" + esc(INTERVENTIONS[id].name) +
-          (inPlan.indexOf(id) > -1 ? ' <span class="pill ok">in plan</span>' : "") + "</span></label>";
+          (inPlan.indexOf(id) > -1 ? ' <span class="pill ok">in plan</span>' : "") + (INTERVENTIONS[id].own ? ' <span class="pill">my research</span>' : "") + (firstIds().indexOf(id) > -1 ? ' <span class="pill ok">best first response</span>' : "") + "</span></label>";
       }).join("");
     }).join("");
     $("more-int").textContent = state.showAll ? "Show matched interventions only" : "Show all interventions";
@@ -188,7 +196,7 @@
     if (!state.ints.length) return "";
     return prefix + joinAnd(state.ints.map(function (id) {
       var it = INTERVENTIONS[id];
-      return it.log + ($("cites").checked ? " (" + BIM.shortCite(it.refs[0]) + ")" : "");
+      return it.log + ($("cites").checked && it.refs.length ? " (" + BIM.shortCite(it.refs[0]) + ")" : "");
     })) + ".";
   }
   function build(d) {
@@ -416,5 +424,6 @@
   }
   renderBehaviorList(); renderInts(); renderHeart(); renderProof(); update();
   window.BIM_SUBJECTIVE = SUBJECTIVE;
+  window.BIMAddInt = function (id) { if (state.ints.indexOf(id) < 0) state.ints.push(id); renderInts(); update(); };
   window.BIMRenderProof = function (stu) { logs = BIM.getLogs(); $("proof-student").value = key(stu); renderProof(); };
 })();

@@ -669,3 +669,25 @@ ol.desk li { margin-bottom: 6px; break-inside: avoid; }
 .sup-vs .sup-n { width: 56px; text-align: center; font-family: var(--display); color: #c8102e; }
 .sup-vs .sup-ck { width: 70px; text-align: center; }
 .sup-vs .sup-ck span { display: inline-block; width: 36px; height: 36px; border: 2px solid #111; border-radius: 6px; }
+
+/* Student Logs */
+.sl-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 14px; }
+@media (max-width: 900px) { .sl-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .sl-filters { grid-template-columns: 1fr; } }
+.sl-filters .f { margin-top: 0; }
+.sl-table th button { border: 0; background: none; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; color: inherit; text-align: left; }
+.sl-table th button:hover { color: var(--red); }
+.sl-row { cursor: pointer; }
+.sl-detail td { background: var(--surface2); }
+.sl-detail .output { min-height: 0; }
+.own-note { margin-top: 14px; }
+.first-resp { margin: 14px 0; border-color: var(--red); }
+.fr-row { margin-bottom: 12px; }
+.fr-row ul { margin: 6px 0 0; padding-left: 20px; }
+.fr-row li { margin-bottom: 6px; font-size: .95rem; }
+.fr-row .cite { font-size: .82rem; }
+.ps-form.locked .output { opacity: .45; user-select: none; }
+.ob-table td, .ob-ref td { vertical-align: top; font-size: .92rem; }
+.ob-break { margin-top: 14px; }
+.ob-table .pill { white-space: nowrap; }
+.saved-logs { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 22px 0 8px; padding: 16px; border: 2px dashed var(--line); border-radius: 12px; }
