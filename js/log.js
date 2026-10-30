@@ -93,6 +93,14 @@
   /* ---------- records ---------- */
   function studentLogs(s) { var k = key(s); return logs.filter(function (l) { return key(l.student) === k; }); }
   function commsCount(list) { return list.filter(function (l) { return l.type === "COMMUNICATION" || (l.contact && l.contact.made); }).length; }
+  function distinctInts(list) { var d = {}; list.forEach(function (l) { (l.ints || []).forEach(function (id) { d[id] = 1; }); }); return Object.keys(d).length; }
+  /* days from first to last logged use of each intervention */
+  function intSpans(list) {
+    var u = {};
+    list.forEach(function (l) { if (!l.date) return; (l.ints || []).forEach(function (id) { var r = u[id] = u[id] || { first: l.date, last: l.date }; if (l.date < r.first) r.first = l.date; if (l.date > r.last) r.last = l.date; }); });
+    Object.keys(u).forEach(function (id) { u[id] = Math.round((new Date(u[id].last) - new Date(u[id].first)) / 864e5); });
+    return u;
+  }
   function intLogs(list) { return list.filter(function (l) { return l.ints && l.ints.length; }); }
 
   /* ---------- core logic: decide the log type ---------- */
@@ -106,32 +114,33 @@
 
     if (lv === 4) {
       type = "DISCIPLINE"; sub = "Level 4: contact an administrator immediately";
-      g.push(["red", "Safety first", "Contact an administrator now. Do not wait to finish this log. Then log the facts as DISCIPLINE."]);
+      g.push(["red", "Safety first", "Contact an administrator now. Do not wait to finish this log. Then log the facts as DISCIPLINE.", "Sunnyside Behavior Intervention Matrix, Level 4"]);
     } else if (lv === 3) {
       type = "DISCIPLINE"; sub = "Level 3: office referral";
       if (noChange) {
         var c = commsCount(prior) + (contact ? 1 : 0);
         var ni = intLogs(prior).length + (state.ints.length ? 1 : 0);
-        if (c < 3) g.push(["red", "Does not yet meet the matrix requirement", "The matrix requires little/no change in Level 2 behaviors after at least three logged parent/guardian communications. This record shows " + c + " of 3. Continue Tier 1 interventions and log each contact as COMMUNICATION first."]);
-        else g.push(["ok", "Matrix requirement met: " + c + " logged parent communications", "Attach a summary of the " + ni + " documented intervention entries (see the Proof of Intervention record below)."]);
-        if (ni < 2) g.push(["warn", "Little documented intervention", "Only " + ni + " intervention entr" + (ni === 1 ? "y is" : "ies are") + " on this device's record for this student. A referral is strongest when it shows several matched Tier 1 interventions used over 2 to 3 weeks."]);
+        if (c < 3) g.push(["red", "Does not yet meet the matrix requirement", "The matrix requires little/no change in Level 2 behaviors after at least three logged parent/guardian communications. This record shows " + c + " of 3. Continue Tier 1 interventions and log each contact as COMMUNICATION first.", "Sunnyside Behavior Intervention Matrix, Level 3"]);
+        else g.push(["ok", "Matrix requirement met: " + c + " logged parent communications", "Attach the Student records summary of the " + ni + " documented intervention entries.", "Sunnyside Behavior Intervention Matrix, Level 3"]);
+        var nd = distinctInts(prior.concat(state.ints.length ? [{ ints: state.ints }] : []));
+        if (nd < 3) g.push(["warn", "Fewer than 3 Tier 1 interventions", nd + " of 3 different interventions are on this device's record for this student. Sunnyside expects at least 3 matched Tier 1 interventions, each tried for 2 to 3 weeks, before a \"little/no change\" referral.", "Sunnyside MTSS process; Kratochwill et al., 2013"]);
       } else {
-        g.push(["warn", "Include prior interventions", "Even for Level 3, list any Tier 1 interventions you already used and the student's response so the administrator has the full picture."]);
+        g.push(["warn", "Include prior interventions", "Even for Level 3, list any Tier 1 interventions you already used and the student's response so the administrator has the full picture.", "Chafouleas, Riley-Tillman, & Sugai, 2007"]);
       }
     } else if (state.purpose === "contact") {
       type = "COMMUNICATION"; sub = "Written or verbal parent/guardian contact";
-      if (!contact) g.push(["warn", "Add the contact details", "Check \"I contacted a parent/guardian\" and describe what was shared."]);
+      if (!contact) g.push(["warn", "Add the contact details", "Check \"I contacted a parent/guardian\" and describe what was shared.", "Sunnyside Behavior Intervention Matrix"]);
     } else if (state.purpose === "info" && lv < 2) {
       type = "INFORMATION"; sub = lv ? "Level 1: details you would like documented" : "Details you would like documented";
     } else {
       type = "INTERVENTION"; sub = lv ? "Level " + lv + ": " + LEVELS[lv].who : "Behavior you have addressed";
-      if (state.purpose === "admin") g.push(["red", "Level " + (lv || "1-2") + " behaviors are not logged as DISCIPLINE", "The matrix handles Level 1 and 2 behaviors in the classroom. This entry is set to INTERVENTION. If a Level 2 behavior has shown little or no change after at least three logged parent communications, add the Level 3 behavior \"Little/no change in Level 2 behaviors...\" instead."]);
-      if (state.purpose === "info" && lv === 2) g.push(["warn", "Level 2 uses INTERVENTION or COMMUNICATION", "INFORMATION is a Level 1 option on the matrix. This entry is set to INTERVENTION."]);
-      if (!state.behaviors.length) g.push(["warn", "Add the behavior", "Choose the behavior from the matrix so the level is documented."]);
-      if (!state.ints.length) g.push(["red", "An INTERVENTION log must include the intervention", "Check the Tier 1 intervention(s) you used. A consequence alone (detention, loss of privilege) is not an intervention."]);
-      if (lv === 2 && !contact) g.push(["warn", "Level 2 requires parent notification", "Contact the family and record it here, or log it as a separate COMMUNICATION entry."]);
+      if (state.purpose === "admin") g.push(["red", "Level " + (lv || "1-2") + " behaviors are not logged as DISCIPLINE", "The matrix handles Level 1 and 2 behaviors in the classroom. This entry is set to INTERVENTION. If a Level 2 behavior has shown little or no change after at least three logged parent communications, add the Level 3 behavior \"Little/no change in Level 2 behaviors...\" instead.", "Sunnyside Behavior Intervention Matrix"]);
+      if (state.purpose === "info" && lv === 2) g.push(["warn", "Level 2 uses INTERVENTION or COMMUNICATION", "INFORMATION is a Level 1 option on the matrix. This entry is set to INTERVENTION.", "Sunnyside Behavior Intervention Matrix"]);
+      if (!state.behaviors.length) g.push(["warn", "Add the behavior", "Choose the behavior from the matrix so the level is documented.", "Sunnyside Behavior Intervention Matrix"]);
+      if (!state.ints.length) g.push(["red", "An INTERVENTION log must include the intervention", "Check the Tier 1 intervention(s) you used. A consequence alone (detention, loss of privilege) does not teach the expected behavior.", "Conroy & Sutherland, 2012; Sugai & Horner, 2002"]);
+      if (lv === 2 && !contact) g.push(["warn", "Level 2 requires parent notification", "Contact the family and record it here, or log it as a separate COMMUNICATION entry.", "Sunnyside Behavior Intervention Matrix; Sheridan et al., 2012"]);
       var onlyRespond = state.ints.length && state.ints.every(function (id) { return INTERVENTIONS[id].type === "respond"; });
-      if (onlyRespond) g.push(["warn", "Add a Prevent or Teach strategy", "Only in-the-moment responses are checked. Research-based plans include an antecedent (Prevent) or skill-building (Teach) strategy so the behavior is less likely next time."]);
+      if (onlyRespond) g.push(["warn", "Add a Prevent or Teach strategy", "Only in-the-moment responses are checked. Research-based plans include an antecedent (Prevent) or skill-building (Teach) strategy so the behavior is less likely next time.", "Simonsen et al., 2008; Kern & Clemens, 2007"]);
     }
     var cm = prior.length ? commsCount(prior) : 0;
     if (lv && lv <= 2 && cm) g.push(["ok", "On record for this student", intLogs(prior).length + " intervention entries and " + cm + " parent communication(s) saved on this device."]);
@@ -242,7 +251,7 @@
     $("type-s").textContent = LOG_TYPES[d.type];
     $("type-lv").textContent = d.sub;
     $("guards").innerHTML = ((state.behaviors.some(function (b) { return b.key === "L3:2"; }) || (window.BULLY && BULLY.rx.test($("desc").value))) && window.BULLY ? BULLY.html() : "") +
-      d.guards.map(function (x) { return '<div class="alert ' + x[0] + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + "</p></div>"; }).join("");
+      d.guards.map(function (x) { return '<div class="alert ' + x[0] + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + (x[3] ? '<span class="src">' + esc(x[3]) + "</span>" : "") + "</p></div>"; }).join("");
     var tName = d.type.charAt(0) + d.type.slice(1).toLowerCase();
     $("ps-type").textContent = tName;
     $("ps-title").textContent = titleFor(d.type);
@@ -276,6 +285,7 @@
     var il = intLogs(mine), cm = commsCount(mine);
     var distinct = {}; il.forEach(function (l) { l.ints.forEach(function (id) { distinct[id] = true; }); });
     var types = {}; Object.keys(distinct).forEach(function (id) { types[INTERVENTIONS[id].type] = true; });
+    var spans = intSpans(mine), full = Object.keys(spans).filter(function (id) { return spans[id] >= 14; }).length;
     var dates = mine.map(function (l) { return l.date; }).filter(Boolean).sort();
     var span = dates.length > 1 ? Math.round((new Date(dates[dates.length - 1]) - new Date(dates[0])) / 864e5) : 0;
     var noChangeCount = mine.filter(function (l) { return l.response === "No change" || l.response === "Partial improvement" || l.response === "Behavior escalated"; }).length;
@@ -284,16 +294,17 @@
       '<h3 style="text-transform:uppercase;margin-bottom:8px">Summary for ' + esc(names[sk]) + "</h3>" +
       '<ul class="checklist">' +
       item(il.length > 0, "<b>" + il.length + "</b> documented intervention entr" + (il.length === 1 ? "y" : "ies")) +
-      item(Object.keys(distinct).length >= 2, "<b>" + Object.keys(distinct).length + "</b> different Tier 1 interventions tried") +
+      item(Object.keys(distinct).length >= 3, "<b>" + Object.keys(distinct).length + "</b> of 3 different Tier 1 interventions tried (Sunnyside MTSS expectation)") +
+      item(full >= 3, "<b>" + full + "</b> of 3 interventions used for at least 2 weeks (each needs 2 to 3 weeks of data)") +
       item(types.prevent || types.teach, "Includes a Prevent or Teach strategy" + (Object.keys(types).length ? " (" + Object.keys(types).map(function (t) { return TYPES[t].name; }).join(", ") + ")" : "")) +
-      item(span >= 14, "Interventions span <b>" + span + "</b> day" + (span === 1 ? "" : "s") + " (MTSS guidance: monitor at least 2 to 3 weeks)") +
+      item(span >= 42, "Record spans <b>" + span + "</b> day" + (span === 1 ? "" : "s") + " (3 interventions x 2 to 3 weeks = about 6 to 9 weeks)") +
       item(cm >= 3, "<b>" + cm + "</b> of 3 logged parent/guardian communications (matrix requirement for a Level 3 \"little/no change\" referral)") +
       item(true, "<b>" + noChangeCount + "</b> entr" + (noChangeCount === 1 ? "y" : "ies") + " show partial, no change, or escalation") +
       "</ul></div><div>" +
       '<h3 style="text-transform:uppercase;margin-bottom:8px">Interventions tried</h3>' +
       (Object.keys(distinct).length ? '<ul class="check">' + Object.keys(distinct).map(function (id) {
         var n = il.filter(function (l) { return l.ints.indexOf(id) > -1; }).length;
-        return "<li>" + esc(INTERVENTIONS[id].name) + ' <span class="hint">(' + n + "x)</span></li>";
+        return "<li>" + esc(INTERVENTIONS[id].name) + ' <span class="hint">(' + n + "x over " + (spans[id] || 0) + " day" + (spans[id] === 1 ? "" : "s") + ")</span></li>";
       }).join("") + "</ul>" : '<p class="hint">None yet.</p>') + "</div></div>";
     h += '<div class="table-scroll" style="margin-top:18px"><table class="hist"><thead><tr><th>Date</th><th>Type</th><th>Behavior</th><th>Intervention(s)</th><th>Response</th><th>Parent contact</th><th></th></tr></thead><tbody>' +
       mine.map(function (l) {

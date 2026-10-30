@@ -24,6 +24,8 @@
     var used = {};
     intLogs.forEach(function (l) { l.ints.forEach(function (id) { var u = used[id] = used[id] || { n: 0, first: l.date, last: l.date }; u.n++; if (l.date < u.first) u.first = l.date; if (l.date > u.last) u.last = l.date; }); });
     var ids = Object.keys(used).filter(function (id) { return INTERVENTIONS[id]; });
+    function spanDays(u) { return Math.round((new Date(u.last) - new Date(u.first)) / 864e5) || 0; }
+    var full = ids.filter(function (id) { return spanDays(used[id]) >= 14; }).length;
     var types = {}; ids.forEach(function (id) { types[INTERVENTIONS[id].type] = 1; });
     var dates = logs.map(function (l) { return l.date; }).filter(Boolean).sort();
     var span = dates.length > 1 ? Math.round((new Date(dates[dates.length - 1]) - new Date(dates[0])) / 864e5) : 0;
@@ -40,14 +42,15 @@
 
       "<h3>Tier 1 documentation summary</h3><ul class=\"checklist\">" +
       chk(intLogs.length > 0, "<b>" + intLogs.length + "</b> documented intervention log entr" + (intLogs.length === 1 ? "y" : "ies")) +
-      chk(ids.length >= 2, "<b>" + ids.length + "</b> different Tier 1 interventions tried") +
+      chk(ids.length >= 3, "<b>" + ids.length + "</b> of 3 different Tier 1 interventions tried (Sunnyside MTSS expectation)") +
+      chk(full >= 3, "<b>" + full + "</b> of 3 interventions used for at least 2 weeks each") +
       chk(types.prevent || types.teach, "Includes a Prevent or Teach strategy") +
-      chk(span >= 14, "Documented over <b>" + span + "</b> days (at least 2-3 weeks recommended)") +
+      chk(span >= 42, "Documented over <b>" + span + "</b> days (3 interventions x 2 to 3 weeks = about 6 to 9 weeks)") +
       chk(comms.length >= 3, "<b>" + comms.length + "</b> logged parent/guardian communications (3 required before a Level 3 \"little/no change\" referral)") +
       chk(days >= 10, "<b>" + days + "</b> days of Daily Behavior Report data") + "</ul>" +
 
-      "<h3>Tier 1 interventions tried</h3>" + (ids.length ? '<table class="sheet-grid"><thead><tr><th>Intervention</th><th>Type</th><th>Times logged</th><th>First</th><th>Last</th></tr></thead><tbody>' +
-        ids.map(function (id) { var u = used[id]; return "<tr><td>" + esc(INTERVENTIONS[id].name) + "</td><td>" + esc(TYPES[INTERVENTIONS[id].type].name) + "</td><td>" + u.n + "</td><td>" + fmt(u.first) + "</td><td>" + fmt(u.last) + "</td></tr>"; }).join("") + "</tbody></table>" : "<p>None logged yet.</p>") +
+      "<h3>Tier 1 interventions tried</h3>" + (ids.length ? '<table class="sheet-grid"><thead><tr><th>Intervention</th><th>Type</th><th>Times logged</th><th>First</th><th>Last</th><th>Days</th></tr></thead><tbody>' +
+        ids.map(function (id) { var u = used[id]; return "<tr><td>" + esc(INTERVENTIONS[id].name) + "</td><td>" + esc(TYPES[INTERVENTIONS[id].type].name) + "</td><td>" + u.n + "</td><td>" + fmt(u.first) + "</td><td>" + fmt(u.last) + "</td><td>" + spanDays(u) + "</td></tr>"; }).join("") + "</tbody></table>" : "<p>None logged yet.</p>") +
 
       "<h3>Parent/guardian communications</h3>" + (comms.length ? '<table class="sheet-grid"><thead><tr><th>Date</th><th>How</th><th>Summary</th></tr></thead><tbody>' +
         comms.map(function (l) { var c = l.contact || {}; return "<tr><td>" + fmt(c.date || l.date) + "</td><td>" + esc(c.method || "") + (c.with ? " (" + esc(c.with) + ")" : "") + "</td><td>" + esc(c.summary || (l.type === "COMMUNICATION" ? l.text : "")) + "</td></tr>"; }).join("") + "</tbody></table>" : "<p>None logged yet.</p>") +
@@ -64,7 +67,7 @@
 
       '<h3>For the team</h3><div class="ct-box"><b>Team decision</b><p><span class="box"></span> Continue Tier 1 with adjustments &nbsp; <span class="box"></span> Add Tier 2 support &nbsp; <span class="box"></span> Further assessment &nbsp; <span class="box"></span> Other</p><p class="rl"></p><p class="rl"></p></div>' +
       '<p class="sheet-sign">Next review date: ____________ &nbsp; Team members: ____________________________________________</p>' +
-      '<p class="sheet-cite">Prepared with The Broncho Intervention Menu. Tier 1 process and decision rules: Sunnyside MTSS process; Sunnyside Behavior Intervention Matrix.</p></div>';
+      '<p class="sheet-cite">Prepared with The Broncho Intervention Menu. Tier 1 process and decision rules: Sunnyside MTSS process (at least 3 Tier 1 interventions, each tried for 2 to 3 weeks); Sunnyside Behavior Intervention Matrix; Kratochwill et al. (2013); Chafouleas, Riley-Tillman, &amp; Sugai (2007).</p></div>';
     return h;
   }
   $("rfs-print").addEventListener("click", function () { BIM.printHTML(packet()); });

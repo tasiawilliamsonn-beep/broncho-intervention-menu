@@ -160,30 +160,30 @@
     /* required elements decide the rating */
     var type = rec || chosen, subj = (window.BIM_SUBJECTIVE || []).some(function (r) { return r[0].test(text); });
     var req = [];
-    function need(label, ok, required) { req.push({ label: label, ok: !!ok, required: required }); }
+    function need(label, ok, required, src) { req.push({ label: label, ok: !!ok, required: required, src: src }); }
     if (type === "COMMUNICATION") {
-      need("Says who you contacted and how", parent, true);
-      need("Explains the reason and what was shared", q.words >= 15, true);
-      need("Objective language", !subj, true);
+      need("Says who you contacted and how", parent, true, "Sunnyside matrix");
+      need("Explains the reason and what was shared", q.words >= 15, true, "Sheridan et al., 2012");
+      need("Objective language", !subj, true, "Girvan et al., 2017");
     } else if (type === "INFORMATION") {
-      need("Enough detail to be useful (15+ words)", q.words >= 15, true);
-      need("Objective language", !subj, true);
+      need("Enough detail to be useful (15+ words)", q.words >= 15, true, "Sunnyside matrix");
+      need("Objective language", !subj, true, "Girvan et al., 2017");
     } else {
-      need("Behavior identified on the matrix", behs.length, true);
-      need("Describes what the student said or did (20+ words)", q.words >= 20, true);
-      need("Objective language (no judgment words)", !subj, true);
-      need("Log Type matches the matrix", !align.some(function (f) { return f[0] === "red"; }), true);
+      need("Behavior identified on the matrix", behs.length, true, "Sunnyside matrix");
+      need("Describes what the student said or did (20+ words)", q.words >= 20, true, "Girvan et al., 2017");
+      need("Objective language (no judgment words)", !subj, true, "Girvan et al., 2017");
+      need("Log Type matches the matrix", !align.some(function (f) { return f[0] === "red"; }), true, "Sunnyside matrix");
       if (lv && lv <= 2) {
-        need("Names the Tier 1 intervention you used", ints.length, true);
-        need("Says how the student responded", RESPONSE_RX.test(text), true);
-        if (lv === 2) need("Parent/guardian contact (required for Level 2)", parent, true);
-        need("Names the HEART expectation", HEART_RX.test(text), false);
-        need("Includes a next step", NEXT_RX.test(text), false);
+        need("Names the Tier 1 intervention you used", ints.length, true, "Sunnyside matrix; Conroy & Sutherland, 2012");
+        need("Says how the student responded", RESPONSE_RX.test(text), true, "Chafouleas et al., 2007");
+        if (lv === 2) need("Parent/guardian contact (required for Level 2)", parent, true, "Sunnyside matrix; Sheridan et al., 2012");
+        need("Names the HEART expectation", HEART_RX.test(text), false, "Simonsen et al., 2008");
+        need("Includes a next step", NEXT_RX.test(text), false, "Chafouleas et al., 2007");
       }
-      if (noChange) need("Mentions the parent communications already logged", parent || NOCHANGE_RX.test(text), true);
+      if (noChange) need("Mentions the parent communications already logged", parent || NOCHANGE_RX.test(text), true, "Sunnyside matrix, Level 3");
     }
     need("No [bracketed] text left to fill in", !/\[[^\]]+\]/.test(text), true);
-    need("No dates, times, or labels (PowerSchool has its own fields)", !DATE_RX.test(text) && !LABEL_RX.test(text), false);
+    need("No dates, times, or labels (PowerSchool has its own fields)", !DATE_RX.test(text) && !LABEL_RX.test(text), false, "PowerSchool log format");
     var missReq = req.filter(function (x) { return x.required && !x.ok; }).length, missOpt = req.filter(function (x) { return !x.required && !x.ok; }).length;
     var rating = missReq ? ["red", "Not ready yet: " + missReq + " required element" + (missReq > 1 ? "s" : "") + " missing"] : missOpt ? ["warn", "Almost there: all required elements are in"] : ["ok", "Strong entry: ready to submit"];
     return { behs: behs, ints: ints, lv: lv, rec: type, refer: refer, align: align, fixes: fixes, good: good, req: req, rating: rating, parent: parent, noChange: noChange };
@@ -320,7 +320,7 @@
     var h = '<div class="alert ' + a.rating[0] + '"><h3>' + esc(a.rating[1]) + "</h3></div>";
     if (window.BULLY && (BULLY.rx.test(text) || a.behs.some(function (b) { return b.key === "L3:2"; }))) h += BULLY.html();
     h += '<ul class="checklist" style="margin-bottom:12px">' + a.req.map(function (x) {
-      return '<li><span class="ic ' + (x.ok ? "yes" : x.required ? "no" : "") + '">' + (x.ok ? "\u2713" : x.required ? "\u2715" : "\u2013") + "</span><span>" + esc(x.label) + (x.required ? "" : ' <span class="hint">(recommended)</span>') + "</span></li>";
+      return '<li><span class="ic ' + (x.ok ? "yes" : x.required ? "no" : "") + '">' + (x.ok ? "\u2713" : x.required ? "\u2715" : "\u2013") + "</span><span>" + esc(x.label) + (x.required ? "" : ' <span class="hint">(recommended)</span>') + (x.src ? ' <span class="hint"><i>' + esc(x.src) + "</i></span>" : "") + "</span></li>";
     }).join("") + "</ul>";
     h += '<div class="ps-form">' +
       '<div class="ps-row"><span class="ps-lab">Matrix level</span><div>' + (a.lv ? "<b>Level " + a.lv + "</b>: " + esc(LEVELS[a.lv].who) : "Not recognized") + "</div></div>" +
@@ -360,14 +360,16 @@
     if (window.BIMRenderProof) window.BIMRenderProof(stu);
   });
 
-  /* mode switch */
+  /* tabs: build, check, records */
   function mode(m) {
-    document.querySelectorAll("[data-mode]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-mode") === m); });
-    $("mode-build").hidden = m !== "build"; $("mode-check").hidden = m !== "check";
-    try { history.replaceState(null, "", m === "check" ? "#check" : location.pathname); } catch (e) {}
+    document.querySelectorAll("[data-mode]").forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-mode") === m); });
+    ["build", "check", "records"].forEach(function (k) { $("mode-" + k).hidden = k !== m; });
+    try { history.replaceState(null, "", m === "build" ? location.pathname : "#" + m); } catch (e) {}
   }
   document.querySelectorAll("[data-mode]").forEach(function (b) { b.addEventListener("click", function () { mode(b.getAttribute("data-mode")); }); });
   var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); $("own-date").value = d.toISOString().slice(0, 10);
-  mode(location.hash === "#check" ? "check" : "build");
+  function fromHash() { mode({ "#check": "check", "#records": "records" }[location.hash] || "build"); }
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
   render();
 })();
