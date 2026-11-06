@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Excel Log Workbook</title>
+<meta name="description" content="Create a Broncho-themed Excel workbook of the logs saved on this computer.">
+<link rel="icon" href="img/broncho-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css?v=388323a">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="img/broncho-logo.png" alt=""><span><b>The Broncho Intervention Menu</b><small>Sunnyside Tier 1 Supports</small></span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Interventions</a>
+    <a href="log.html">Log Builder</a>
+    <a href="logs.html">Student Logs</a>
+    <a href="excel.html" aria-current="page">Excel Workbook</a>
+    <a href="tools.html">Classroom Tools</a>
+    <a href="supports.html">ML &amp; SPED</a>
+    <a href="parent.html">Parent Contact</a>
+    <a href="mtss.html">MTSS Team</a>
+    <a href="research.html">Research</a>
+  </nav>
+</div></header>
+
+<div class="page-head"><div class="wrap">
+  <h1>Excel Log Workbook</h1>
+  <p>Create a red-and-black Broncho Excel workbook of the logs saved on this computer: a separate copy you can keep, and a place to keep logging if the website is ever unavailable.</p>
+</div></div>
+
+<main id="main" class="wrap" style="padding-block:24px 56px">
+  <div class="grid g2" style="align-items:start">
+    <section class="panel xl-form"><header><h2>Create your workbook</h2></header><div class="body">
+      <label class="f" for="xl-teacher">Your name <span class="hint">(optional, shown at the top; not saved)</span></label>
+      <input type="text" id="xl-teacher" placeholder="e.g., Ms. Williamson">
+      <div class="row3">
+        <div><label class="f" for="xl-student">Students</label><select id="xl-student"></select></div>
+        <div><label class="f" for="xl-from">From</label><input type="date" id="xl-from"></div>
+        <div><label class="f" for="xl-to">To</label><input type="date" id="xl-to"></div>
+      </div>
+      <label class="f">Tabs to include</label>
+      <label class="opt"><input type="checkbox" checked disabled><span>All Logs</span></label>
+      <label class="opt"><input type="checkbox" id="xl-sum" checked><span>Summary by Student (with the Tier 1 timeline)</span></label>
+      <label class="opt"><input type="checkbox" id="xl-ints" checked><span>Interventions Tried (dates and days used)</span></label>
+      <label class="opt"><input type="checkbox" id="xl-guide" checked><span>How to Log (Sunnyside standards, log types, levels)</span></label>
+      <label class="f" for="xl-blank">Blank rows for new entries in Excel</label>
+      <select id="xl-blank" style="max-width:220px"><option value="0">None</option><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select>
+      <p class="hint" id="xl-count" style="margin-top:12px"></p>
+      <div class="cta" style="margin-top:6px"><button class="btn" type="button" id="xl-make">Create Excel workbook</button><button class="btn ghost" type="button" id="xl-blankbook">Create a blank workbook</button></div>
+    </div></section>
+
+    <div>
+      <div class="alert tipbox"><h3>Stored only where you save it</h3><p>The workbook is built on this computer. Nothing is uploaded or sent anywhere. To protect student information (FERPA):</p>
+        <ul class="check" style="margin:6px 0 0">
+          <li>Save it to your <b>school OneDrive or Teams</b>, not a personal device, USB drive, or personal email.</li>
+          <li>Share it only with staff who work with the student (administrator, counselor, MTSS team).</li>
+          <li>Use initials or student ID, never full names.</li>
+          <li>PowerSchool stays the official record. Delete copies you no longer need.</li>
+        </ul></div>
+      <div class="card red-top" style="margin-top:16px"><h3>What's inside</h3>
+        <ul class="check">
+          <li><b>All Logs:</b> every entry with date, student, location, Log Type, level, behavior, interventions, response, parent contact, and the full log entry. Discipline rows are highlighted in red. Blank rows have drop-down menus so you can keep logging in Excel.</li>
+          <li><b>Summary by Student:</b> entries, interventions tried, parent contacts, and whether the Tier 1 timeline is met.</li>
+          <li><b>Interventions Tried:</b> each intervention with first and last dates and days used.</li>
+          <li><b>How to Log:</b> the Sunnyside standards, so the workbook works on its own.</li>
+        </ul>
+        <p class="hint">Every tab has the Broncho banner, red column headers, and prints landscape with page numbers. It uses the site's fonts (Oswald and Source Sans 3); if they are not installed, Excel shows a similar font. The free fonts are at <a href="https://fonts.google.com/specimen/Oswald" target="_blank" rel="noopener">Google Fonts</a>.</p></div>
+      <p class="hint" style="margin-top:12px">To bring logs back into this website, use the backup file on the <a href="logs.html">Student Logs</a> page. The Excel workbook is a copy for safekeeping and sharing.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/broncho-logo.png" alt="">
+  <div><b>The Broncho Intervention Menu</b> &middot; Lafayette Sunnyside Intermediate School</div>
+</div></footer>
+
+<script src="js/data.js?v=770fa8a"></script>
+<script src="js/app.js?v=770fa8a"></script>
+<script src="js/vendor/exceljs-4.4.0.min.js"></script>
+<script src="js/excel.js?v=770fa8a"></script>
+<script src="js/feedback.js?v=770fa8a"></script>
+</body>
+</html>
