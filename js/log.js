@@ -203,10 +203,11 @@
   }
   /* ---------- the entry, in order: what happened and the expectation, what I did,
      how the student responded and what happened next, family contact and next step ---------- */
-  var PRONOUNS = { they: ["they", "their"], he: ["he", "his"], she: ["she", "her"] };
+  var PRONOUNS = { he: ["he", "his"], she: ["she", "her"] };
   function who() { var n = $("student").value.trim(); return n || "the student"; }
   function fill(t) {
-    var pr = PRONOUNS[$("pron").value] || PRONOUNS.they;
+    /* no pronoun chosen: use the student's initials instead */
+    var pr = PRONOUNS[$("pron").value] || [who(), who() + "'s"];
     return t.replace(/\{n\}/g, who()).replace(/\{p\}/g, pr[1]).replace(/\{s\}/g, pr[0]);
   }
   /* turn a teacher's note into a sentence about the student: "talked to a peer" -> "J.P. talked to a peer." */

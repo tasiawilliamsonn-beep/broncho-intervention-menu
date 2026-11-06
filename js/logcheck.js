@@ -222,7 +222,7 @@
   var SETTING_WORDS = [[/\b(lunch|cafeteria)\b/i, "Cafeteria / lunch"], [/\bhall(way)?\b/i, "Hallway"], [/\brecess\b/i, "Recess"], [/\b(arrival|dismissal|bus)\b/i, "Arrival / dismissal"],
     [/\b(test|quiz|assessment)\b/i, "Test or quiz"], [/\bindependent(ly)? work\b/i, "Independent work"], [/\bpartner\b/i, "Partner work"], [/\b(small[- ]group|group work|stations?)\b/i, "Small-group / cooperative work"],
     [/\btransition\b/i, "Transition between activities"], [/\b(board|instruction|lesson|mini-?lesson|direct instruction)\b/i, "Whole-group instruction"]];
-  var PRON = { he: "his", she: "her", they: "their" };
+  var PRON = { he: "his", she: "her" };
   /* a sentence about what the teacher did (not what the teacher will do) */
   var TEACHER_ACT = /(^|[,;]\s*|\b(then|also|and)\s+)(I|we)\s+(?!will\b|would\b|am\b|was\b|observed\b|saw\b|noticed\b|heard\b)(\w+ed|gave|took|told|had|sent|made|held|met|spoke|kept|set|put|began|wrote|taught|brought|led|let|chose|showed|stood|sat|went|got|did)\b|^To (address|prevent|support|redirect|help)\b/i;
   function cap(x) { return x.charAt(0).toUpperCase() + x.slice(1); }
@@ -236,13 +236,14 @@
     var tSet = t.split(/(?<=[.!?])\s+/).filter(function (x) { return !CONSEQ_RX.test(x); }).join(" ");
     SETTING_WORDS.some(function (x) { if (x[0].test(tSet)) { res.setting = x[1]; return true; } return false; });
     var nm = t.trim().match(/^([A-Z]\.[A-Z]\.?|[A-Z][a-z]+)(?=[\s,])/); if (nm && !/^(The|He|She|They|I|During|In|At|When|After|Before|Today|This|Student|While|Following|Verbal)$/.test(nm[1])) res.name = nm[1];
-    var pron = (t.match(/\b(he|she|they)\b/i) || [, "they"])[1].toLowerCase(), poss = PRON[pron];
+    var pron = (t.match(/\b(he|she)\b/i) || [, ""])[1].toLowerCase(), poss = PRON[pron] || (res.name ? res.name + "'s" : "the student's");
     t = t.replace(/,\s*so (I|we) (will|would|am going to|plan to)\b/g, ". $1 $2");
     var sentences = t.replace(/\b([A-Z])\.([A-Z])\.(?=\s)/g, "$1\u2024$2\u2024").split(/(?<=[.!?])\s+/).map(function (x) { return x.replace(/\u2024/g, ".").trim(); }).filter(Boolean);
     var hadInt = false;
     sentences.forEach(function (orig) {
       var x = orig;
       REWRITES.forEach(function (r) { x = x.replace(r[0], r[1]); });
+      x = x.replace(/ during instruction (?=(during|in|at|while)\b)/g, " ");
       if (res.name) x = x.replace(/\bthe student's parent\/guardian\b/g, res.name + "'s parent/guardian");
       if (res.name) x = x.replace(new RegExp("\\b(spoke with|informed|called|emailed|contacted|messaged|met with) (the student's )?(mother|father|grandmother|grandfather|parents?|guardian)\\b", "i"), "$1 " + res.name + "'s $3");
       x = x.replace(/\s{2,}/g, " ").replace(/\s+([.,])/g, "$1").replace(/,\s*,/g, ",").replace(/^[,\s]+/, "").trim();
@@ -338,7 +339,7 @@
     if (last.length) paras.push({ g: "p", s: last });
     return paras.map(function (p) { return p.s.join(" "); }).join("\n\n");
   }
-  function sayFor(id) { return window.SAY && SAY[id] ? SAY[id].replace(/\{n\}/g, "the student").replace(/\{s\}/g, "they").replace(/\{p\}/g, "their") : INTERVENTIONS[id].log; }
+  function sayFor(id) { return window.SAY && SAY[id] ? SAY[id].replace(/\{n\}/g, "the student").replace(/\{s\}/g, "the student").replace(/\{p\}/g, "the student's") : INTERVENTIONS[id].log; }
 
   /* ---------- How strong is it? The seven qualities of a strong log entry ---------- */
   var INFORMAL_RX = /\b(mom|dad|kid|kiddo|owe[sd]? me|owing me|on me|got mad|freaked( out)?|lost it|drama|sassy|mouthy|smart mouth|acting out|goofing|messing around|rough day|bad day|annoying|ridiculous)\b/gi;
