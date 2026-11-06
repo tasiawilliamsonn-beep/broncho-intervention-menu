@@ -34,7 +34,7 @@
     ["tone", /\b(tone|eye[- ]?roll(ed|ing)?|rolled (his|her|their) eyes|sigh(ed|ing)|argu(ed|ing)|talk(ed)? back|raised (his|her|their) voice|yell(ed|ing))\b/i],
     ["outofarea", /\bout of (his |her |their )?(assigned )?(seat|area)|wander(ed|ing)|left (the |his |her |their )?(room|class|group|seat)|walk(ed|ing) around\b/i],
     ["offtask", /\b(off[- ]task|not working|did not (start|begin|complete|finish)|didn'?t (start|begin|complete|finish)|head (down|on (the|his|her|their) desk)|turned away from the (board|lesson|teacher)|doodl(ed|ing)|sleep(ing)?|daydream|distract(ed|ing))/i],
-    ["talking", /\b(talk(ed|ing)? (to|with) (another student|a (peer|friend|classmate|neighbor)|(his|her|their) friends|friends|peers|classmates)|conversations? with|pass(ed|ing)? notes|talk(ed|ing) (out|during|while|to (his|her|their) (neighbor|friend|peer))|call(ed|ing)? out|blurt(ed|ing)?|side conversations?|interrupt(ed|ing)?|making noises|noises)\b/i]
+    ["talking", /\b((kept|continued|keeps) (on )?talking|talk(ed|ing) during|talk(ed|ing)? (to|with) (another student|a (peer|friend|classmate|neighbor)|(his|her|their) friends|friends|peers|classmates)|conversations? with|pass(ed|ing)? notes|talk(ed|ing) (out|during|while|to (his|her|their) (neighbor|friend|peer))|call(ed|ing)? out|blurt(ed|ing)?|side conversations?|interrupt(ed|ing)?|making noises|noises)\b/i]
   ];
 
   var INT_RX = [
@@ -63,7 +63,7 @@
     ["replacement", /\b(replacement behavior|taught (him|her|them) to (ask|use|say))\b/i], ["ladder", /\bsupportive response/i]
   ];
   var CONSEQ_RX = /\b((owe|owes|owed|owing) (me )?(recess|lunch|time)|(miss|missing|lose|losing) (recess|lunch)|detention|silent lunch|lost (recess|privileges?)|loss of (recess|privileges?)|no recess|took away|sent (him|her|them|the student)? ?(out|to the office|to the hall|into the hall)|removed (him|her|them|the student)? ?from (class|the room)|write[- ]?up|wrote (him|her|them) up|suspend|clip (down|moved)|moved (his|her|their) clip|points? (taken|deducted|lost))\b/i;
-  var PARENT_RX = /(call(ed)?|email(ed)?|contact(ed)?|spoke (with|to)|messag(ed|e)|text(ed)?|voicemail|note home|conference(d)?|reached out).{0,40}\b(parent|mom|mother|dad|father|guardian|grand(ma|pa|mother|father|parent)|family|home)\b|\b(parent|mom|mother|dad|father|guardian|family)\b.{0,30}(call|email|contact|messag|conference|was notified|notified)/i;
+  var PARENT_RX = /(call(ed)?|email(ed)?|contact(ed|ing)?|spoke (with|to)|talked (to|with)|met with|told|explained to|messag(ed|e)|text(ed)?|voicemail|note home|conference(d)?|reached out).{0,40}\b(parent|mom|mother|dad|father|guardian|grand(ma|pa|mother|father|parent)|family|home)\b|\b(parent|mom|mother|dad|father|guardian|family)\b.{0,30}(call|email|contact|messag|conference|was notified|notified)/i;
   var RESPONSE_RX = /\b(responded|corrected|stopped|complied|returned to (work|task|(his|her|their) seat)|got back to work|began (working|the)|started (working|the)|improv(ed|ement)|no change|did not change|continued|escalat(ed|ion)|refused again|was able to|followed (the )?(direction|request))/i;
   var NEXT_RX = /\b(will |plan|next step|follow[- ]?up|continue|monitor)\b/i;
   var HEART_RX = /\b(honesty|effort|attitude|respect|teamwork|expectation)\b/i;
@@ -194,7 +194,7 @@
     behs.forEach(function (b) { var x = byId[b.key]; if (x) x.ints.forEach(function (id) { if (ids.indexOf(id) < 0 && (!types || types.indexOf(INTERVENTIONS[id].type) > -1)) ids.push(id); }); });
     ids = ids.slice(0, 3);
     if (!ids.length) return " Use the Intervention Menu to find one matched to the behavior.";
-    return " Matched options from the menu: " + ids.map(function (id) { return INTERVENTIONS[id].name + " (\"I " + INTERVENTIONS[id].log + "\")"; }).join("; ") + ".";
+    return " Matched options from the menu: " + ids.map(function (id) { return INTERVENTIONS[id].name + " (\u201cI " + sayFor(id) + "\u201d)"; }).join("; ") + ".";
   }
 
   var last = null;
@@ -212,6 +212,10 @@
     [/\bI talked to\b/g, "I spoke with"], [/\bI told\b/g, "I informed"],
     [/\bexplained the behaviors? I (was seeing|saw|have been seeing)\b/gi, "explained the behaviors observed in class"],
     [/\b(kept|keeps) (on )?/gi, "continued "], [/\bacting out\b/gi, "[describe what the student did]"], [/\bgoofing (off|around)\b/gi, "[describe what the student did]"],
+    [/\bI moved (his|her|their) seat\b/g, function (m, p) { return "I used strategic seating to move " + { his: "him", her: "her", their: "them" }[p] + " to a new seat [location, for example closer to instruction and away from peers]"; }],
+    [/\bcall(ing|ed)? home\b/gi, function (m, e) { return "call" + (e || "") + " the student's parent/guardian"; }],
+    [/\b(and )?told (him|her|them) to stop\b/g, function (m, a, w) { return (a || "") + "gave " + w + " a private verbal redirection [the words you used] and stated the expected behavior"; }],
+    [/\bgave (him|her|them) a warning\b/g, "gave $1 a private verbal redirection and restated the expectation"],
     [/\bwould not stop\b/gi, "continued"], [/\bwouldn'?t stop\b/gi, "continued"]
   ];
   var SUBJECTS = /\b(?:in|during)\s+(language arts|ela|reading|writing|math(?:ematics)?|science|social studies|spelling|grammar|specials|art|music|p\.?e\.?|gym|library|homeroom|advisory|health|stem)(?:\s+class)?\b/i;
@@ -219,6 +223,8 @@
     [/\b(test|quiz|assessment)\b/i, "Test or quiz"], [/\bindependent(ly)? work\b/i, "Independent work"], [/\bpartner\b/i, "Partner work"], [/\b(small[- ]group|group work|stations?)\b/i, "Small-group / cooperative work"],
     [/\btransition\b/i, "Transition between activities"], [/\b(board|instruction|lesson|mini-?lesson|direct instruction)\b/i, "Whole-group instruction"]];
   var PRON = { he: "his", she: "her", they: "their" };
+  /* a sentence about what the teacher did (not what the teacher will do) */
+  var TEACHER_ACT = /(^|[,;]\s*|\b(then|also|and)\s+)(I|we)\s+(?!will\b|would\b|am\b|was\b|observed\b|saw\b|noticed\b|heard\b)(\w+ed|gave|took|told|had|sent|made|held|met|spoke|kept|set|put|began|wrote|taught|brought|led|let|chose|showed|stood|sat|went|got|did)\b|^To (address|prevent|support|redirect|help)\b/i;
   function cap(x) { return x.charAt(0).toUpperCase() + x.slice(1); }
   function objectify(text) {
     var res = { parts: [], date: "", subject: "", setting: "", name: "" };
@@ -229,13 +235,15 @@
     var sm = t.match(SUBJECTS); if (sm) res.subject = sm[1].length <= 4 && !/math|art|gym/i.test(sm[1]) ? sm[1].toUpperCase() : sm[1].replace(/\b\w/g, function (c) { return c.toUpperCase(); });
     var tSet = t.split(/(?<=[.!?])\s+/).filter(function (x) { return !CONSEQ_RX.test(x); }).join(" ");
     SETTING_WORDS.some(function (x) { if (x[0].test(tSet)) { res.setting = x[1]; return true; } return false; });
-    var nm = t.trim().match(/^([A-Z][a-z]+)\b/); if (nm && !/^(The|He|She|They|I|During|In|At|When|After|Before|Today|This|Student|While|Following|Verbal)$/.test(nm[1])) res.name = nm[1];
+    var nm = t.trim().match(/^([A-Z]\.[A-Z]\.?|[A-Z][a-z]+)(?=[\s,])/); if (nm && !/^(The|He|She|They|I|During|In|At|When|After|Before|Today|This|Student|While|Following|Verbal)$/.test(nm[1])) res.name = nm[1];
     var pron = (t.match(/\b(he|she|they)\b/i) || [, "they"])[1].toLowerCase(), poss = PRON[pron];
-    var sentences = t.split(/(?<=[.!?])\s+/).map(function (x) { return x.trim(); }).filter(Boolean);
+    t = t.replace(/,\s*so (I|we) (will|would|am going to|plan to)\b/g, ". $1 $2");
+    var sentences = t.replace(/\b([A-Z])\.([A-Z])\.(?=\s)/g, "$1\u2024$2\u2024").split(/(?<=[.!?])\s+/).map(function (x) { return x.replace(/\u2024/g, ".").trim(); }).filter(Boolean);
     var hadInt = false;
     sentences.forEach(function (orig) {
       var x = orig;
       REWRITES.forEach(function (r) { x = x.replace(r[0], r[1]); });
+      if (res.name) x = x.replace(/\bthe student's parent\/guardian\b/g, res.name + "'s parent/guardian");
       if (res.name) x = x.replace(new RegExp("\\b(spoke with|informed|called|emailed|contacted|messaged|met with) (the student's )?(mother|father|grandmother|grandfather|parents?|guardian)\\b", "i"), "$1 " + res.name + "'s $3");
       x = x.replace(/\s{2,}/g, " ").replace(/\s+([.,])/g, "$1").replace(/,\s*,/g, ",").replace(/^[,\s]+/, "").trim();
       if (x && !/[.!?]$/.test(x)) x += ".";
@@ -243,8 +251,8 @@
       if (CONSEQ_RX.test(x)) cat = "consequence";
       else if (PARENT_RX.test(x)) cat = "parent";
       else if (SUBJ_SUMMARY.test(orig) && !BEH_RX.some(function (r) { return r[1].test(orig); })) cat = "removed";
-      else if (/^(I|We)\b/.test(x) && INT_RX.some(function (r) { return r[1].test(x); })) { cat = "intervention"; hadInt = true; }
-      else if (hadInt && RESPONSE_RX.test(x)) cat = "response";
+      else if (TEACHER_ACT.test(x) || (/^(I|We)\b/.test(x) && INT_RX.some(function (r) { return r[1].test(x); }))) { cat = "intervention"; hadInt = true; }
+      else if (hadInt) cat = "response";
       else cat = "behavior";
       /* "despite redirection" inside a behavior sentence: pull the intervention out */
       var dr = cat === "behavior" && x.match(/,?\s*(despite|even after|after) (my |several |multiple |repeated )?(verbal )?(redirections?|reminders?|warnings?|prompts?)/i);
@@ -257,13 +265,14 @@
       if (cat === "response" && /^(he|she|they)\b/i.test(x) && !/^following/i.test(x)) x = "Following redirection, " + x.charAt(0).toLowerCase() + x.slice(1);
       res.parts.push({ cat: cat, orig: orig, out: x });
     });
+    var fb = res.parts.filter(function (p) { return p.cat === "behavior"; })[0];
+    if (fb) {
+      if (res.name) fb.out = fb.out.replace(/^(He|She|They)\b/, res.name);
+      if (res.subject && !/^(during|in|at|while)\b/i.test(fb.out)) fb.out = "During " + res.subject + ", " + (res.name && fb.out.indexOf(res.name) === 0 ? fb.out : fb.out.charAt(0).toLowerCase() + fb.out.slice(1));
+    }
     /* order: behavior, intervention, response, parent contact */
     var order = ["behavior", "intervention", "response", "parent"], out = [];
     order.forEach(function (c) { res.parts.filter(function (p) { return p.cat === c; }).forEach(function (p) { out.push(p.out); }); });
-    if (out.length) {
-      if (res.name) out[0] = out[0].replace(/^(He|She|They)\b/, res.name);
-      if (res.subject && !/^(during|in|at|while)\b/i.test(out[0])) out[0] = "During " + res.subject + ", " + (/^[A-Z][a-z]+\b/.test(out[0]) && out[0].split(" ")[0] === res.name ? out[0] : out[0].charAt(0).toLowerCase() + out[0].slice(1));
-    }
     res.text = out.join(" ");
     return res;
   }
@@ -298,25 +307,131 @@
       s = s.replace(rx, function (m) { return "[replace \"" + m + "\" with what the student said or did]"; });
     });
     s = s.replace(/\s{2,}/g, " ").replace(/\s+([.,])/g, "$1").replace(/,(\s*,)+/g, ",").replace(/(^|[.!?]\s+)[,;]\s*/g, "$1").trim();
-    return s.replace(/(^|[.!?]\s+)([a-z])/g, function (m, p, c) { return p + c.toUpperCase(); });
+    return s.replace(/(^|[.!?]\s+)([a-z])/g, function (m, p, c, i) { return /\b[A-Z]\.[A-Z]\.\s+$/.test(s.slice(0, i + p.length)) ? m : p + c.toUpperCase(); });
   }
   function strongText(a, text) {
-    var ob = objectify(text), s = cleanText(ob.text || text), out = [];
-    var rec = a.rec;
-    if (rec === "DISCIPLINE" && !/administrator/i.test(s)) out.push("I am requesting that an administrator address this behavior.");
-    if (s) out.push(s);
-    if (a.lv && !/\blevel \d\b/i.test(s)) out.push("This is a Level " + a.lv + " behavior on the Sunnyside Behavior Intervention Matrix.");
-    if (add.heart.length) out.push("This did not meet our " + (add.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(add.heart) + ".");
-    if (add.ints.length) out.push((rec === "DISCIPLINE" ? "Tier 1 interventions already used: I " : (a.ints.length ? "I also " : "To address the behavior, I ")) + joinAnd(add.ints.map(function (id) { return INTERVENTIONS[id].log; })) + ".");
-    if (add.resp) out.push(add.resp);
-    if (add.pMethod || add.pWho) out.push("I contacted " + (add.pWho ? "the student's " + add.pWho : "the student's parent/guardian") + (METHODS[add.pMethod] ? " " + METHODS[add.pMethod] : "") + ".");
-    if (add.next) out.push(add.next);
-    var lvl = a.lv;
-    if ((rec === "INTERVENTION" || (lvl && lvl <= 2)) && !a.ints.length && !add.ints.length) out.push("[Add the Tier 1 intervention you used.]");
-    if (lvl && lvl <= 2 && !RESPONSE_RX.test(text) && !add.resp) out.push("[Add how the student responded.]");
-    if (lvl === 2 && !a.parent && !add.pMethod && !add.pWho) out.push("[Add your parent/guardian contact, or log it as a separate Communication entry.]");
-    return out.join(" ");
+    var ob = objectify(text), rec = a.rec;
+    var seq = ob.parts.filter(function (p) { return p.cat !== "removed" && p.cat !== "consequence" && p.cat !== "parent"; }).map(function (p) { return { cat: p.cat, t: cleanText(p.out) }; });
+    /* the behavior always comes first */
+    var fbi = seq.map(function (p) { return p.cat; }).indexOf("behavior");
+    if (fbi > 0) seq.unshift(seq.splice(fbi, 1)[0]);
+    var grp = function (c) { return c === "behavior" ? "b" : c === "intervention" ? "i" : "r"; };
+    var paras = [], cur = null;
+    seq.forEach(function (p) { if (!cur || cur.g !== grp(p.cat)) { cur = { g: grp(p.cat), s: [] }; paras.push(cur); } cur.s.push(p.t); });
+    if (!paras.length || paras[0].g !== "b") paras.unshift({ g: "b", s: ["[Describe what the student said or did, where, and for how long.]"] });
+    var first = paras[0].s;
+    if (rec === "DISCIPLINE" && !/administrator/i.test(text)) first.unshift("I am requesting that an administrator address this behavior.");
+    if (a.lv && !/\blevel \d\b/i.test(text)) first.push("This behavior is classified as a Level " + a.lv + " behavior on the Sunnyside Behavior Intervention Matrix" +
+      (add.heart.length ? " and did not meet our HEART " + (add.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(add.heart) : "") + ".");
+    else if (add.heart.length) first.push("This did not meet our HEART " + (add.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(add.heart) + ".");
+    var hasI = paras.some(function (p) { return p.g === "i"; }), hasR = paras.some(function (p) { return p.g === "r"; });
+    var addI = add.ints.length ? (rec === "DISCIPLINE" ? "Tier 1 interventions already used: I " : (hasI ? "I also " : "To address the behavior, I ")) + joinAnd(add.ints.map(sayFor)) + "." :
+      (!hasI && (rec === "INTERVENTION" || (a.lv && a.lv <= 2)) ? "[Add the Tier 1 intervention you used: what you said or did to redirect, re-teach, or support the student.]" : "");
+    if (addI) { var fi = -1; paras.forEach(function (p, i) { if (p.g === "i" && fi < 0) fi = i; }); if (fi > -1) paras[fi].s.push(addI); else paras.splice(1, 0, { g: "i", s: [addI] }); }
+    var addR = add.resp || (!hasR && !RESPONSE_RX.test(text) && a.lv && a.lv <= 2 ? "[Add how the student responded to the intervention.]" : "");
+    if (addR) paras.push({ g: "r", s: [addR] });
+    var last = ob.parts.filter(function (p) { return p.cat === "parent"; }).map(function (p) { return cleanText(p.out); });
+    if (add.pMethod || add.pWho) last.push("I contacted " + (add.pWho ? "the student's " + add.pWho : "the student's parent/guardian") + (METHODS[add.pMethod] ? " " + METHODS[add.pMethod] : "") + " to share the incident and the interventions used.");
+    if (!last.length && a.lv === 2) last.push("[Add your parent/guardian contact, or log it as a separate Communication entry.]");
+    if (add.next) last.push(add.next);
+    else if (a.lv && !NEXT_RX.test(text)) last.push("[Add the next step.]");
+    if (last.length) paras.push({ g: "p", s: last });
+    return paras.map(function (p) { return p.s.join(" "); }).join("\n\n");
   }
+  function sayFor(id) { return window.SAY && SAY[id] ? SAY[id].replace(/\{n\}/g, "the student").replace(/\{s\}/g, "they").replace(/\{p\}/g, "their") : INTERVENTIONS[id].log; }
+
+  /* ---------- How strong is it? The seven qualities of a strong log entry ---------- */
+  var INFORMAL_RX = /\b(mom|dad|kid|kiddo|owe[sd]? me|owing me|on me|got mad|freaked( out)?|lost it|drama|sassy|mouthy|smart mouth|acting out|goofing|messing around|rough day|bad day|annoying|ridiculous)\b/gi;
+  /* The seven Sunnyside requirements for a strong log entry. Each row says what was found in the
+     teacher's own words and exactly what to add. */
+  function criteria(a, ob, text) {
+    var q = function (l) { return l.map(function (x) { return "\u201c" + x.trim().replace(/[.,;]+$/, "") + "\u201d"; }).join(", "); };
+    var uniq = function (l) { var low = []; return l.filter(function (x) { var k = x.toLowerCase().trim(); if (low.indexOf(k) > -1) return false; low.push(k); return true; }); };
+    var chosen = $("own-type").value, words = (text.match(/[A-Za-z']+/g) || []).length, rows = [];
+    var tn = function (t) { return t ? t.charAt(0) + t.slice(1).toLowerCase() : ""; };
+
+    /* 1 behavior identified: the matrix behavior, the expectation missed, and the matrix connection */
+    var expSaid = HEART_RX.test(text.replace(/\b(bad|negative|poor|an|a|his|her|their|some|with) attitude\b/gi, "").replace(new RegExp(SUBJ_SUMMARY.source, "gi"), "")) || /\b(posted|rule|voice level|norm)\b/i.test(text);
+    var lvlSaid = /\blevel \d\b|behavior intervention matrix/i.test(text);
+    var bm = []; if (!expSaid) bm.push("the specific expectation that was missed (a HEART value or the posted rule)"); if (!lvlSaid) bm.push("the matrix connection (\u201cThis behavior is classified as a Level " + (a.lv || 1) + " behavior on the Sunnyside Behavior Intervention Matrix.\u201d)");
+    rows.push(!a.behs.length ? { n: "Behavior identified", st: "miss", found: "No behavior from the Sunnyside matrix was found.", fix: "Name the behavior in plain terms (for example \u201ctalked to a peer during the assessment\u201d or \u201crefused to start the assignment\u201d), or pick it under Matrix behavior.", src: "Sunnyside matrix" }
+      : bm.length ? { n: "Behavior identified", st: "part", found: "Reads as " + a.behs.map(function (b) { return "Level " + b.level + " " + b.name; }).join("; ") + ", but the entry does not state " + bm.join(" or ") + ".", fix: "Add " + bm.join(" and ") + ".", src: "Sunnyside matrix" }
+      : { n: "Behavior identified", st: "ok", found: "Matches the matrix (" + a.behs.map(function (b) { return "Level " + b.level + " " + b.name; }).join("; ") + ") and names the expectation missed." });
+
+    /* 2 specific description */
+    var where = !!(ob.subject || ob.setting || /\b(during|while|at the start|in the hall)/i.test(text)), much = /\b(\d+|once|twice|several|multiple|most of|entire|minutes?|seconds?|times)\b/i.test(text);
+    var dl = uniq((text.match(new RegExp(DATE_RX.source, "gi")) || []).concat(text.match(/^\s*[A-Z][A-Za-z /]{2,25}:/gm) || []));
+    var cats = ob.parts.map(function (p) { return p.cat; }).filter(function (c) { return c !== "removed"; });
+    var fI = cats.indexOf("intervention"), fR = cats.indexOf("response"), fC = cats.indexOf("consequence");
+    var sm = [];
+    if (words < 20) sm.push("more detail (" + words + " words; aim for 20 or more)");
+    if (!where) sm.push("where or during what activity");
+    if (!much) sm.push("how often or how long (e.g., twice in five minutes)");
+    if (cats.indexOf("behavior") > 0 || (fR > -1 && (fI < 0 || fR < fI)) || (fC > -1 && (fI < 0 || fC < fI))) sm.push("the events in order: behavior, then what you did, then the response");
+    var dlNote = dl.length ? "Remove " + q(dl) + ": PowerSchool has its own date, time, and title fields." : "";
+    rows.push(sm.length || dl.length ? { n: "Specific description", st: words < 20 || sm.length > 2 ? "miss" : "part", found: (sm.length ? "Needs " + sm.join("; ") + ". " : "Describes what the student did. ") + dlNote, fix: "Example: \u201cDuring the common assessment, J.P. talked to another student twice in five minutes. The expectation \u2018Voice Level 0: Silent\u2019 was posted on the board.\u201d", src: "Girvan et al., 2017" }
+      : { n: "Specific description", st: "ok", found: "Says what the student did, where, and how often, in order (" + words + " words)." });
+
+    /* 3 objective language (includes informal wording) */
+    var subj = [];
+    (window.BIM_SUBJECTIVE || []).forEach(function (r) { subj = subj.concat(text.match(new RegExp(r[0].source, "gi")) || []); });
+    subj = uniq(subj.concat(text.match(new RegExp(SUBJ_SUMMARY.source, "gi")) || []).concat(text.match(INFORMAL_RX) || []));
+    var loud = /!/.test(text) || (text.match(/\b[A-Z]{4,}\b/g) || []).some(function (w) { return !/^(MTSS|HEART|PBIS|ELA|IEP|BIP)$/.test(w); });
+    rows.push(subj.length || loud ? { n: "Objective language", st: "miss", found: (subj.length ? "Judgment or informal words: " + q(subj) + "." : "") + (loud ? " Exclamation points or all-caps words." : ""),
+        fix: (function () {
+          var tips = (window.BIM_SUBJECTIVE || []).filter(function (r) { return r[0].test(text); }).map(function (r) { return r[1]; });
+          if (INFORMAL_RX.test(text)) tips.push("Informal words: write \u201cmother\u201d or \u201cfather\u201d instead of \u201cmom\u201d or \u201cdad,\u201d and leave consequences like \u201cowes me recess\u201d out of an Intervention entry.");
+          INFORMAL_RX.lastIndex = 0;
+          return tips.join(" ") || "Replace each with what you saw or heard.";
+        })(), src: "Girvan et al., 2017" }
+      : { n: "Objective language", st: "ok", found: "Factual and nonjudgmental." });
+
+    /* 4 appropriate log type */
+    var bad = chosen && a.rec && chosen !== a.rec && !(chosen === "INFORMATION" && a.lv === 1);
+    rows.push(!a.rec ? { n: "Appropriate log type", st: "part", found: "Cannot tell yet; the behavior was not identified.", fix: "Identify the behavior first. Level 1-2: Intervention. Parent contact only: Communication. Level 3-4: Discipline.", src: "Sunnyside matrix" }
+      : bad ? { n: "Appropriate log type", st: "miss", found: "You chose " + tn(chosen) + ", but this entry should be " + tn(a.rec) + (a.lv ? " (Level " + a.lv + ")" : "") + ".", fix: "Change the Log Type to " + tn(a.rec) + (a.refer ? " and check Office Referral" : "") + ".", src: "Sunnyside matrix" }
+      : { n: "Appropriate log type", st: "ok", found: tn(a.rec) + (a.lv ? " matches a Level " + a.lv + " behavior" : "") + (a.refer ? "; check Office Referral" : "; leave Office Referral unchecked") + "." });
+
+    /* 5 intervention documented */
+    var conseq = text.match(new RegExp(CONSEQ_RX.source, "gi")) || [], names = a.ints.map(function (id) { return INTERVENTIONS[id].name; });
+    var tActs = ob.parts.filter(function (p) { return p.cat === "intervention"; }).length;
+    var onlyResp = a.ints.length && a.ints.every(function (id) { return INTERVENTIONS[id].type === "respond"; });
+    var VAGUE = text.match(/\b(told (him|her|them|the student) to (stop|knock it off|quit|be quiet|calm down)|talked to (him|her|them)|warned (him|her|them)|yelled|gave (him|her|them) a warning|moved (his|her|their) seat)\b/gi) || [];
+    var NAMED = { redirect: /redirect/i, seating: /strategic seat|seat (closer|near|away)|instructional zone/i, proximity: /proximity|moved closer|stood (near|next)/i, bsp: /specific praise|praised/i, teach: /re-?taught|modeled|re-?teach/i,
+      stopstart: /stop-start|what to (stop|start)/i, ask: /which expectation/i, precorrect: /pre-?correct|reminded .{0,30}before/i, calm: /calm(ly)?/i, reentry: /conference|problem-solv/i };
+    var unnamed = a.ints.filter(function (id) { return NAMED[id] && !NAMED[id].test(text); });
+    var noneNamed = a.ints.length && unnamed.length === a.ints.filter(function (id) { return NAMED[id]; }).length && unnamed.length > 0 && !a.ints.some(function (id) { return !NAMED[id]; });
+    if (a.ints.length && (VAGUE.length || noneNamed) && !onlyResp) {
+      rows.push({ n: "Intervention documented", st: "part", found: "Describes " + (VAGUE.length ? q(uniq(VAGUE)) : "the intervention") + " without its appropriate name.", fix: "Name the Tier 1 intervention and what it looked like: " +
+        (VAGUE.length ? "" : "for example, \u201cI used proximity control and stood next to J.P.'s desk while continuing instruction.\u201d") + uniq(VAGUE).map(function (v) { return /seat/i.test(v) ? "\u201cmoved his seat\u201d \u2192 \u201cStrategic seating: I moved J.P. to a seat near instruction, away from peers\u201d" : /stop|quit|quiet|warn/i.test(v) ? "\u201ctold him to stop\u201d \u2192 \u201cI gave a private verbal redirection and stated the expected behavior (Stop-Start-Praise)\u201d" : "\u201c" + v + "\u201d \u2192 \u201cI held a private conversation to re-teach the expectation\u201d"; }).join("; ") + ".", src: "Sunnyside matrix; Simonsen et al., 2008" });
+    } else rows.push(!a.ints.length && !tActs ? { n: "Intervention documented", st: "miss", found: conseq.length ? "Only a consequence is listed (" + q(uniq(conseq)) + "). A consequence is not an intervention." : "No Tier 1 intervention is described.", fix: "Say what you did to redirect, re-teach, or support the student." + suggest(a.behs), src: "Conroy & Sutherland, 2012" }
+      : onlyResp ? { n: "Intervention documented", st: "part", found: "Names " + joinAnd(names) + ", an in-the-moment response only.", fix: "Also document a strategy that prevents the behavior or teaches the skill." + suggest(a.behs, ["prevent", "teach"]), src: "Simonsen et al., 2008" }
+      : { n: "Intervention documented", st: "ok", found: names.length ? "Names " + joinAnd(names) + "." : "Describes what you did (" + tActs + " action" + (tActs === 1 ? "" : "s") + ")." + (conseq.length ? " The consequence (" + q(uniq(conseq)) + ") is left out of the strengthened version." : "") });
+
+    /* 6 student response */
+    var resp = ob.parts.filter(function (p) { return p.cat === "response"; });
+    var rText = resp.map(function (p) { return p.orig; }).join(" ") || (text.match(/[^.!?]*\b(continued|stopped|returned|responded|complied)\b[^.!?]*[.!?]?/i) || [""])[0];
+    var rSubj = (window.BIM_SUBJECTIVE || []).some(function (r) { return r[0].test(rText); });
+    if ((resp.length || RESPONSE_RX.test(text)) && rSubj) rows.push({ n: "Student response", st: "part", found: "The response is described with a judgment: " + q([rText.trim()]) + ".", fix: "Say what the student did after the intervention, for example \u201cJ.P. stopped talking for about two minutes, then began talking to the same student again.\u201d", src: "Chafouleas et al., 2007" });
+    else rows.push(resp.length || RESPONSE_RX.test(text) ? { n: "Student response", st: "ok", found: resp.length ? "Describes it: " + q([resp[0].orig.length > 90 ? resp[0].orig.slice(0, 87) + "..." : resp[0].orig]) : "Describes how the student responded." }
+      : { n: "Student response", st: "miss", found: "Does not say what the student did after your intervention.", fix: "Example: \u201cJ.P. stopped talking after the redirect but began talking again about five minutes later.\u201d This shows whether the intervention worked.", src: "Chafouleas et al., 2007" });
+
+    /* 7 next steps */
+    var nm = []; if (a.lv === 2 && !a.parent) nm.push("parent/guardian contact (required for Level 2)"); if (!NEXT_RX.test(text) && !a.parent) nm.push("a follow-up or next step");
+    rows.push(nm.length ? { n: "Next steps", st: nm.length > 1 || a.lv === 2 ? "miss" : "part", found: "Missing: " + nm.join("; ") + ".", fix: "Example: \u201cI contacted J.P.'s mother by phone to share the incident and the interventions used. I will continue the seat change and check in with J.P. before each assessment.\u201d", src: "Sunnyside matrix; Sheridan et al., 2012" }
+      : { n: "Next steps", st: "ok", found: a.parent ? "Documents parent/guardian contact" + (NEXT_RX.test(text) ? " and a next step." : ".") : "Documents a follow-up step." });
+    return rows;
+  }
+  function scorecard(rows) {
+    var ok = rows.filter(function (r) { return r.st === "ok"; }).length;
+    var lab = { ok: "Met", part: "Needs work", miss: "Missing" };
+    return '<div class="sc-head"><b>' + ok + " of " + rows.length + "</b> requirements met" + (ok === rows.length ? ". Ready to submit." : ". Fix the rows below, or use the strengthened version.") + "</div>" +
+      '<ul class="sc-list">' + rows.map(function (r) {
+        return '<li class="sc-' + r.st + '"><div class="sc-top"><b>' + esc(r.n) + '</b><span class="pill' + (r.st === "ok" ? " ok" : " no") + '">' + lab[r.st] + "</span></div>" +
+          '<p class="sc-found">' + esc(r.found) + "</p>" + (r.fix ? '<p class="sc-fix"><b>To strengthen:</b> ' + esc(r.fix) + (r.src ? ' <span class="cite">' + esc(r.src) + "</span>" : "") + "</p>" : "") + "</li>";
+      }).join("") + "</ul>";
+  }
+
   function titleFor(a) {
     var names = a.behs.filter(function (b) { return a.lv < 3 || b.level >= 3; }).map(function (b) { return b.key === "L3:2" ? "Peer concern for administrator review" : b.name.split(" after ")[0]; }).slice(0, 2).join(" / ");
     var t = { INTERVENTION: names ? names + " - Tier 1 intervention" : "Tier 1 intervention", COMMUNICATION: names ? "Parent contact - " + names : "Parent contact",
@@ -360,7 +475,7 @@
       '<div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="s-title"></div><button class="btn ghost sm" type="button" data-copy="s-title">Copy title</button></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="s-text"></div><button class="btn sm" type="button" data-copy="s-text">Copy log entry</button> <button class="btn ghost sm" type="button" id="s-use">Use this version</button></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Office Referral</span><div id="s-ref"></div></div></div>' +
-      '<div id="s-ready" style="margin-top:10px"></div><p class="hint" style="margin-top:8px">Anything in [brackets] needs your words. Replace it before you submit.</p><div id="s-break"></div>';
+      '<div id="s-ready" style="margin-top:10px"></div><div id="s-break"></div>';
     renderStrongControls(a, text);
     $("s-type").textContent = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Choose the behavior to decide";
     $("s-title").textContent = $("own-title").value.trim() || titleFor(a);
@@ -369,8 +484,8 @@
     var a2 = analyze(st2, a.rec);
     var miss2 = a2 && a2.req ? a2.req.filter(function (x) { return x.required && !x.ok; }).map(function (x) { return x.label; }) : [];
     $("s-ready").innerHTML = miss2.length
-      ? '<div class="alert warn"><h3>Not ready to submit yet</h3><p>Still needed: ' + esc(miss2.join("; ")) + ". Use the choices above, or edit your entry and replace anything in [brackets].</p></div>"
-      : '<div class="alert ok"><h3>Ready to submit</h3><p>All required elements are included. Read it once more, then copy it into PowerSchool.</p></div>';
+      ? '<p class="hint"><b>Still needed:</b> ' + esc(miss2.join("; ")) + ". Use the choices above or replace anything in [brackets].</p>"
+      : '<p class="hint"><b>Ready:</b> read it once more, then copy it into PowerSchool.</p>';
     $("s-ref").innerHTML = a.refer ? '<span class="pill no">Check it</span>' : '<span class="pill ok">Leave unchecked</span>';
   }
   $("own-strong").addEventListener("change", function (e) {
@@ -425,21 +540,11 @@
     $("own-save").disabled = false;
     if (!a) { renderStrong(null); $("own-out").innerHTML = '<p class="hint">Paste or type your log entry, choose the Log Type you plan to use, and the feedback will appear here.</p>'; return; }
     if (a.invalid) { renderStrong(a); $("own-out").innerHTML = '<div class="alert red"><h3>' + esc(a.rating[1]) + "</h3><p>" + esc(a.why) + "</p></div>"; return; }
-    var typeName = a.rec ? a.rec.charAt(0) + a.rec.slice(1).toLowerCase() : "Not sure yet";
-    var h = '<div class="alert ' + a.rating[0] + '"><h3>' + esc(a.rating[1]) + "</h3></div>";
-    if (window.BULLY && (BULLY.rx.test(text) || a.behs.some(function (b) { return b.key === "L3:2"; }))) h += BULLY.html();
-    h += '<ul class="checklist" style="margin-bottom:12px">' + a.req.map(function (x) {
-      return '<li><span class="ic ' + (x.ok ? "yes" : x.required ? "no" : "") + '">' + (x.ok ? "\u2713" : x.required ? "\u2715" : "\u2013") + "</span><span>" + esc(x.label) + (x.required ? "" : ' <span class="hint">(recommended)</span>') + (x.src ? ' <span class="hint"><i>' + esc(x.src) + "</i></span>" : "") + "</span></li>";
-    }).join("") + "</ul>";
-    h += '<div class="ps-form">' +
-      '<div class="ps-row"><span class="ps-lab">Matrix level</span><div>' + (a.lv ? "<b>Level " + a.lv + "</b>: " + esc(LEVELS[a.lv].who) : "Not recognized") + "</div></div>" +
-      '<div class="ps-row"><span class="ps-lab">Behaviors found</span><div>' + (a.behs.length ? esc(a.behs.map(function (b) { return "L" + b.level + " " + b.name; }).join("; ")) : "None") + "</div></div>" +
-      '<div class="ps-row"><span class="ps-lab">Log Type</span><div><b>' + esc(typeName) + "</b>" + (chosen && a.rec && chosen !== a.rec ? ' <span class="pill no">you chose ' + esc(chosen.charAt(0) + chosen.slice(1).toLowerCase()) + "</span>" : "") + "</div></div>" +
-      '<div class="ps-row"><span class="ps-lab">Office Referral</span><div>' + (a.refer ? '<span class="pill no">Check it</span>' : '<span class="pill ok">Leave unchecked</span>') + "</div></div></div>";
-    if (a.align.length) h += '<h3 class="subhead" style="font-size:1.05rem;margin:16px 0 8px">Matrix alignment</h3>' + a.align.map(box).join("");
-    if (a.fixes.length) h += '<h3 class="subhead" style="font-size:1.05rem;margin:16px 0 8px">How to strengthen it</h3>' + a.fixes.map(box).join("");
-    if (a.good.length) h += '<h3 class="subhead" style="font-size:1.05rem;margin:16px 0 8px">What\'s working</h3><ul class="check">' + a.good.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("") + "</ul>";
-    h += '<p class="hint" style="margin-top:12px">This checker looks for key words, so use your judgment. It does not read for meaning the way a person would.</p>';
+    var h = "";
+    if (window.BULLY && (BULLY.rx.test(text) || a.behs.some(function (b) { return b.key === "L3:2"; }))) h += BULLY.html(true);
+    h += scorecard(criteria(a, ob, text));
+    h += '<p class="hint" style="margin-top:12px">Matrix: ' + (a.lv ? "Level " + a.lv + " (" + esc(a.behs.map(function (b) { return b.name; }).join("; ")) + ")" : "no behavior recognized yet") +
+      ". This checker reads key words, so use your judgment.</p>";
     $("own-out").innerHTML = h;
     renderStrong(a);
     if ($("s-break")) $("s-break").innerHTML = ob ? breakdown(ob) : "";

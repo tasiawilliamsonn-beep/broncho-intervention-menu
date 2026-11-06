@@ -61,6 +61,8 @@
         <div><label class="f" for="student">Student (initials or ID)</label><input type="text" id="student" placeholder="e.g., A.B." list="students"><datalist id="students"></datalist></div>
         <div><label class="f" for="date">Date</label><input type="date" id="date"></div>
       </div>
+      <label class="f" for="pron">Pronouns used in the entry</label>
+      <select id="pron" style="max-width:220px"><option value="they">they / their</option><option value="he">he / his</option><option value="she">she / her</option></select>
       <div id="fs-beh">
         <div class="row2">
           <div><label class="f" for="beh">Behavior (Sunnyside matrix)</label><select id="beh"></select></div>
@@ -80,6 +82,10 @@
         <label class="f" for="desc">What you saw and heard</label>
         <textarea id="desc" placeholder="e.g., Said &quot;I'm not doing this&quot; and put head on desk for about 8 minutes."></textarea>
         <ul class="flags" id="flags"></ul>
+        <div class="row2" style="margin-top:4px">
+          <div><label class="f" for="expect">Expectation that was missed <span class="hint">(optional)</span></label><input type="text" id="expect" placeholder="e.g., Voice Level 0: Silent"></div>
+          <div><label class="f" for="expect-how">How it was shared</label><select id="expect-how"><option value="had been posted and taught">Posted and taught</option><option value="was posted on the board">Posted on the board</option><option value="was reviewed before the activity">Reviewed before the activity</option><option value="had been taught and practiced">Taught and practiced</option></select></div>
+        </div>
         <details class="lb-more"><summary>Add more detail (optional)</summary>
           <div class="row2">
             <div><label class="f" for="period">Period / time</label><input type="text" id="period" placeholder="e.g., Period 3"></div>
@@ -119,6 +125,8 @@
           <option>No change</option>
           <option>Behavior escalated</option>
         </select>
+        <label class="f" for="after">What happened next <span class="hint">(optional, in order)</span></label>
+        <textarea id="after" placeholder="e.g., After about five minutes at the new seat, J.P. began a verbal disagreement with another student. I moved J.P. to the front of the room, away from other students, and had him read the posted expectations aloud."></textarea>
       </div>
       <p class="why"><b>Why:</b> an Intervention log must name the intervention (Sunnyside matrix), and the student's response shows whether it is working (Chafouleas, Riley-Tillman, &amp; Sugai, 2007). Give each intervention 2 to 3 weeks before changing it; Sunnyside expects at least 3 before an MTSS referral.</p>
     </section>
@@ -216,6 +224,19 @@
     <select id="own-beh"></select>
     <button class="btn dark" type="button" id="own-save" style="margin-top:12px">Save to student record</button>
     <a class="btn ghost sm" href="logs.html" style="margin-top:12px">View saved logs</a>
+    <details class="lb-more"><summary>What a strong entry includes</summary>
+      <ol class="req-list">
+        <li><b>Behavior identified:</b> matches the Sunnyside Behavior Intervention Matrix, with the expectation that was missed.</li>
+        <li><b>Specific description:</b> what the student said or did, where, and how often (20+ words), in order.</li>
+        <li><b>Objective language:</b> factual, nonjudgmental wording.</li>
+        <li><b>Appropriate log type:</b> matches the matrix.</li>
+        <li><b>Intervention documented:</b> names the Tier 1 intervention used.</li>
+        <li><b>Student response:</b> how the student responded to the intervention.</li>
+        <li><b>Next steps:</b> parent contact, follow-up, or additional support when needed.</li>
+      </ol>
+      <p class="hint" style="margin:10px 0 4px"><b>Weak:</b> “J.P. was being disruptive during class and would not follow directions. He kept talking and bothering other students. I moved his seat and told him to stop. He continued to have an attitude, so I will be calling home.”</p>
+      <p class="hint" style="margin:0"><b>Strong:</b> “During a common assessment, J.P. was observed talking to another student. Assessment expectations were posted on the board reading ‘Voice Level 0: Silent.’ This behavior is classified as a Level 1 behavior on the Sunnyside Behavior Intervention Matrix. To address the behavior, I provided a nonverbal/private verbal redirect, reinforced compliance, and privately asked J.P. to identify which expectation was not being followed and what the appropriate alternative behavior should be. After approximately five minutes at the new seat, J.P. began a verbal disagreement with another student…”</p>
+    </details>
     <details class="lb-more"><summary>Intervention vs. consequence</summary>
       <table class="hist ob-ref"><thead><tr><th>Category</th><th>Definition</th><th>Example</th></tr></thead><tbody>
         <tr><td><b>Behavior</b></td><td>What the student did, described objectively.</td><td>Talked to peers during instruction and passed notes.</td></tr>
@@ -227,8 +248,8 @@
   </div></div>
   <section>
     <div id="own-block"></div>
-    <div class="panel"><header><h2>Strengthened entry</h2></header><div class="body" id="own-strong"></div></div>
-    <div class="panel" style="margin-top:18px"><header><h2>Feedback</h2></header><div class="body" id="own-out"></div></div>
+    <div class="panel"><header><h2>How strong is it?</h2></header><div class="body" id="own-out"></div></div>
+    <div class="panel" style="margin-top:18px"><header><h2>Strengthened entry</h2></header><div class="body" id="own-strong"></div></div>
   </section>
 </div>
 </div>
@@ -270,6 +291,7 @@
 <script src="js/data.js?v=fda437d"></script>
 <script src="js/app.js?v=fda437d"></script>
 <script src="js/bully.js?v=fda437d"></script>
+<script src="js/logtext.js?v=x"></script>
 <script src="js/log.js?v=fda437d"></script>
 <script src="js/logcheck.js?v=fda437d"></script>
 <script src="js/support.js?v=fda437d"></script>
@@ -277,5 +299,6 @@
 <script>document.getElementById("tl").innerHTML = BIM.timeline();
 document.getElementById("bk-save").addEventListener("click", BIM.backup);
 document.getElementById("bk-load").addEventListener("change", function (e) { if (e.target.files[0]) BIM.restore(e.target.files[0], function () { location.reload(); }); });</script>
+<script src="js/feedback.js?v=81c027b"></script>
 </body>
 </html>

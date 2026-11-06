@@ -8,10 +8,11 @@
 
   var HEART = ["Honesty", "Effort", "Attitude", "Respect", "Teamwork"];
   var SUBJECTIVE = [
+    [/\b(disruptive|bothering|misbehav(ed|ing)|out of control|wild|being silly)\b/i, "\"disruptive/bothering\": say exactly what the student did (e.g., talked to the student next to him 3 times; tapped a peer's desk)."],
     [/\b(rough|bad|tough|hard|off) day\b|\bhaving a day\b/i, "\"had a rough day\": this is a judgment. Describe what the student did and said."],
     [/\b(disrespectful|rude)\b/i, "\"disrespectful/rude\": describe the words or actions instead (e.g., said \"...\" in a raised voice)."],
     [/\blazy\b|\bunmotivated\b|\bdoesn'?t care\b/i, "\"lazy/unmotivated\": describe the work behavior (e.g., completed 1 of 10 problems in 20 minutes)."],
-    [/\b(bad|negative|poor|an|a|his|her|their) attitude\b/i, "\"attitude\": name the observable behavior (eye rolling, sighing, muttering \"...\")."],
+    [/\b(bad|negative|poor|an|a|his|her|their|some|with) attitude\b/i, "\"attitude\": name the observable behavior (eye rolling, sighing, muttering \"...\")."],
     [/\balways\b|\bnever\b|\bconstantly\b/i, "\"always/never/constantly\": give a count or time frame (e.g., 4 times this period)."],
     [/\bdefian(t|ce)\b/i, "\"defiant\": describe the direction given and the student's response. \"Overt defiance\" is a Level 3 term; use it only for a Level 3 referral."],
     [/\b(out of control|crazy|wild|psycho)\b/i, "Avoid labels; describe what the student did and for how long."],
@@ -144,6 +145,7 @@
       type = "INTERVENTION"; sub = lv ? "Level " + lv + ": " + LEVELS[lv].who : "Behavior you have addressed";
       if (state.purpose === "admin") g.push(["red", "Level " + (lv || "1-2") + " behaviors are not logged as DISCIPLINE", "The matrix handles Level 1 and 2 behaviors in the classroom. This entry is set to INTERVENTION. If a Level 2 behavior has shown little or no change after at least three logged parent communications, add the Level 3 behavior \"Little/no change in Level 2 behaviors...\" instead.", "Sunnyside Behavior Intervention Matrix"]);
       if (state.purpose === "info" && lv === 2) g.push(["warn", "Level 2 uses INTERVENTION or COMMUNICATION", "INFORMATION is a Level 1 option on the matrix. This entry is set to INTERVENTION.", "Sunnyside Behavior Intervention Matrix"]);
+      if (state.behaviors.length && !$("desc").value.trim()) g.push(["tip", "Make it specific", "Add what you saw and heard in \"What you saw and heard.\" The matrix wording is general; your own words (and how often or how long) make the entry clear to someone who was not there.", "Girvan et al., 2017"]);
       if (!state.behaviors.length) g.push(["warn", "Add the behavior", "Choose the behavior from the matrix so the level is documented.", "Sunnyside Behavior Intervention Matrix"]);
       if (!state.ints.length) g.push(["red", "An INTERVENTION log must include the intervention", "Check the Tier 1 intervention(s) you used. A consequence alone (detention, loss of privilege) does not teach the expected behavior.", "Conroy & Sutherland, 2012; Sugai & Horner, 2002"]);
       if (lv === 2 && !contact) g.push(["warn", "Level 2 requires parent notification", "Contact the family and record it here, or log it as a separate COMMUNICATION entry.", "Sunnyside Behavior Intervention Matrix; Sheridan et al., 2012"]);
@@ -199,36 +201,93 @@
       return it.log + ($("cites").checked && it.refs.length ? " (" + BIM.shortCite(it.refs[0]) + ")" : "");
     })) + ".";
   }
+  /* ---------- the entry, in order: what happened and the expectation, what I did,
+     how the student responded and what happened next, family contact and next step ---------- */
+  var PRONOUNS = { they: ["they", "their"], he: ["he", "his"], she: ["she", "her"] };
+  function who() { var n = $("student").value.trim(); return n || "the student"; }
+  function fill(t) {
+    var pr = PRONOUNS[$("pron").value] || PRONOUNS.they;
+    return t.replace(/\{n\}/g, who()).replace(/\{p\}/g, pr[1]).replace(/\{s\}/g, pr[0]);
+  }
+  /* turn a teacher's note into a sentence about the student: "talked to a peer" -> "J.P. talked to a peer." */
+  var SUBJ_START = /^(he|she|they|the student|i|we|after|during|when|while|at|in|before|following|then|later|this|it|[A-Z]\.[A-Z]\.?|[A-Z][a-z]+ (was|had|did|said|told|began|started|continued|stopped|returned|refused|walked|talked|asked))\b/i;
+  function aboutStudent(t) {
+    t = String(t || "").trim().replace(/^(i observed|observed)\s+/i, ""); if (!t) return "";
+    if (SUBJ_START.test(t)) return sentence(t);
+    return sentence(who() + " " + t.charAt(0).toLowerCase() + t.slice(1));
+  }
+  var SETTING_TEXT = { "Start of class / bell-ringer": "At the start of class", "Whole-group instruction": "During whole-group instruction", "Teacher-led discussion": "During a class discussion",
+    "Independent work": "During independent work", "Partner work": "During partner work", "Small-group / cooperative work": "During small-group work", "Computer / device work": "During computer work",
+    "Test or quiz": "During an assessment", "Transition between activities": "During a transition", "Hallway": "In the hallway", "Cafeteria / lunch": "At lunch", "Recess": "At recess",
+    "Specials / related arts": "During specials", "Arrival / dismissal": "During arrival/dismissal" };
+  var RESP2 = {
+    "Corrected the behavior right away": "{n} corrected the behavior after the first prompt and met the expectation.",
+    "Corrected the behavior after a second prompt": "{n} corrected the behavior after a second prompt.",
+    "Partial improvement": "{n}'s behavior improved but did not fully meet the expectation.",
+    "No change": "{n} continued the behavior after the intervention.",
+    "Behavior escalated": "{n}'s behavior escalated after the intervention."
+  };
+  var NEXT2 = {
+    "Continue the current interventions and monitor": "I will continue these interventions for 2 to 3 weeks and monitor {n}'s progress.",
+    "Add or change an intervention": "I will add or adjust an intervention and monitor {n}'s response.",
+    "Follow-up parent contact": "I will follow up with the family to share {n}'s progress.",
+    "Begin ABC data / Daily Behavior Rating": "I will begin recording ABC data and a Daily Behavior Report to monitor {n}'s progress.",
+    "Bring documented interventions to the MTSS team": "I will bring the documented interventions to the MTSS team.",
+    "Administrator to address (Level 3/4)": ""
+  };
+  function obsPhrase() {
+    return joinAnd(state.behaviors.map(function (b) {
+      if (b.key === "L3:2") return "engaging in repeated behavior directed at a peer that I am reporting to an administrator for review";
+      if (b.bid.charAt(0) === "L") return "engaging in behavior described on the matrix as " + b.name.toLowerCase();
+      var beh = byId[b.bid], i = beh ? beh.v.map(function (v) { return v.t; }).indexOf(b.look) : -1;
+      return OBS[b.bid + ":" + i] ? fill(OBS[b.bid + ":" + i]) : b.look.toLowerCase();
+    }));
+  }
+  function intSentence(prefix) {
+    if (!state.ints.length) return "";
+    var parts = state.ints.map(function (id) {
+      var it = INTERVENTIONS[id], t = it.own ? it.log : fill(SAY[id] || it.log);
+      return t + ($("cites").checked && it.refs.length ? " (" + BIM.shortCite(it.refs[0]) + ")" : "");
+    });
+    if (parts.length <= 3) return prefix + joinAnd(parts) + ".";
+    return prefix + joinAnd(parts.slice(0, 2)) + ". I also " + joinAnd(parts.slice(2)) + ".";
+  }
   function build(d) {
-    var out = [];
-    var SETTING_TEXT = { "Start of class / bell-ringer": "At the start of class", "Whole-group instruction": "During whole-group instruction", "Teacher-led discussion": "During a class discussion",
-      "Independent work": "During independent work", "Partner work": "During partner work", "Small-group / cooperative work": "During small-group work", "Computer / device work": "During computer work",
-      "Test or quiz": "During a test", "Transition between activities": "During a transition", "Hallway": "In the hallway", "Cafeteria / lunch": "At lunch", "Recess": "At recess",
-      "Specials / related arts": "During specials", "Arrival / dismissal": "During arrival/dismissal" };
-    var setting = SETTING_TEXT[$("setting").value] || "";
     if (d.type === "COMMUNICATION" && !state.behaviors.length) return buildComm();
-    if (d.type === "DISCIPLINE") out.push("I am requesting that an administrator address this behavior.");
-    if (state.behaviors.length) out.push((setting ? setting + ", I observed " : "I observed ") + behaviorPhrase() + ".");
-    if ($("desc").value.trim()) out.push(sentence($("desc").value));
+    var p1 = [], p2 = [], p3 = [], p4 = [];
+    var setting = SETTING_TEXT[$("setting").value] || "";
+    if (d.type === "DISCIPLINE") p1.push("I am requesting that an administrator address this behavior.");
+    var desc = $("desc").value.trim();
+    /* the teacher's own description replaces the generic matrix wording, so nothing is said twice */
+    if (desc) {
+      var own = aboutStudent(desc), hasPlace = /\b(during|while)\b|\b(in|at) (the |a |an )?(class|hall|hallway|cafeteria|lunch|recess|gym|library)\b/i.test(desc);
+      p1.push(setting && !hasPlace && !/^(during|in|at|after|before|while|when)\b/i.test(own) ? setting + ", " + (own.indexOf(who()) === 0 ? own : own.charAt(0).toLowerCase() + own.slice(1)) : own);
+    } else if (state.behaviors.length) p1.push((setting ? setting + ", " : "") + who() + " was observed " + obsPhrase() + ".");
     var fq = $("freq").value.trim();
-    if (fq) out.push(/^\d/.test(fq) ? "This occurred " + fq.replace(/[.]$/, "") + "." : sentence(fq));
-    if (d.level) out.push("This is a Level " + d.level + " behavior on the Sunnyside Behavior Intervention Matrix.");
-    if (state.heart.length) out.push("This did not meet our " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) + ".");
+    if (fq) p1.push(/^\d/.test(fq) ? "This occurred " + fq.replace(/[.]$/, "") + "." : sentence(fq));
+    var ex = $("expect").value.trim().replace(/^["\u201c]|["\u201d.]$/g, "");
+    if (ex) p1.push("The expectation \u201c" + ex + "\u201d " + ($("expect-how").value || "had been posted and taught") + ".");
+    if (d.level) p1.push("This behavior is classified as a Level " + d.level + " behavior on the Sunnyside Behavior Intervention Matrix" +
+      (state.heart.length ? " and did not meet our HEART " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) : "") + ".");
+    else if (state.heart.length) p1.push("This did not meet our HEART " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) + ".");
     if (d.type === "DISCIPLINE") {
       if (state.behaviors.some(function (b) { return b.key === "L3:0"; })) {
         var c = commsCount(studentLogs($("student").value)) + ($("contact-made").checked ? 1 : 0);
-        out.push("The student has shown little or no change in Level 2 behaviors after " + c + " logged parent/guardian communication" + (c === 1 ? "" : "s") + ".");
+        p2.push(who() + " has shown little or no change in Level 2 behaviors after " + c + " logged parent/guardian communication" + (c === 1 ? "" : "s") + ".");
       }
-      out.push(interventionSentence("Tier 1 interventions already used: I "));
-    } else {
-      out.push(interventionSentence("To address the behavior, I ") || (d.type === "INTERVENTION" ? "[Add the Tier 1 intervention you used.]" : ""));
+      p2.push(intSentence("Tier 1 interventions already used: I "));
+    } else p2.push(intSentence("To address the behavior, I ") || (d.type === "INTERVENTION" ? "[Add the Tier 1 intervention you used.]" : ""));
+    if ($("response").value) p3.push(fill(RESP2[$("response").value] || sentence($("response").value)));
+    if ($("after").value.trim()) p3.push(aboutStudent($("after").value));
+    if ($("contact-made").checked) {
+      var w = $("c-with").value.trim(), m = METHOD_TEXT[$("c-method").value] || "";
+      p4.push("I contacted " + (w ? (who() === "the student" ? "the student's " : who() + "'s ") + w : "the parent/guardian") + (m ? " " + m : "") + " to share the incident and the interventions used.");
+      if ($("c-sum").value.trim()) p4.push(sentence($("c-sum").value));
     }
-    if ($("response").value) out.push(RESPONSE_TEXT[$("response").value] || sentence($("response").value));
-    if ($("contact-made").checked) { out.push(contactSentence()); if ($("c-sum").value.trim()) out.push(sentence($("c-sum").value)); }
     var nx = $("next").value;
-    if (nx && !(d.type === "DISCIPLINE" && nx.indexOf("Administrator") === 0)) out.push(NEXT_TEXT[nx] || sentence(nx));
-    if ($("next-note").value.trim()) out.push(sentence($("next-note").value));
-    return out.filter(Boolean).join(" ");
+    if (nx && NEXT2[nx]) p4.push(fill(NEXT2[nx]));
+    if ($("next-note").value.trim()) p4.push(sentence($("next-note").value));
+    return [p1, p2, p3, p4].map(function (p) { return p.filter(Boolean).join(" "); }).filter(Boolean).join("\n\n");
   }
   function buildComm() {
     var out = [contactSentence().replace(/\.$/, "") + (state.behaviors.length ? " about " + joinAnd(state.behaviors.map(function (b) { return b.name.toLowerCase(); })) + "." : ".")];
@@ -259,7 +318,7 @@
     $("type-s").textContent = LOG_TYPES[d.type];
     $("type-lv").textContent = d.sub;
     $("guards").innerHTML = ((state.behaviors.some(function (b) { return b.key === "L3:2"; }) || (window.BULLY && BULLY.rx.test($("desc").value))) && window.BULLY ? BULLY.html() : "") +
-      d.guards.map(function (x) { return '<div class="alert ' + x[0] + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + (x[3] ? '<span class="src">' + esc(x[3]) + "</span>" : "") + "</p></div>"; }).join("");
+      d.guards.map(function (x) { return '<div class="alert ' + (x[0] === "tip" ? "tipbox" : x[0]) + '"><h3>' + esc(x[1]) + "</h3><p>" + esc(x[2]) + (x[3] ? '<span class="src">' + esc(x[3]) + "</span>" : "") + "</p></div>"; }).join("");
     var tName = d.type.charAt(0) + d.type.slice(1).toLowerCase();
     $("ps-type").textContent = tName;
     $("ps-title").textContent = titleFor(d.type);
@@ -392,7 +451,7 @@
   });
   $("more-int").addEventListener("click", function () { state.showAll = !state.showAll; renderInts(); });
   $("contact-made").addEventListener("change", function () { $("contact-fields").hidden = !this.checked; if (this.checked && !$("c-date").value) $("c-date").value = $("date").value; update(); });
-  ["student", "date", "period", "setting", "desc", "freq", "response", "c-method", "c-with", "c-date", "c-sum", "next", "next-note", "cites"].forEach(function (id) {
+  ["student", "pron", "expect", "expect-how", "after", "date", "period", "setting", "desc", "freq", "response", "c-method", "c-with", "c-date", "c-sum", "next", "next-note", "cites"].forEach(function (id) {
     $(id).addEventListener("input", update); $(id).addEventListener("change", update);
   });
   $("student").addEventListener("change", function () { if (key(this.value)) { $("proof-student").value = key(this.value); renderProof(); } });
