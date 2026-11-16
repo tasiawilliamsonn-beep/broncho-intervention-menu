@@ -209,7 +209,7 @@
     [/\btalk(ing|ed)? to (another student|a friend|a classmate|a peer|(his|her|their) neighbor)\b/gi, function (m, e) { return "talk" + (e || "") + " with a peer during instruction"; }],
     [/\btalk(ing|ed)? to (his |her |their )?(friends|classmates|peers)\b/gi, function (m, e) { return "talk" + (e || "") + " with peers"; }],
     [/\b(mom|mommy|momma)\b/gi, "mother"], [/\b(dad|daddy)\b/gi, "father"], [/\bgrandma\b/gi, "grandmother"], [/\bgrandpa\b/gi, "grandfather"],
-    [/\bI talked to\b/g, "I spoke with"], [/\bI told\b/g, "I informed"],
+    [/\bI talked to\b/g, "I spoke with"],
     [/\bexplained the behaviors? I (was seeing|saw|have been seeing)\b/gi, "explained the behaviors observed in class"],
     [/\b(kept|keeps) (on )?/gi, "continued "], [/\bacting out\b/gi, "[describe what the student did]"], [/\bgoofing (off|around)\b/gi, "[describe what the student did]"],
     [/\bI moved (his|her|their) seat\b/g, function (m, p) { return "I used strategic seating to move " + { his: "him", her: "her", their: "them" }[p] + " to a new seat [location, for example closer to instruction and away from peers]"; }],
@@ -237,13 +237,13 @@
     var t = text.replace(/^\s*[A-Z][A-Za-z /]{2,25}:\s*/gm, "").replace(/\|/g, ". ");
     var dm = t.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/);
     if (dm) { var y = dm[3] ? (dm[3].length === 2 ? "20" + dm[3] : dm[3]) : String(new Date().getFullYear()); res.date = y + "-" + ("0" + dm[1]).slice(-2) + "-" + ("0" + dm[2]).slice(-2); }
-    t = t.replace(/,?\s*\b(on\s+)?\d{1,2}\/\d{1,2}(\/\d{2,4})?\b,?/g, " ").replace(/,?\s*\b(at|around)?\s*\d{1,2}:\d{2}\s*(am|pm)?\b/gi, " ");
+    t = t.replace(/,?\s*\b(on\s+)?\d{1,2}\/\d{1,2}(\/\d{2,4})?\b\s*[-\u2013\u2014:,]?/g, " ").replace(/,?\s*\b(at|around)?\s*\d{1,2}:\d{2}\s*(am|pm)?\b/gi, " ");
     var sm = t.match(SUBJECTS); if (sm) res.subject = sm[1].length <= 4 && !/math|art|gym/i.test(sm[1]) ? sm[1].toUpperCase() : sm[1].replace(/\b\w/g, function (c) { return c.toUpperCase(); });
     var tSet = t.split(/(?<=[.!?])\s+/).filter(function (x) { return !CONSEQ_RX.test(x) && !PARENT_RX.test(x); }).join(" ");
     SETTING_WORDS.some(function (x) { if (x[0].test(tSet)) { res.setting = x[1]; return true; } return false; });
     var nm = t.trim().match(/^([A-Z]\.[A-Z]\.?|[A-Z][a-z]+)(?=[\s,])/); if (nm && !/^(The|He|She|They|I|During|In|At|When|After|Before|Today|This|Student|While|Following|Verbal)$/.test(nm[1])) res.name = nm[1];
     var pron = (t.match(/\b(he|she)\b/i) || [, ""])[1].toLowerCase(), poss = PRON[pron] || (res.name ? res.name + "'s" : "the student's");
-    t = t.replace(/,\s*so (I|we) (will|would|am going to|plan to)\b/g, ". $1 $2");
+    t = t.replace(/,?\s*(?:so|and) (I|we) (will|would|am going to|plan to)\b/g, ". $1 $2");
     var sentences = t.replace(/\b([A-Z])\.([A-Z])\.(?=\s)/g, "$1\u2024$2\u2024").split(/(?<=[.!?])\s+/).map(function (x) { return x.replace(/\u2024/g, ".").trim(); }).filter(Boolean);
     var hadInt = false;
     sentences.forEach(function (orig) {
@@ -251,7 +251,8 @@
       REWRITES.forEach(function (r) { x = x.replace(r[0], r[1]); });
       x = x.replace(/ during instruction (?=(during|in|at|while)\b)/g, " ");
       if (res.name) x = x.replace(/\bthe student's parent\/guardian\b/g, res.name + "'s parent/guardian");
-      if (res.name) x = x.replace(new RegExp("\\b(spoke with|informed|called|emailed|contacted|messaged|met with) (the student's )?(mother|father|grandmother|grandfather|parents?|guardian)\\b", "i"), "$1 " + res.name + "'s $3");
+      x = x.replace(/\b(spoke with|informed|called|calling|call|emailed|emailing|email|contacted|contacting|contact|messaged|met with|meet with|talk to|talking to) (the student's |his |her )?(mother|father|grandmother|grandfather|parents?|guardian)\b/i, function (m, v, w, who) { return v + " " + (res.name ? res.name + "'s " : w || "the student's ") + who; });
+      x = x.replace(/!+/g, ".");
       x = x.replace(/\s{2,}/g, " ").replace(/\s+([.,])/g, "$1").replace(/,\s*,/g, ",").replace(/^[,\s]+/, "").trim();
       if (x && !/[.!?]$/.test(x)) x += ".";
       var cat;
@@ -275,7 +276,7 @@
     var fb = res.parts.filter(function (p) { return p.cat === "behavior"; })[0];
     if (fb) {
       if (res.name) fb.out = fb.out.replace(/^(He|She|They)\b/, res.name);
-      if (res.subject && !/^(during|in|at|while)\b/i.test(fb.out)) fb.out = "During " + res.subject + ", " + (res.name && fb.out.indexOf(res.name) === 0 ? fb.out : fb.out.charAt(0).toLowerCase() + fb.out.slice(1));
+      if (res.subject && !/^(during|in|at|while)\b/i.test(fb.out) && !new RegExp("\\b(in|during) " + res.subject + "\\b", "i").test(fb.out)) fb.out = "During " + res.subject + ", " + (res.name && fb.out.indexOf(res.name) === 0 ? fb.out : fb.out.charAt(0).toLowerCase() + fb.out.slice(1));
     }
     /* order: behavior, intervention, response, parent contact */
     var order = ["behavior", "intervention", "response", "parent"], out = [];
@@ -403,13 +404,13 @@
     var conseq = text.match(new RegExp(CONSEQ_RX.source, "gi")) || [], names = a.ints.map(function (id) { return INTERVENTIONS[id].name; });
     var tActs = ob.parts.filter(function (p) { return p.cat === "intervention"; }).length;
     var onlyResp = a.ints.length && a.ints.every(function (id) { return INTERVENTIONS[id].type === "respond"; });
-    var VAGUE = text.match(/\b(told (him|her|them|the student) to (stop|knock it off|quit|be quiet|calm down)|talked to (him|her|them)|warned (him|her|them)|yelled|gave (him|her|them) a warning|moved (his|her|their) seat)\b/gi) || [];
+    var VAGUE = text.match(/\b(told (him|her|them|the student|[A-Z]\.[A-Z]\.) to (stop|knock it off|quit|be quiet|calm down|start|sit down|get to work)|talked to (him|her|them)|warned (him|her|them)|yelled|gave (him|her|them) a warning|moved (his|her|their) seat)\b/gi) || [];
     var NAMED = { redirect: /redirect/i, seating: /strategic seat|seat (closer|near|away)|instructional zone/i, proximity: /proximity|moved closer|stood (near|next)/i, bsp: /specific praise|praised/i, teach: /re-?taught|modeled|re-?teach/i,
       stopstart: /stop-start|what to (stop|start)/i, ask: /which expectation/i, precorrect: /pre-?correct|reminded .{0,30}before/i, calm: /calm(ly)?/i, reentry: /conference|problem-solv/i };
     var unnamed = a.ints.filter(function (id) { return NAMED[id] && !NAMED[id].test(text); });
     var noneNamed = a.ints.length && unnamed.length === a.ints.filter(function (id) { return NAMED[id]; }).length && unnamed.length > 0 && !a.ints.some(function (id) { return !NAMED[id]; });
-    if (a.ints.length && (VAGUE.length || noneNamed) && !onlyResp) {
-      rows.push({ n: "Intervention documented", st: "part", found: "Describes " + (VAGUE.length ? q(uniq(VAGUE)) : "the intervention") + " without its appropriate name.", fix: "Name the Tier 1 intervention and what it looked like: " +
+    if (VAGUE.length || (a.ints.length && noneNamed && !onlyResp)) {
+      rows.push({ n: "Intervention documented", st: "part", found: "Describes " + (VAGUE.length ? q(uniq(VAGUE)) : "the intervention") + " without naming the Tier 1 intervention.", fix: "Name the Tier 1 intervention and what it looked like: " +
         (VAGUE.length ? "" : "for example, \u201cI used proximity control and stood next to J.P.'s desk while continuing instruction.\u201d") + uniq(VAGUE).map(function (v) { return /seat/i.test(v) ? "\u201cmoved his seat\u201d \u2192 \u201cStrategic seating: I moved J.P. to a seat near instruction, away from peers\u201d" : /stop|quit|quiet|warn/i.test(v) ? "\u201ctold him to stop\u201d \u2192 \u201cI gave a private verbal redirection and stated the expected behavior (Stop-Start-Praise)\u201d" : "\u201c" + v + "\u201d \u2192 \u201cI held a private conversation to re-teach the expectation\u201d"; }).join("; ") + ".", src: "Sunnyside matrix; Simonsen et al., 2008" });
     } else rows.push(!a.ints.length && !tActs ? { n: "Intervention documented", st: "miss", found: conseq.length ? "Only a consequence is listed (" + q(uniq(conseq)) + "). A consequence is not an intervention." : "No Tier 1 intervention is described.", fix: "Say what you did to redirect, re-teach, or support the student." + suggest(a.behs), src: "Conroy & Sutherland, 2012" }
       : onlyResp ? { n: "Intervention documented", st: "part", found: "Names " + joinAnd(names) + ", an in-the-moment response only.", fix: "Also document a strategy that prevents the behavior or teaches the skill." + suggest(a.behs, ["prevent", "teach"]), src: "Simonsen et al., 2008" }
@@ -522,7 +523,7 @@
     if (!a || a.invalid) return null;
     var ok = !chosen || !a.rec || chosen === a.rec || (chosen === "INFORMATION" && a.lv === 1);
     if (!ok) return { title: "Wrong Log Type: this should be " + a.rec.charAt(0) + a.rec.slice(1).toLowerCase() + ", not " + chosen.charAt(0) + chosen.slice(1).toLowerCase(),
-      text: (TYPE_WHY[a.rec] || "") + " Change the Log Type, or click Use this version to switch to the correct one, before you save or copy it.", src: "Sunnyside Behavior Intervention Matrix" };
+      text: (TYPE_WHY[a.rec] || "") + " Change the Log Type, or click Rewrite my entry to switch to the correct one, before you save or copy it.", src: "Sunnyside Behavior Intervention Matrix" };
     if (a.rec === "INTERVENTION" && !a.ints.length && CONSEQ_RX.test($("own-text").value))
       return { title: "This is a consequence, not an intervention", text: "The entry lists only a consequence. An Intervention log must name the Tier 1 intervention you used first. Add it before you save or copy.", src: "Conroy & Sutherland, 2012; Sunnyside matrix" };
     return null;
