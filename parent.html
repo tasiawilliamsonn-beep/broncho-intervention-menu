@@ -57,8 +57,14 @@
 
 
   <h2 class="title" style="margin-top:36px">Script Builder</h2>
-  <div class="grid g2" style="align-items:start">
-    <form class="panel" id="pc-form" onsubmit="return false" autocomplete="off"><header><h2>About the contact</h2></header><div class="body">
+  <section class="panel pc-start"><header><h2>Start from a log entry</h2></header><div class="body">
+    <label class="f" for="pc-log">Paste your log entry</label>
+    <textarea id="pc-log" placeholder="Paste the log entry you wrote (or copied from the Log Builder). The script below fills in from it."></textarea>
+    <div class="cta" style="margin-top:8px"><button class="btn" type="button" id="pc-fromlog">Build my script</button><a class="btn ghost sm" href="log.html">Write a log entry first</a></div>
+    <div id="pc-found" class="hint" style="margin-top:8px"></div>
+  </div></section>
+  <div class="grid g2" style="align-items:start;margin-top:18px">
+    <form class="panel" id="pc-form" onsubmit="return false" autocomplete="off"><header><h2>Adjust the details</h2></header><div class="body">
       <label class="f">Type of contact</label>
       <div class="chips pc-types">
         <label class="opt"><input type="radio" name="pc-type" value="concern" checked><span>Concern call</span></label>
@@ -67,7 +73,8 @@
         <label class="opt"><input type="radio" name="pc-type" value="voicemail"><span>Voicemail</span></label>
         <label class="opt"><input type="radio" name="pc-type" value="email"><span>Email or message</span></label>
       </div>
-      <div class="row2"><div><label class="f" for="pc-student">Student's first name</label><input type="text" id="pc-student" placeholder="Not saved"></div><div><label class="f" for="pc-parent">Family member's name</label><input type="text" id="pc-parent" placeholder="e.g., Ms. Lopez"></div></div>
+      <div class="row2"><div><label class="f" for="pc-student">Student (initials or name)</label><input type="text" id="pc-student" placeholder="Not saved"></div><div><label class="f" for="pc-parent">Family member's name</label><input type="text" id="pc-parent" placeholder="e.g., Ms. Lopez"></div></div>
+      <label class="f" for="pc-pron">Pronouns in the script</label><select id="pc-pron" style="max-width:240px"><option value="">Choose... (initials are used)</option><option value="he">he / his</option><option value="she">she / her</option></select>
       <div class="row2"><div><label class="f" for="pc-me">Your name</label><input type="text" id="pc-me"></div><div><label class="f" for="pc-subject">Your class or subject</label><input type="text" id="pc-subject" placeholder="e.g., math"></div></div>
       <div data-for="concern followup email"><label class="f" for="pc-beh">Behavior (from the matrix)</label><select id="pc-beh"></select></div>
       <div data-for="concern email"><label class="f" for="pc-strength">A strength to share first</label><input type="text" id="pc-strength" placeholder="e.g., is kind to classmates and works hard in reading"></div>
@@ -105,6 +112,8 @@
 <script src="js/data.js?v=7187bd9"></script>
 <script src="js/parent-data.js?v=7187bd9"></script>
 <script src="js/app.js?v=7187bd9"></script>
+<script src="js/grammar.js?v=x"></script>
+<script src="js/detect.js?v=x"></script>
 <script src="js/parent.js?v=7187bd9"></script>
 <script src="js/feedback.js?v=7187bd9"></script>
 </body>

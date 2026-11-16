@@ -3,6 +3,15 @@
   var esc = BIM.esc;
   var $ = function (id) { return document.getElementById(id); };
   function v(id) { return ($(id).value || "").trim(); }
+  /* the teacher's words, corrected, without the final period (they go inside a longer sentence) */
+  function g(t) { t = String(t || "").trim(); if (!t) return ""; if (window.GRAMMAR) t = GRAMMAR.fix(t, v("pc-student")).text; return t.replace(/[.!]+$/, ""); }
+  /* "he is kind" / "J.P. is kind" / "is kind" -> "J.P. is kind" */
+  function aboutS(t, s) {
+    t = g(t); if (!t) return "";
+    var rx = new RegExp("^(he|she|they|the student|" + s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")\\s+", "i");
+    return rx.test(t) ? s + " " + t.replace(rx, "") : s + " " + t.charAt(0).toLowerCase() + t.slice(1);
+  }
+  function lc(t) { return /^([A-Z]\.|I\b|[A-Z][a-z]+'s\b)/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1); }
   var byId = {}; BEHAVIORS.forEach(function (b) { byId[b.id] = b; });
 
   $("pc-beh").innerHTML = '<option value="">Choose the behavior...</option>' + [1, 2].map(function (l) {
@@ -40,28 +49,30 @@
     var m = mode(), s = v("pc-student") || "[student]", par = v("pc-parent"), me = v("pc-me") || "[your name]", subj = v("pc-subject");
     var hello = "Hi" + (par ? " " + par : "") + ", this is " + me + ", " + s + "'s " + (subj ? subj + " " : "") + "teacher at Lafayette Sunnyside Intermediate School.";
     var b = PARENT[$("pc-beh").value], name = byId[$("pc-beh").value];
-    var fill = function (t) { return t.replace(/\{s\}/g, s); };
+    var pr = { he: ["he", "his", "him"], she: ["she", "her", "her"] }[$("pc-pron").value] || [s, s + "'s", s];
+    var fill = function (t) { return t.replace(/\{s\}/g, s).replace(/\{sp\}/g, pr[0]).replace(/\{p\}/g, pr[1]).replace(/\{o\}/g, pr[2]); };
     var ints = Array.prototype.map.call(document.querySelectorAll(".pc-int:checked"), function (c) { return fill(PARENT_INT[c.value]); });
     var strength = v("pc-strength"), example = v("pc-example");
     var steps = [];
     if (m === "concern") {
       steps.push(["Open", hello + " Is now a good time to talk for a few minutes?"]);
-      steps.push(["Start with a strength", "First, I want to share something good: " + s + " " + (strength ? strength.replace(/\.$/, "") : "[something " + s + " does well]") + "."]);
-      steps.push(["Describe it objectively", "I'm calling because " + s + " " + (b ? b.say + ", " + fill(b.why) : "[describe the behavior]") + ". " + (example ? "For example, " + example.replace(/\.$/, "") + "." : "[Give one specific example of what you saw or heard.]")]);
+      steps.push(["Start with a strength", "First, I want to share something good: " + (strength ? aboutS(strength, s) : s + " [something " + s + " does well]") + "."]);
+      steps.push(["Describe it objectively", "I'm calling because " + s + " " + (b ? fill(b.say) + ", " + fill(b.why) : "[describe the behavior]") + ". " + (example ? "For example, " + lc(g(example)) + "." : "[Give one specific example of what you saw or heard.]") +
+        (fromLogResp ? " " + fromLogResp : "")]);
       steps.push(["Share what you're doing", ints.length ? "Here's what I'm doing in class to help: " + joinAnd(ints) + "." : "[Share the Tier 1 intervention you're using.]"]);
       steps.push(["Ask and listen", (b ? fill(b.ask) + " " : "") + "What has worked at home that I could try in class?"]);
       var hm = Array.prototype.map.call(document.querySelectorAll(".pc-hm:checked"), function (c) { return HOME[c.value]; });
       steps.push(["Offer an idea for home", hm.length ? "Here " + (hm.length > 1 ? "are a few things" : "is one thing") + " that could help at home: " + hm.map(function (x) { return fill(x[1]); }).join(" ") : (b ? "One thing that could help at home: " + fill(b.home) : "[Offer one simple idea for home.]")]);
-      steps.push(["Agree on a plan", "Let's try this for the next two weeks. I'll check back with you by [day] to let you know how it's going."]);
+      steps.push(["Agree on a plan", (fromLogNext ? fromLogNext + " " : "") + "Let's try this for the next two weeks. I'll check back with you by [day] to let you know how it's going."]);
       steps.push(["Close", "Thank you for your help. We're on the same team, and I want " + s + " to have a great year."]);
     } else if (m === "good") {
       steps.push(["Open", hello + " Don't worry, I'm calling with good news!"]);
-      steps.push(["Share the good news", s + " " + (v("pc-good") || "[what the student did well]") + "."]);
+      steps.push(["Share the good news", (v("pc-good") ? aboutS(v("pc-good"), s) : s + " [what the student did well]") + "."]);
       steps.push(["Connect to HEART", "That's a great example of " + $("pc-heart").value + ", one of our Sunnyside expectations."]);
       steps.push(["Close", "Please celebrate this at home. Thank you for everything you do for " + s + "!"]);
     } else if (m === "followup") {
       steps.push(["Open", hello + " I'm following up on our last conversation."]);
-      steps.push(["Share the progress", "Since we talked, " + s + " " + (v("pc-good") || "[describe the improvement]") + "."]);
+      steps.push(["Share the progress", "Since we talked, " + (v("pc-good") ? aboutS(v("pc-good"), s) : s + " [describe the improvement]") + "."]);
       steps.push(["Name what's working", ints.length ? "What's been helping: " + joinAnd(ints) + "." : "[Name what has been working.]"]);
       steps.push(["Ask", "Have you noticed any changes at home? Is there anything else I should know?"]);
       steps.push(["Close", "Thank you for your support. I'll keep you posted."]);
@@ -70,14 +81,63 @@
       steps.push(["Tip", "Keep voicemails short and general. Share details only when you reach the family."]);
     } else {
       var body = "Hello" + (par ? " " + par : "") + ",\n\nThis is " + me + ", " + s + "'s " + (subj ? subj + " " : "") + "teacher at Lafayette Sunnyside Intermediate School. " +
-        (strength ? "First, I want to share that " + s + " " + strength.replace(/\.$/, "") + ". " : "") +
-        (b ? "I'm reaching out because " + s + " " + b.say + ". " : "") + (ints.length ? "In class, I am " + joinAnd(ints) + ". " : "") +
+        (strength ? "First, I want to share that " + aboutS(strength, s) + ". " : "") +
+        (b ? "I'm reaching out because " + s + " " + fill(b.say) + ". " : "") + (ints.length ? "In class, I am " + joinAnd(ints) + ". " : "") +
         (function () { var hm = Array.prototype.map.call(document.querySelectorAll(".pc-hm:checked"), function (c) { return HOME[c.value]; }); return hm.length ? "\n\nIdeas that could help at home:\n" + hm.map(function (x) { return "- " + x[0] + ": " + fill(x[1]); }).join("\n") + "\n\n" : ""; })() +
         "I'd love your ideas on what works at home. Could we talk by phone this week?\n\nThank you,\n" + me;
       steps.push(["Email or message", body]);
     }
     return steps;
   }
+  /* ---------- start from a log entry ---------- */
+  var fromLogResp = "", fromLogNext = "";
+  var CONSEQ = /\b((lost|lose|loses|losing|miss(ed|es)?|no) recess|detention|silent lunch|sent to the office|office referral|owe[sd]?|owing|write[- ]?up|lost (a )?privilege)/i;
+  function fromLog() {
+    var raw = v("pc-log");
+    if (!raw) { $("pc-found").innerHTML = "Paste a log entry first."; return; }
+    var name = (raw.match(/\b([A-Z]\.[A-Z]\.?)(?=[\s,'])/) || [])[1] || (raw.trim().match(/^([A-Z][a-z]+)\b(?! (was|had|is|did))/) || [])[1] || "";
+    if (/^(During|In|At|When|While|After|Before|Today|This|The|He|She|They|I)$/.test(name)) name = "";
+    if (name && !v("pc-student")) $("pc-student").value = name.replace(/\.?$/, name.indexOf(".") > -1 ? "." : "");
+    var text = window.GRAMMAR ? GRAMMAR.fix(raw, v("pc-student")).text : raw;
+    var sents = text.replace(/\b([A-Z])\.([A-Z])\.(?=\s)/g, "$1\u2024$2\u2024").split(/(?<=[.!?])\s+/).map(function (x) { return x.replace(/\u2024/g, ".").trim(); }).filter(Boolean);
+    /* behavior: the first matrix behavior that has family wording (Level 1-2) */
+    var keys = DETECT.behaviors(text), beh = keys.filter(function (k) { return PARENT[k]; })[0] || "";
+    var serious = keys.some(function (k) { return /^L[34]:/.test(k); });
+    if (beh) $("pc-beh").value = beh;
+    fillInts(); fillHome();
+    /* interventions the entry names */
+    var ints = DETECT.interventions(text).filter(function (id) { return PARENT_INT[id]; });
+    document.querySelectorAll(".pc-int").forEach(function (c) { c.checked = ints.indexOf(c.value) > -1; });
+    var have = Array.prototype.map.call(document.querySelectorAll(".pc-int"), function (c) { return c.value; });
+    var extra = ints.filter(function (id) { return have.indexOf(id) < 0; });
+    if (extra.length) $("pc-ints").insertAdjacentHTML("beforeend", extra.map(function (id) { return '<label class="opt"><input type="checkbox" class="pc-int" value="' + id + '" checked><span>' + esc(INTERVENTIONS[id].name) + "</span></label>"; }).join(""));
+    /* the example: the first sentence about the student (not the teacher, not the matrix line) */
+    var isTeacher = function (x) { return /^(I|We|To address|To prevent|Verbal redirection|This behavior|This is a Level)\b/i.test(x); };
+    var ex = sents.filter(function (x) { return !isTeacher(x) && !/\b(mother|father|parent|guardian|family)\b/i.test(x); })[0] || "";
+    $("pc-example").value = ex.replace(/\bwas observed\s+/i, "was ").replace(/[.]$/, "");
+    /* how the student responded, and the teacher's next step */
+    var iFirst = sents.map(isTeacher).indexOf(true);
+    var resp = iFirst > -1 ? sents.slice(iFirst + 1).filter(function (x) { return !isTeacher(x) && !/\b(mother|father|parent|guardian|family)\b/i.test(x); })[0] : "";
+    if (resp && CONSEQ.test(resp)) resp = "";
+    resp = resp ? resp.replace(/^following (the )?(redirection|seat change|intervention),?\s*/i, "") : "";
+    fromLogResp = resp ? (/^(after|then|later|when|once|within|by)\b/i.test(resp) ? resp : "After I stepped in, " + lc(resp)) : "";
+    var nx = sents.filter(function (x) { return /^I will\b/.test(x) && !/\b(call|contact|email)\b.{0,30}\b(mother|father|parent|guardian|home|family)\b/i.test(x); })[0] || "";
+    fromLogNext = nx ? "In class, " + lc(nx) : "";
+    document.querySelector('input[name="pc-type"][value="concern"]').checked = true;
+    render();
+    var found = [];
+    if (v("pc-student")) found.push("student <b>" + esc(v("pc-student")) + "</b>");
+    if (beh) found.push("behavior <b>" + esc(byId[beh].name) + "</b>");
+    if (ints.length) found.push(ints.length + " intervention" + (ints.length === 1 ? "" : "s"));
+    if (ex) found.push("an example");
+    if (resp) found.push("the student's response");
+    $("pc-found").innerHTML = (found.length ? "Filled in from your entry: " + found.join(", ") + ". Add your name, the family member's name, and a strength, then check the script." : "No matrix behavior was found. Choose it under Adjust the details.") +
+      (serious ? '<div class="alert red" style="margin-top:8px"><p><b>Level 3 or 4 behavior:</b> an administrator contacts the family. Coordinate with your administrator before you call.</p></div>' : "");
+    $("pc-out").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  $("pc-fromlog").addEventListener("click", fromLog);
+  $("pc-log").addEventListener("input", function () { if (!v("pc-log")) { fromLogResp = fromLogNext = ""; $("pc-found").innerHTML = ""; } });
+
   function joinAnd(l) { return l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + (l.length > 2 ? "," : "") + " and " + l[l.length - 1]; }
 
   function render() {
