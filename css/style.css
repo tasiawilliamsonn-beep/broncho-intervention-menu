@@ -722,3 +722,27 @@ body:has(.plan-bar) .fb-btn { bottom: 84px; }
 body.under-construction main > *:not(.uc-sign):not(#print-area) { display: none !important; }
 .req-list { padding-left: 20px; margin: 8px 0 0; font-size: .92rem; }
 .req-list li { margin-bottom: 4px; }
+
+/* home: task tiles, rules, Learn more */
+.tasks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 900px) { .tasks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .tasks { grid-template-columns: 1fr; } }
+.task { position: relative; display: block; padding: 18px 18px 18px 64px; border: 2px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s; }
+.task:hover, .task:focus-visible { border-color: var(--red); transform: translateY(-2px); }
+.task b { display: block; font-family: var(--display); text-transform: uppercase; letter-spacing: .03em; font-size: 1.15rem; margin-bottom: 4px; }
+.task span:not(.task-n) { color: var(--muted); font-size: .95rem; }
+.task-n { position: absolute; left: 16px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-family: var(--display); }
+.rule a { display: inline-block; margin-top: 6px; font-weight: 700; }
+details.more { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin-bottom: 10px; }
+details.more > summary { cursor: pointer; list-style: none; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::after { content: "+"; font-size: 1.5rem; font-weight: 700; color: var(--red); line-height: 1; }
+details.more[open] > summary::after { content: "\2212"; }
+details.more > summary b { display: block; font-family: var(--display); text-transform: uppercase; font-size: 1.15rem; letter-spacing: .03em; }
+details.more > summary small { display: block; color: var(--muted); font-size: .85rem; margin-top: 2px; }
+details.more[open] { border-color: var(--red); }
+.more-body { padding: 4px 18px 20px; border-top: 1px solid var(--line); }
+.more-body.dark { background: var(--black); color: #fff; border-radius: 0 0 12px 12px; }
+.more-body.dark .card { color: var(--ink); }
+.more-body > .wrap { padding: 0; max-width: none; }
+details.more { scroll-margin-top: 90px; }
