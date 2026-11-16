@@ -13,6 +13,9 @@
   var qf = (location.search.match(/[?&]f=([a-z]+)/g) || []).map(function (m) { return m.split("=")[1]; }).filter(function (f) { return FUNCTIONS[f]; });
   if (qf.length) { funcs = {}; qf.forEach(function (f) { funcs[f] = true; }); funcsTouched = true; }
   plan.interventions = plan.interventions || [];
+  /* ?b=talking:1 (from the home page search) starts with that behavior selected */
+  var qb = (location.search.match(/[?&]b=([A-Za-z0-9]+:\d+)/) || [])[1];
+  if (qb) { var qp = qb.split(":"); if ((qp[0] === "L3" && LEVEL3[+qp[1]]) || (qp[0] === "L4" && LEVEL4[+qp[1]]) || BEHAVIORS.some(function (b) { return b.id === qp[0] && b.v[+qp[1]]; })) { sel = {}; sel[qb] = true; } }
 
   var byId = {};
   BEHAVIORS.forEach(function (b) { byId[b.id] = b; });

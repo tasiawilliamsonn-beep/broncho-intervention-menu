@@ -44,8 +44,22 @@
         <a class="btn ghost" href="log.html">Write a PowerSchool log</a>
         <a class="btn ghost" href="parent.html">Contact a family</a>
       </div>
+      <form class="hsearch" id="hs-form" role="search" autocomplete="off">
+        <label for="hs-q">What behavior are you seeing?</label>
+        <div class="hs-box"><input type="search" id="hs-q" placeholder="e.g., talking during a test, won't start work, missing homework"><button class="btn" type="submit">Find</button></div>
+        <div id="hs-results" class="hs-results" aria-live="polite"></div>
+      </form>
     </div>
     <div class="logo-big"><img src="img/broncho-logo.png" alt="Sunnyside Broncho logo: a bucking bronco over a red star"></div>
+  </div>
+</section>
+
+<section class="band alt" id="my-students" hidden>
+  <div class="wrap">
+    <h2 class="title">Your students</h2>
+    <p class="intro">From the logs saved on this computer only. Nothing is shared.</p>
+    <div class="ms-list" id="ms-list"></div>
+    <p id="ms-more" style="margin-top:10px"></p>
   </div>
 </section>
 
@@ -59,6 +73,8 @@
       <a class="task" href="parent.html"><span class="task-n">4</span><b>Call or email home</b><span>Paste your log entry and get a family script.</span></a>
       <a class="task" href="logs.html"><span class="task-n">5</span><b>See my saved logs</b><span>Filter by student, behavior, or location. Export to Excel.</span></a>
       <a class="task" href="tools.html"><span class="task-n">6</span><b>Get a classroom tool</b><span>Behavior reports, posters, contracts, passes, and more.</span></a>
+      <a class="task" href="tools.html#fourc"><span class="task-n">7</span><b>Audit my classroom</b><span>Rate your 4 C's (climate, communication, curriculum, culture) and get next steps.</span></a>
+      <button class="task" type="button" id="desk-print"><span class="task-n">8</span><b>Print a desk reference</b><span>The matrix, three rules, log types, and a strong entry on one page.</span></button>
     </div>
   </div>
 </section>
@@ -358,6 +374,7 @@
   if (location.hash) openTo(location.hash.slice(1));
 })();
 </script>
+<div class="print-only" id="print-area"></div>
 </main>
 
 <footer class="foot"><div class="wrap">
@@ -365,6 +382,9 @@
   <div><b>The Broncho Intervention Menu</b> &middot; Lafayette Sunnyside Intermediate School &middot; Tier 1 Behavior Supports<br>
   Built on the Sunnyside Behavior Intervention Matrix and peer-reviewed research. <a href="research.html">References</a>.</div>
 </div></footer>
+<script src="js/data.js?v=x"></script>
+<script src="js/app.js?v=x"></script>
+<script src="js/home.js?v=x"></script>
 <script src="js/feedback.js?v=a3aa2a5"></script>
 </body>
 </html>
