@@ -212,8 +212,16 @@
   }
   /* turn a teacher's note into a sentence about the student: "talked to a peer" -> "J.P. talked to a peer." */
   var SUBJ_START = /^(he|she|they|the student|i|we|after|during|when|while|at|in|before|following|then|later|this|it|[A-Z]\.[A-Z]\.?|[A-Z][a-z]+ (was|had|did|said|told|began|started|continued|stopped|returned|refused|walked|talked|asked))\b/i;
+  /* the teacher's own words: fix spelling and grammar, then common informal phrasing */
+  var gramChanges = [];
+  function clean(t) {
+    t = String(t || "").trim(); if (!t) return "";
+    if (window.GRAMMAR) { var g = GRAMMAR.fix(t, $("student").value); gramChanges = gramChanges.concat(g.changes); t = g.text; }
+    if (window.BIM_PHRASES) { var before = t; t = BIM_PHRASES(t, true); if (t !== before) gramChanges.push({ from: "informal wording", to: "objective wording", why: "wording" }); }
+    return t;
+  }
   function aboutStudent(t) {
-    t = String(t || "").trim().replace(/^(i observed|observed)\s+/i, ""); if (!t) return "";
+    t = clean(t).replace(/^(i observed|observed)\s+/i, ""); if (!t) return "";
     if (SUBJ_START.test(t)) return sentence(t);
     return sentence(who() + " " + t.charAt(0).toLowerCase() + t.slice(1));
   }
@@ -254,6 +262,7 @@
     return prefix + joinAnd(parts.slice(0, 2)) + ". I also " + joinAnd(parts.slice(2)) + ".";
   }
   function build(d) {
+    gramChanges = [];
     if (d.type === "COMMUNICATION" && !state.behaviors.length) return buildComm();
     var p1 = [], p2 = [], p3 = [], p4 = [];
     var setting = SETTING_TEXT[$("setting").value] || "";
@@ -265,8 +274,8 @@
       p1.push(setting && !hasPlace && !/^(during|in|at|after|before|while|when)\b/i.test(own) ? setting + ", " + (own.indexOf(who()) === 0 ? own : own.charAt(0).toLowerCase() + own.slice(1)) : own);
     } else if (state.behaviors.length) p1.push((setting ? setting + ", " : "") + who() + " was observed " + obsPhrase() + ".");
     var fq = $("freq").value.trim();
-    if (fq) p1.push(/^\d/.test(fq) ? "This occurred " + fq.replace(/[.]$/, "") + "." : sentence(fq));
-    var ex = $("expect").value.trim().replace(/^["\u201c]|["\u201d.]$/g, "");
+    if (fq) p1.push(/^\d/.test(fq) ? "This occurred " + fq.replace(/[.]$/, "") + "." : sentence(clean(fq)));
+    var ex = (window.GRAMMAR ? GRAMMAR.fix($("expect").value.trim()).text.replace(/\.$/, "") : $("expect").value.trim()).replace(/^["\u201c]|["\u201d.]$/g, "");
     if (ex) p1.push("The expectation \u201c" + ex + "\u201d " + ($("expect-how").value || "had been posted and taught") + ".");
     if (d.level) p1.push("This behavior is classified as a Level " + d.level + " behavior on the Sunnyside Behavior Intervention Matrix" +
       (state.heart.length ? " and did not meet our HEART " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) : "") + ".");
@@ -281,13 +290,13 @@
     if ($("response").value) p3.push(fill(RESP2[$("response").value] || sentence($("response").value)));
     if ($("after").value.trim()) p3.push(aboutStudent($("after").value));
     if ($("contact-made").checked) {
-      var w = $("c-with").value.trim(), m = METHOD_TEXT[$("c-method").value] || "";
+      var w = $("c-with").value.trim().replace(/\b(mom|mommy|momma)\b/i, "mother").replace(/\b(dad|daddy)\b/i, "father").replace(/\bgrandma\b/i, "grandmother").replace(/\bgrandpa\b/i, "grandfather"), m = METHOD_TEXT[$("c-method").value] || "";
       p4.push("I contacted " + (w ? (who() === "the student" ? "the student's " : who() + "'s ") + w : "the parent/guardian") + (m ? " " + m : "") + " to share the incident and the interventions used.");
-      if ($("c-sum").value.trim()) p4.push(sentence($("c-sum").value));
+      if ($("c-sum").value.trim()) p4.push(sentence(clean($("c-sum").value)));
     }
     var nx = $("next").value;
     if (nx && NEXT2[nx]) p4.push(fill(NEXT2[nx]));
-    if ($("next-note").value.trim()) p4.push(sentence($("next-note").value));
+    if ($("next-note").value.trim()) p4.push(sentence(clean($("next-note").value)));
     return [p1, p2, p3, p4].map(function (p) { return p.filter(Boolean).join(" "); }).filter(Boolean).join("\n\n");
   }
   function buildComm() {
@@ -324,6 +333,8 @@
     $("ps-type").textContent = tName;
     $("ps-title").textContent = titleFor(d.type);
     $("out").textContent = build(d);
+    var gs = window.GRAMMAR ? GRAMMAR.summary(gramChanges) : [];
+    $("gfix").innerHTML = gs.length ? "<b>Fixed in your words:</b> " + esc(gs.join("; ")) + "." : "";
     $("ps-ref").innerHTML = d.type === "DISCIPLINE"
       ? '<span class="pill no">Check it</span> This is a Level ' + (d.level || "3/4") + " behavior for an administrator."
       : '<span class="pill ok">Leave unchecked</span> Level 1 and 2 behaviors are handled in the classroom.';

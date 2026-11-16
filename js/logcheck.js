@@ -218,6 +218,12 @@
     [/\bgave (him|her|them) a warning\b/g, "gave $1 a private verbal redirection and restated the expectation"],
     [/\bwould not stop\b/gi, "continued"], [/\bwouldn'?t stop\b/gi, "continued"]
   ];
+  window.BIM_PHRASES = function (x, noBrackets) {
+    REWRITES.forEach(function (r) {
+      if (noBrackets) { var probe = x.replace(r[0], r[1]); if (/\[/.test(probe) && !/\[/.test(x)) return; x = probe; } else x = x.replace(r[0], r[1]);
+    });
+    return x;
+  };
   var SUBJECTS = /\b(?:in|during)\s+(language arts|ela|reading|writing|math(?:ematics)?|science|social studies|spelling|grammar|specials|art|music|p\.?e\.?|gym|library|homeroom|advisory|health|stem)(?:\s+class)?\b/i;
   var SETTING_WORDS = [[/\b(lunch|cafeteria)\b/i, "Cafeteria / lunch"], [/\bhall(way)?\b/i, "Hallway"], [/\brecess\b/i, "Recess"], [/\b(arrival|dismissal|bus)\b/i, "Arrival / dismissal"],
     [/\b(test|quiz|assessment)\b/i, "Test or quiz"], [/\bindependent(ly)? work\b/i, "Independent work"], [/\bpartner\b/i, "Partner work"], [/\b(small[- ]group|group work|stations?)\b/i, "Small-group / cooperative work"],
@@ -233,7 +239,7 @@
     if (dm) { var y = dm[3] ? (dm[3].length === 2 ? "20" + dm[3] : dm[3]) : String(new Date().getFullYear()); res.date = y + "-" + ("0" + dm[1]).slice(-2) + "-" + ("0" + dm[2]).slice(-2); }
     t = t.replace(/,?\s*\b(on\s+)?\d{1,2}\/\d{1,2}(\/\d{2,4})?\b,?/g, " ").replace(/,?\s*\b(at|around)?\s*\d{1,2}:\d{2}\s*(am|pm)?\b/gi, " ");
     var sm = t.match(SUBJECTS); if (sm) res.subject = sm[1].length <= 4 && !/math|art|gym/i.test(sm[1]) ? sm[1].toUpperCase() : sm[1].replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-    var tSet = t.split(/(?<=[.!?])\s+/).filter(function (x) { return !CONSEQ_RX.test(x); }).join(" ");
+    var tSet = t.split(/(?<=[.!?])\s+/).filter(function (x) { return !CONSEQ_RX.test(x) && !PARENT_RX.test(x); }).join(" ");
     SETTING_WORDS.some(function (x) { if (x[0].test(tSet)) { res.setting = x[1]; return true; } return false; });
     var nm = t.trim().match(/^([A-Z]\.[A-Z]\.?|[A-Z][a-z]+)(?=[\s,])/); if (nm && !/^(The|He|She|They|I|During|In|At|When|After|Before|Today|This|Student|While|Following|Verbal)$/.test(nm[1])) res.name = nm[1];
     var pron = (t.match(/\b(he|she)\b/i) || [, ""])[1].toLowerCase(), poss = PRON[pron] || (res.name ? res.name + "'s" : "the student's");
@@ -465,7 +471,7 @@
     if ($("s-method")) $("s-method").value = add.pMethod;
   }
   function renderStrong(a) {
-    var text = $("own-text").value;
+    var text = gram.text != null ? gram.text : $("own-text").value;
     if (!a) { $("own-strong").innerHTML = '<p class="hint">Write or paste your log entry on the left. A strengthened version that aligns with the matrix will appear here.</p>'; sig = ""; return; }
     if (a.invalid) { $("own-strong").innerHTML = '<div class="alert red"><h3>No strengthened version yet</h3><p>' + esc(a.why) + "</p></div>"; sig = ""; return; }
     if (!a.behs.length && a.rec !== "COMMUNICATION" && a.rec !== "INFORMATION") {
@@ -474,7 +480,7 @@
     if (!$("own-add")) $("own-strong").innerHTML = '<div id="own-add"></div><div class="ps-form" style="margin-top:12px">' +
       '<div class="ps-row"><span class="ps-lab">Log Type</span><div><b id="s-type"></b></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="s-title"></div><button class="btn ghost sm" type="button" data-copy="s-title">Copy title</button></div></div>' +
-      '<div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="s-text"></div><button class="btn sm" type="button" data-copy="s-text">Copy log entry</button> <button class="btn ghost sm" type="button" id="s-use">Use this version</button></div></div>' +
+      '<div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="s-text"></div><button class="btn sm" type="button" data-copy="s-text">Copy log entry</button> <button class="btn ghost sm" type="button" id="s-use">Rewrite my entry with this</button></div></div>' +
       '<div class="ps-row"><span class="ps-lab">Office Referral</span><div id="s-ref"></div></div></div>' +
       '<div id="s-ready" style="margin-top:10px"></div><div id="s-break"></div>';
     renderStrongControls(a, text);
@@ -497,16 +503,12 @@
     if (t.id === "s-next") add.next = t.value;
     renderStrong(last);
   });
-  $("own-strong").addEventListener("input", function (e) { if (e.target.id === "s-who") { add.pWho = e.target.value.trim(); $("s-text").textContent = strongText(last, $("own-text").value); } });
+  $("own-strong").addEventListener("input", function (e) { if (e.target.id === "s-who") { add.pWho = e.target.value.trim(); $("s-text").textContent = strongText(last, gram.text); } });
   $("own-strong").addEventListener("click", function (e) {
     var b = e.target.closest("[data-sheart]");
     if (b) { var v = b.getAttribute("data-sheart"), i = add.heart.indexOf(v); if (i > -1) add.heart.splice(i, 1); else add.heart.push(v); b.setAttribute("aria-pressed", i < 0); renderStrong(last); }
     if (e.target.id === "s-use") {
-      $("own-text").value = $("s-text").textContent;
-      if (!$("own-title").value.trim()) $("own-title").value = $("s-title").textContent;
-      if (last && last.rec) $("own-type").value = last.rec;
-      add = { ints: [], resp: "", heart: [], pWho: "", pMethod: "", next: "" }; sig = "";
-      render(); BIM.toast("Your entry was updated. Check the feedback again.");
+      rewrite(); return;
     }
   });
 
@@ -531,8 +533,11 @@
     var w = document.querySelector("#own-strong .ps-form"); if (w) w.classList.toggle("locked", on);
   }
 
+  var gram = { changes: [] };
   function render() {
-    var text = $("own-text").value, chosen = $("own-type").value;
+    var raw = $("own-text").value, chosen = $("own-type").value;
+    gram = window.GRAMMAR && raw.trim() ? GRAMMAR.fix(raw, $("own-student").value) : { text: raw, changes: [] };
+    var text = gram.text;
     var a = analyze(text, chosen); last = a;
     var ob = text.trim() ? objectify(text) : null;
     if (ob && ob.date && !dateTouched) $("own-date").value = ob.date;
@@ -544,6 +549,8 @@
     var h = "";
     if (window.BULLY && (BULLY.rx.test(text) || a.behs.some(function (b) { return b.key === "L3:2"; }))) h += BULLY.html(true);
     h += scorecard(criteria(a, ob, text));
+    var gs = window.GRAMMAR ? GRAMMAR.summary(gram.changes) : [];
+    if (gs.length) h += '<p class="hint gfix"><b>Spelling and grammar fixed in the rewrite:</b> ' + esc(gs.join("; ")) + ".</p>";
     h += '<p class="hint" style="margin-top:12px">Matrix: ' + (a.lv ? "Level " + a.lv + " (" + esc(a.behs.map(function (b) { return b.name; }).join("; ")) + ")" : "no behavior recognized yet") +
       ". This checker reads key words, so use your judgment.</p>";
     $("own-out").innerHTML = h;
@@ -553,6 +560,39 @@
     $("own-block").innerHTML = bl ? '<div class="alert red"><h3>' + esc(bl.title) + "</h3><p>" + esc(bl.text) + '<span class="src">' + esc(bl.src) + "</span></p></div>" : "";
     lock(!!bl);
   }
+  /* Rewrite: replace the teacher's text with the strengthened version (and keep the original for Undo) */
+  var original = null;
+  function rewrite() {
+    if (!last || last.invalid || !$("s-text")) { BIM.toast("Write a few sentences about what happened first."); return; }
+    original = $("own-text").value;
+    $("own-text").value = $("s-text").textContent;
+    if (!$("own-title").value.trim()) $("own-title").value = $("s-title").textContent;
+    if (last && last.rec) $("own-type").value = last.rec;
+    add = { ints: [], resp: "", heart: [], pWho: "", pMethod: "", next: "" }; sig = "";
+    $("own-undo").hidden = false;
+    render();
+    var br = ($("own-text").value.match(/\[[^\]]+\]/g) || []).length;
+    BIM.toast(br ? "Rewritten. Fill in the " + br + " part" + (br === 1 ? "" : "s") + " in [brackets]." : "Rewritten. Read it once more before you copy it.");
+  }
+  $("own-rewrite").addEventListener("click", rewrite);
+  $("own-student").addEventListener("input", function () { sig = ""; render(); });
+  $("own-undo").addEventListener("click", function () {
+    if (original == null) return;
+    $("own-text").value = original; original = null; $("own-undo").hidden = true; sig = ""; render(); BIM.toast("Your original entry is back.");
+  });
+  /* an entry sent from Student Logs to be rewritten */
+  try {
+    var sent = JSON.parse(sessionStorage.getItem("bim.rewrite") || "null");
+    if (sent) {
+      sessionStorage.removeItem("bim.rewrite");
+      $("own-student").value = sent.student || ""; $("own-text").value = sent.text || ""; $("own-title").value = sent.title || "";
+      if (sent.type) $("own-type").value = sent.type;
+      setTimeout(function () {
+        if (sent.date) { $("own-date").value = sent.date; dateTouched = true; }
+        if (sent.setting) { $("own-setting").value = sent.setting; settingTouched = true; }
+        mode("check"); render(); BIM.toast("Loaded your saved entry. Click Rewrite my entry."); }, 0);
+    }
+  } catch (e) {}
   var dateTouched = false, settingTouched = false;
   $("own-date").addEventListener("input", function () { dateTouched = true; });
   $("own-setting").addEventListener("change", function () { settingTouched = true; });

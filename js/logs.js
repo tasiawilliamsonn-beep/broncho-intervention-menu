@@ -66,7 +66,7 @@
         "</td><td>" + esc(behs(l).join("; ")) + "</td><td>" + esc(l.setting || "") + "</td><td>" + esc((l.ints || []).map(intName).join("; ")) + "</td><td>" + esc(l.response || "") +
         "</td><td>" + (contact(l) ? "Yes" : "") + '</td><td><button class="btn ghost sm" type="button" data-open="' + esc(l.id) + '">' + (open[l.id] ? "Hide" : "View") + "</button></td></tr>";
       if (open[l.id]) row += '<tr class="sl-detail"><td colspan="10"><p><b>Title:</b> ' + esc(l.title || "") + '</p><div class="output" id="txt-' + esc(l.id) + '">' + esc(l.text || "") + '</div>' +
-        '<div class="cta" style="margin-top:8px"><button class="btn sm" type="button" data-copy="txt-' + esc(l.id) + '">Copy log entry</button><button class="btn ghost sm" type="button" data-del="' + esc(l.id) + '">Delete</button></div></td></tr>';
+        '<div class="cta" style="margin-top:8px"><button class="btn sm" type="button" data-copy="txt-' + esc(l.id) + '">Copy log entry</button><button class="btn dark sm" type="button" data-rewrite="' + esc(l.id) + '">Rewrite in Log Builder</button><button class="btn ghost sm" type="button" data-del="' + esc(l.id) + '">Delete</button></div></td></tr>';
       return row;
     }).join("") : '<tr><td colspan="10" class="empty">' + (logs.length ? "No entries match these filters." : 'No saved logs on this device yet. Save entries in the <a href="log.html">Log Builder</a>.') + "</td></tr>";
   }
@@ -94,6 +94,12 @@
   });
   $("sl-body").addEventListener("click", function (e) {
     var c = e.target.closest("[data-copy]"); if (c) { BIM.copy($(c.getAttribute("data-copy")).textContent); return; }
+    var rw = e.target.closest("[data-rewrite]");
+    if (rw) {
+      var l = logs.filter(function (x) { return x.id === rw.getAttribute("data-rewrite"); })[0];
+      try { sessionStorage.setItem("bim.rewrite", JSON.stringify({ student: l.student, date: l.date, type: l.type, title: l.title, text: l.text, setting: l.setting })); } catch (err) {}
+      location.href = "log.html#check"; return;
+    }
     var d = e.target.closest("[data-del]");
     if (d) { if (confirm("Delete this log entry from this device?")) { logs = logs.filter(function (l) { return l.id !== d.getAttribute("data-del"); }); BIM.setLogs(logs); refresh(); } return; }
     var o = e.target.closest("[data-open]"); if (o) { var id = o.getAttribute("data-open"); open[id] = !open[id]; render(); }

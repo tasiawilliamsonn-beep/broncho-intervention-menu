@@ -179,7 +179,7 @@
           <div class="ps-row"><span class="ps-lab">Log Type</span><div><b id="ps-type"></b></div></div>
           <div class="ps-row"><span class="ps-lab">Subtype</span><div>Closest match from Sunnyside's list</div></div>
           <div class="ps-row"><span class="ps-lab">Title</span><div><div class="output ps-title" id="ps-title"></div><button class="btn ghost sm" type="button" data-copy="ps-title">Copy</button></div></div>
-          <div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="out" tabindex="0" aria-live="polite"></div><button class="btn sm" type="button" data-copy="out">Copy log entry</button></div></div>
+          <div class="ps-row"><span class="ps-lab">Log Entry</span><div><div class="output" id="out" tabindex="0" aria-live="polite"></div><button class="btn sm" type="button" data-copy="out">Copy log entry</button><p class="hint gfix" id="gfix"></p></div></div>
           <div class="ps-row"><span class="ps-lab">Office Referral</span><div id="ps-ref"></div></div>
         </div>
         <label class="opt" style="padding-left:0;margin-top:6px"><input type="checkbox" id="cites"><span class="hint">Add research citations to the entry</span></label>
@@ -221,6 +221,8 @@
     <label class="f" for="own-title">Title</label><input type="text" id="own-title" placeholder="e.g., Refusal to comply - Tier 1 intervention">
     <label class="f" for="own-text">Log Entry</label>
     <textarea id="own-text" style="min-height:220px" placeholder="Write or paste your entry the same way you would in PowerSchool."></textarea>
+    <div class="cta" style="margin-top:8px"><button class="btn" type="button" id="own-rewrite">Rewrite my entry</button><button class="btn ghost sm" type="button" id="own-undo" hidden>Undo rewrite</button></div>
+    <p class="hint" id="own-rewrite-note" style="margin-top:4px">Rewrite fixes spelling and grammar, uses objective language, puts events in order, and adds what is missing. Anything in [brackets] needs your words.</p>
     <label class="f" for="own-beh">Matrix behavior <span class="hint">(if it isn't found automatically)</span></label>
     <select id="own-beh"></select>
     <button class="btn dark" type="button" id="own-save" style="margin-top:12px">Save to student record</button>
@@ -293,6 +295,7 @@
 <script src="js/data.js?v=9982a54"></script>
 <script src="js/app.js?v=9982a54"></script>
 <script src="js/bully.js?v=9982a54"></script>
+<script src="js/grammar.js?v=x"></script>
 <script src="js/logtext.js?v=9982a54"></script>
 <script src="js/log.js?v=9982a54"></script>
 <script src="js/logcheck.js?v=9982a54"></script>
