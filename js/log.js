@@ -96,6 +96,7 @@
   }
 
   function renderHeart() {
+    if (!$("heart")) return;
     $("heart").innerHTML = HEART.map(function (h) { return '<button type="button" class="chip" data-h="' + h + '" aria-pressed="' + (state.heart.indexOf(h) > -1) + '">' + h + "</button>"; }).join("");
   }
 
@@ -277,9 +278,7 @@
     if (fq) p1.push(/^\d/.test(fq) ? "This occurred " + fq.replace(/[.]$/, "") + "." : sentence(clean(fq)));
     var ex = (window.GRAMMAR ? GRAMMAR.fix($("expect").value.trim()).text.replace(/\.$/, "") : $("expect").value.trim()).replace(/^["\u201c]|["\u201d.]$/g, "");
     if (ex) p1.push("The expectation \u201c" + ex + "\u201d " + ($("expect-how").value || "had been posted and taught") + ".");
-    if (d.level) p1.push("This behavior is classified as a Level " + d.level + " behavior on the Sunnyside Behavior Intervention Matrix" +
-      (state.heart.length ? " and did not meet our HEART " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) : "") + ".");
-    else if (state.heart.length) p1.push("This did not meet our HEART " + (state.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(state.heart) + ".");
+    if (d.level) p1.push("This behavior is classified as a Level " + d.level + " behavior on the Sunnyside Behavior Intervention Matrix.");
     if (d.type === "DISCIPLINE") {
       if (state.behaviors.some(function (b) { return b.key === "L3:0"; })) {
         var c = commsCount(studentLogs($("student").value)) + ($("contact-made").checked ? 1 : 0);

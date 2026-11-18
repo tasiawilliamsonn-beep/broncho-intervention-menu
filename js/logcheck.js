@@ -10,7 +10,9 @@
   var PARENT_RX = /(call(ed)?|email(ed)?|contact(ed|ing)?|spoke (with|to)|talked (to|with)|met with|told|explained to|messag(ed|e)|text(ed)?|voicemail|note home|conference(d)?|reached out).{0,40}\b(parent|mom|mother|dad|father|guardian|grand(ma|pa|mother|father|parent)|family|home)\b|\b(parent|mom|mother|dad|father|guardian|family)\b.{0,30}(call|email|contact|messag|conference|was notified|notified)/i;
   var RESPONSE_RX = /\b(responded|corrected|stopped|complied|returned to (work|task|(his|her|their) seat)|got back to work|began (working|the)|started (working|the)|improv(ed|ement)|no change|did not change|continued|escalat(ed|ion)|refused again|was able to|followed (the )?(direction|request))/i;
   var NEXT_RX = /\b(will |plan|next step|follow[- ]?up|continue|monitor)\b/i;
-  var HEART_RX = /\b(honesty|effort|attitude|respect|teamwork|expectation)\b/i;
+  var HEART_RX = /\b(expectations?|expected behavior)\b/i;
+  /* HEART values are not used in Sunnyside log entries */
+  var HEART_LOG_RX = /\bHEART\b|\b(did not|didn't|failed to) (meet|show|follow) (our |the )?(HEART )?(expectations?|values?) of (honesty|effort|attitude|respect|teamwork)\b|\b(was|is) not (showing|being) (respectful|honest|a team player)\b/i;
   var DATE_RX = /\b\d{1,2}\/\d{1,2}(\/\d{2,4})?\b|\b\d{1,2}:\d{2}\s?(am|pm)?\b|\b(monday|tuesday|wednesday|thursday|friday)\b/i;
   var LABEL_RX = /^\s*[A-Z][A-Za-z /]{2,25}:\s/m;
   var NOCHANGE_RX = /(three|3|several|multiple) (logged )?(parent|phone|family)? ?(calls|contacts|communications|conferences)|little (or|to) no change|no change after/i;
@@ -91,7 +93,7 @@
     else if (RESPONSE_RX.test(text)) good.push("Describes the student's response");
     if (lv === 2 && !parent) fixes.push(["warn", "Level 2 requires parent notification", "Contact the family and log it as a separate Communication entry, or mention the contact here."]);
     else if (parent) good.push("Documents parent/guardian contact");
-    if (!HEART_RX.test(text) && lv && lv <= 2) fixes.push(["tip", "Name the expectation", "Connect the behavior to HEART, for example \"This did not meet our expectation of Respect.\""]);
+    if (!HEART_RX.test(text) && lv && lv <= 2) fixes.push(["tip", "Name the expectation", "State the classroom expectation or posted rule that was missed, for example \"The expectation 'Voice Level 0: Silent' was posted on the board.\""]);
     if (!NEXT_RX.test(text) && lv) fixes.push(["tip", "Add a next step", "For example: \"I will continue the break card and check in daily.\""]);
 
     /* wording */
@@ -121,7 +123,7 @@
         need("Names the Tier 1 intervention you used", ints.length, true, "Sunnyside matrix; Conroy & Sutherland, 2012");
         need("Says how the student responded", RESPONSE_RX.test(text), true, "Chafouleas et al., 2007");
         if (lv === 2) need("Parent/guardian contact (required for Level 2)", parent, true, "Sunnyside matrix; Sheridan et al., 2012");
-        need("Names the HEART expectation", HEART_RX.test(text), false, "Simonsen et al., 2008");
+        need("Names the expectation that was missed", HEART_RX.test(text), false, "Simonsen et al., 2008");
         need("Includes a next step", NEXT_RX.test(text), false, "Chafouleas et al., 2007");
       }
       if (noChange) need("Mentions the parent communications already logged", parent || NOCHANGE_RX.test(text), true, "Sunnyside matrix, Level 3");
@@ -166,7 +168,7 @@
     REWRITES.forEach(function (r) {
       if (noBrackets) { var probe = x.replace(r[0], r[1]); if (/\[/.test(probe) && !/\[/.test(x)) return; x = probe; } else x = x.replace(r[0], r[1]);
     });
-    return x;
+    return x.replace(/ during instruction (?=(during|in|at|while)\b)/g, " ");
   };
   var SUBJECTS = /\b(?:in|during)\s+(language arts|ela|reading|writing|math(?:ematics)?|science|social studies|spelling|grammar|specials|art|music|p\.?e\.?|gym|library|homeroom|advisory|health|stem)(?:\s+class)?\b/i;
   var SETTING_WORDS = [[/\b(lunch|cafeteria)\b/i, "Cafeteria / lunch"], [/\bhall(way)?\b/i, "Hallway"], [/\brecess\b/i, "Recess"], [/\b(arrival|dismissal|bus)\b/i, "Arrival / dismissal"],
@@ -202,6 +204,7 @@
       var cat;
       if (CONSEQ_RX.test(x)) cat = "consequence";
       else if (PARENT_RX.test(x)) cat = "parent";
+      else if (HEART_LOG_RX.test(orig)) cat = "heart";
       else if (SUBJ_SUMMARY.test(orig) && !BEH_RX.some(function (r) { return r[1].test(orig); })) cat = "removed";
       else if (TEACHER_ACT.test(x) || (/^(I|We)\b/.test(x) && INT_RX.some(function (r) { return r[1].test(x); }))) { cat = "intervention"; hadInt = true; }
       else if (hadInt) cat = "response";
@@ -228,16 +231,17 @@
     res.text = out.join(" ");
     return res;
   }
-  var CAT_LABEL = { behavior: "Behavior", intervention: "Intervention", response: "Student response", parent: "Parent contact", consequence: "Consequence", removed: "Removed" };
+  var CAT_LABEL = { heart: "Removed", behavior: "Behavior", intervention: "Intervention", response: "Student response", parent: "Parent contact", consequence: "Consequence", removed: "Removed" };
   var CAT_NOTE = {
     removed: "A summary judgment, not an observable behavior (Girvan et al., 2017).",
+    heart: "HEART values are not used in Sunnyside log entries. Name the classroom expectation or posted rule instead.",
     consequence: "A consequence, not an intervention. It is left out of the Intervention entry. If you assign it, document it after the intervention (Conroy & Sutherland, 2012; Sunnyside matrix)."
   };
   function breakdown(o) {
     if (!o.parts.length) return "";
     return '<details class="lb-more ob-break" open><summary>How your entry was rewritten</summary><table class="hist ob-table"><thead><tr><th>Category</th><th>You wrote</th><th>Objective version</th></tr></thead><tbody>' +
       o.parts.map(function (p) {
-        return '<tr class="ob-' + p.cat + '"><td><span class="pill' + (p.cat === "consequence" || p.cat === "removed" ? " no" : " ok") + '">' + CAT_LABEL[p.cat] + "</span></td><td>" + esc(p.orig) + "</td><td>" +
+        return '<tr class="ob-' + p.cat + '"><td><span class="pill' + (p.cat === "consequence" || p.cat === "removed" || p.cat === "heart" ? " no" : " ok") + '">' + CAT_LABEL[p.cat] + "</span></td><td>" + esc(p.orig) + "</td><td>" +
           (CAT_NOTE[p.cat] ? '<i>' + esc(CAT_NOTE[p.cat]) + "</i>" : esc(p.out)) + "</td></tr>";
       }).join("") + "</tbody></table>" +
       ((o.date || o.subject) ? '<p class="hint">' + (o.date ? "Date moved to PowerSchool's Incident Date field. " : "") + (o.subject ? "Class: " + esc(o.subject) + ". " : "") + "</p>" : "") + "</details>";
@@ -263,7 +267,7 @@
   }
   function strongText(a, text) {
     var ob = objectify(text), rec = a.rec;
-    var seq = ob.parts.filter(function (p) { return p.cat !== "removed" && p.cat !== "consequence" && p.cat !== "parent"; }).map(function (p) { return { cat: p.cat, t: cleanText(p.out) }; });
+    var seq = ob.parts.filter(function (p) { return p.cat !== "removed" && p.cat !== "heart" && p.cat !== "consequence" && p.cat !== "parent"; }).map(function (p) { return { cat: p.cat, t: cleanText(p.out) }; });
     /* the behavior always comes first */
     var fbi = seq.map(function (p) { return p.cat; }).indexOf("behavior");
     if (fbi > 0) seq.unshift(seq.splice(fbi, 1)[0]);
@@ -273,9 +277,9 @@
     if (!paras.length || paras[0].g !== "b") paras.unshift({ g: "b", s: ["[Describe what the student said or did, where, and for how long.]"] });
     var first = paras[0].s;
     if (rec === "DISCIPLINE" && !/administrator/i.test(text)) first.unshift("I am requesting that an administrator address this behavior.");
-    if (a.lv && !/\blevel \d\b/i.test(text)) first.push("This behavior is classified as a Level " + a.lv + " behavior on the Sunnyside Behavior Intervention Matrix" +
-      (add.heart.length ? " and did not meet our HEART " + (add.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(add.heart) : "") + ".");
-    else if (add.heart.length) first.push("This did not meet our HEART " + (add.heart.length > 1 ? "expectations" : "expectation") + " of " + joinAnd(add.heart) + ".");
+    var noExp = !(HEART_RX.test(text.replace(HEART_LOG_RX, "")) || /\b(posted|rule|voice level|norm|procedure|routine)\b/i.test(text));
+    if (a.lv && a.lv <= 2 && noExp) first.push("[State the classroom expectation or posted rule that was missed.]");
+    if (a.lv && !/\blevel \d\b/i.test(text)) first.push("This behavior is classified as a Level " + a.lv + " behavior on the Sunnyside Behavior Intervention Matrix.");
     var hasI = paras.some(function (p) { return p.g === "i"; }), hasR = paras.some(function (p) { return p.g === "r"; });
     var addI = add.ints.length ? (rec === "DISCIPLINE" ? "Tier 1 interventions already used: I " : (hasI ? "I also " : "To address the behavior, I ")) + joinAnd(add.ints.map(sayFor)) + "." :
       (!hasI && (rec === "INTERVENTION" || (a.lv && a.lv <= 2)) ? "[Add the Tier 1 intervention you used: what you said or did to redirect, re-teach, or support the student.]" : "");
@@ -303,17 +307,18 @@
     var tn = function (t) { return t ? t.charAt(0) + t.slice(1).toLowerCase() : ""; };
 
     /* 1 behavior identified: the matrix behavior, the expectation missed, and the matrix connection */
-    var expSaid = HEART_RX.test(text.replace(/\b(bad|negative|poor|an|a|his|her|their|some|with) attitude\b/gi, "").replace(new RegExp(SUBJ_SUMMARY.source, "gi"), "")) || /\b(posted|rule|voice level|norm)\b/i.test(text);
+    var expSaid = HEART_RX.test(text.replace(HEART_LOG_RX, "")) || /\b(posted|rule|voice level|norm|procedure|routine)\b/i.test(text);
     var lvlSaid = /\blevel \d\b|behavior intervention matrix/i.test(text);
-    var bm = []; if (!expSaid) bm.push("the specific expectation that was missed (a HEART value or the posted rule)"); if (!lvlSaid) bm.push("the matrix connection (\u201cThis behavior is classified as a Level " + (a.lv || 1) + " behavior on the Sunnyside Behavior Intervention Matrix.\u201d)");
+    var bm = []; if (!expSaid) bm.push("the specific classroom expectation or posted rule that was missed"); if (!lvlSaid) bm.push("the matrix connection (\u201cThis behavior is classified as a Level " + (a.lv || 1) + " behavior on the Sunnyside Behavior Intervention Matrix.\u201d)");
+    var heartUsed = HEART_LOG_RX.test(text), heartNote = heartUsed ? " Remove the HEART reference: HEART values are not used in Sunnyside log entries." : "";
     rows.push(!a.behs.length ? { n: "Behavior identified", st: "miss", found: "No behavior from the Sunnyside matrix was found.", fix: "Name the behavior in plain terms (for example \u201ctalked to a peer during the assessment\u201d or \u201crefused to start the assignment\u201d), or pick it under Matrix behavior.", src: "Sunnyside matrix" }
-      : bm.length ? { n: "Behavior identified", st: "part", found: "Reads as " + a.behs.map(function (b) { return "Level " + b.level + " " + b.name; }).join("; ") + ", but the entry does not state " + bm.join(" or ") + ".", fix: "Add " + bm.join(" and ") + ".", src: "Sunnyside matrix" }
+      : bm.length || heartUsed ? { n: "Behavior identified", st: "part", found: "Reads as " + a.behs.map(function (b) { return "Level " + b.level + " " + b.name; }).join("; ") + (bm.length ? ", but the entry does not state " + bm.join(" or ") + "." : ".") + heartNote, fix: (bm.length ? "Add " + bm.join(" and ") + ". " : "") + (heartUsed ? "Example: \u201cThe expectation \u2018Voice Level 0: Silent\u2019 was posted on the board.\u201d" : ""), src: "Sunnyside matrix" }
       : { n: "Behavior identified", st: "ok", found: "Matches the matrix (" + a.behs.map(function (b) { return "Level " + b.level + " " + b.name; }).join("; ") + ") and names the expectation missed." });
 
     /* 2 specific description */
     var where = !!(ob.subject || ob.setting || /\b(during|while|at the start|in the hall)/i.test(text)), much = /\b(\d+|once|twice|several|multiple|most of|entire|minutes?|seconds?|times)\b/i.test(text);
     var dl = uniq((text.match(new RegExp(DATE_RX.source, "gi")) || []).concat(text.match(/^\s*[A-Z][A-Za-z /]{2,25}:/gm) || []));
-    var cats = ob.parts.map(function (p) { return p.cat; }).filter(function (c) { return c !== "removed"; });
+    var cats = ob.parts.map(function (p) { return p.cat; }).filter(function (c) { return c !== "removed" && c !== "heart"; });
     var fI = cats.indexOf("intervention"), fR = cats.indexOf("response"), fC = cats.indexOf("consequence");
     var sm = [];
     if (words < 20) sm.push("more detail (" + words + " words; aim for 20 or more)");
@@ -398,7 +403,7 @@
   }
   function renderStrongControls(a, text) {
     var need = { ints: (a.rec === "INTERVENTION" || a.rec === "DISCIPLINE") && a.lv && a.lv <= 3, resp: a.lv && a.lv <= 2 && !/\b(responded|corrected|stopped|complied|returned to|got back to work|began|started (working|the)|improv|no change|did not change|continued|escalat|refused again|was able to|followed)/i.test(text),
-      heart: a.lv && a.lv <= 2 && !/\b(honesty|effort|attitude|respect|teamwork)\b/i.test(text), parent: a.lv === 2 && !a.parent, next: a.lv && !/\b(will |plan|next step|follow[- ]?up|continue|monitor)\b/i.test(text) };
+      heart: false, parent: a.lv === 2 && !a.parent, next: a.lv && !/\b(will |plan|next step|follow[- ]?up|continue|monitor)\b/i.test(text) };
     var s2 = JSON.stringify([a.behs.map(function (b) { return b.key; }), a.ints, need, a.rec]);
     if (s2 === sig) return;
     sig = s2;
